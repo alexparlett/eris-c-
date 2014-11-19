@@ -27,7 +27,7 @@ namespace Eris
 {
 
     Object::Object(Context* context) :
-    context_(context)
+        context_(context)
     {
         assert(context_);
     }
