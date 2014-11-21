@@ -36,6 +36,7 @@ namespace Eris
     {
         VAR_NONE = 0,
         VAR_INT,
+        VAR_DOUBLE,
         VAR_BOOL,
         VAR_FLOAT,
         VAR_VECTOR2,
@@ -64,6 +65,7 @@ namespace Eris
             int int_;
             bool bool_;
             float float_;
+            double double_;
             void* ptr_;
         };
 
@@ -71,6 +73,7 @@ namespace Eris
         {
             int int2_;
             float float2_;
+            double double2_;
             void* ptr2_;
         };
 
@@ -78,6 +81,7 @@ namespace Eris
         {
             int int3_;
             float float3_;
+            double double3_;
             void* ptr3_;
         };
 
@@ -85,6 +89,7 @@ namespace Eris
         {
             int int4_;
             float float4_;
+            double double4_;
             void* ptr4_;
         };
     };
@@ -104,6 +109,13 @@ namespace Eris
 
         /// Construct from integer.
         Variant(int value) :
+            type_(VAR_NONE)
+        {
+            *this = value;
+        }
+
+        /// Construct from integer.
+        Variant(double value) :
             type_(VAR_NONE)
         {
             *this = value;
@@ -314,6 +326,14 @@ namespace Eris
             return *this;
         }
 
+        /// Assign from an integer.
+        Variant& operator = (double rhs)
+        {
+            SetType(VAR_DOUBLE);
+            value_.double_ = rhs;
+            return *this;
+        }
+
         /// Assign from an unsigned integer.
         Variant& operator = (unsigned rhs)
         {
@@ -486,6 +506,8 @@ namespace Eris
         bool operator == (const Variant& rhs) const;
         /// Test for equality with an integer. To return true, both the type and value must match.
         bool operator == (int rhs) const { return type_ == VAR_INT ? value_.int_ == rhs : false; }
+        /// Test for equality with an double. To return true, both the type and value must match.
+        bool operator == (double rhs) const { return type_ == VAR_DOUBLE ? value_.double_ == rhs : false; }
         /// Test for equality with an unsigned integer. To return true, both the type and value must match.
         bool operator == (unsigned rhs) const { return type_ == VAR_INT ? value_.int_ == (int) rhs : false; }
         /// Test for equality with a bool. To return true, both the type and value must match.
@@ -551,6 +573,8 @@ namespace Eris
         bool operator != (const Variant& rhs) const { return !(*this == rhs); }
         /// Test for inequality with an integer.
         bool operator != (int rhs) const { return !(*this == rhs); }
+        /// Test for inequality with an double.
+        bool operator != (double rhs) const { return !(*this == rhs); }
         /// Test for inequality with an unsigned integer.
         bool operator != (unsigned rhs) const { return !(*this == rhs); }
         /// Test for inequality with a bool.
@@ -605,6 +629,8 @@ namespace Eris
         int GetInt() const { return type_ == VAR_INT ? value_.int_ : 0; }
         /// Return unsigned int or zero on type mismatch.
         int GetUInt() const { return type_ == VAR_INT ? (unsigned) value_.int_ : 0; }
+        /// Return double or zero on type mismatch.
+        double GetDouble() const { return type_ == VAR_DOUBLE ? value_.double_ : 0; }
         /// Return StringHash or zero on type mismatch.
         StringHash GetStringHash() const { return StringHash(GetUInt()); }
         /// Return bool or false on type mismatch.

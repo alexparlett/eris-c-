@@ -48,14 +48,12 @@ namespace Eris
 
         timeStep_ = timeStep;
 
-        {
-            using namespace BeginFrame;
+        using namespace BeginFrame;
 
-            VariantMap eventData = context_->GetEventDataMap();
-            eventData[P_FRAME] = frameNumber_;
-            eventData[P_TIMESTEP] = timeStep_;
-            SendEvent(E_BEGINFRAME, eventData);
-        }
+        VariantMap& eventData = context_->GetEventDataMap();
+        eventData[P_FRAME] = frameNumber_;
+        eventData[P_TIMESTEP] = timeStep_;
+        SendEvent(E_BEGINFRAME, eventData);
     }
 
     void Time::EndFrame()

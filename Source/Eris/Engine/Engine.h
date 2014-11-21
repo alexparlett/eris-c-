@@ -24,6 +24,8 @@
 
 #include "Object.h"
 #include "Variant.h"
+#include "Vector.h"
+#include "Timer.h"
 
 namespace Eris
 {
@@ -38,10 +40,44 @@ namespace Eris
 
         bool Initialize(VariantMap parameters);
         void RunFrame();
-        bool IsExiting() { return exitRequested_; }
+        void Update();
+        void Render();
+        void ApplyFrameLimit();
+        void Exit();
+
+        void SetNextTimeStep(float seconds);
+        void SetMinFPS(unsigned fps);
+        void SetMaxFPS(unsigned fps);
+        void SetMaxInactiveFPS(unsigned fps);
+        void SetAutoExit(bool enabled);
+        void SetPauseMinimized(bool enabled);
+
+        float GetNextTimeStep() const { return timeStep_; }
+        unsigned GetMinFPS() const { return minFps_; }
+        unsigned GetMaxFPS() const { return maxFps_; }
+        unsigned GetMaxInactiveFPS() const { return maxInactiveFps_; }
+        bool GetAutoExit() const { return autoExit_; }
+        bool GetPauseMinimized() const { return pauseMinimized_; }
+
+        bool IsExiting() const { return exitRequested_; }
+        bool IsInitialized() const { return initialized_; }
 
     private:
+        void HandleExitRequest(const VariantMap& eventData, void* userData);
+        void DoExit();
+
+        Timer frameTimer_;
+        PODVector<float> lastTimeSteps_;
         bool exitRequested_;
+        bool initialized_;
+        bool pauseMinimized_;
+        bool autoExit_;
+        bool audioPaused_;
+        float timeStep_;
+        unsigned timeStepSmoothing_;
+        unsigned minFps_;
+        unsigned maxFps_;
+        unsigned maxInactiveFps_;
     };
 
 }

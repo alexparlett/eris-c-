@@ -33,5 +33,8 @@ namespace Eris
     public:
         Graphics(Context* context);
         virtual ~Graphics();
+
+        void Close();
+        bool IsInitialized();
     };
 }

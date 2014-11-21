@@ -36,4 +36,13 @@ namespace Eris
 
     }
 
+    void Graphics::Close()
+    {
+    }
+
+    bool Graphics::IsInitialized()
+    {
+        throw std::logic_error("The method or operation is not implemented.");
+    }
+
 }

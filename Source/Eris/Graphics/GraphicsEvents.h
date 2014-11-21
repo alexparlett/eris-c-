@@ -23,31 +23,8 @@
 #pragma once
 
 #include "Object.h"
-#include "Engine.h"
-#include "Ptr.h"
-#include "Variant.h"
 
-namespace Eris
+EVENT(E_SCREENMODE, ScreenMode)
 {
-    class Application : public Object
-    {
-    public:
-        Application(Context* context);
-
-        virtual void ParseParameters(const Vector<String>& args);
-        virtual void Setup() {}
-        virtual void Start() {}
-        virtual void Stop() {}
-
-        int Run();
-
-    protected:
-        VariantMap parameters_;
-        int exitCode_;
-
-    private:
-        Vector<String> GetArguments();
-
-        SharedPtr<Engine> engine_;
-    };
+    PARAM(P_SIZE, Size);
 }

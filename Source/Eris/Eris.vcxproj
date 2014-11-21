@@ -69,27 +69,27 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)Bin\$(ProjectName)_$(Platform)$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)Temp\$(ProjectName)_$(Platform)$(Configuration)\</IntDir>
-    <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(ProjectDir)Engine;$(ProjectDir)Core;$(ProjectDir)Container;$(ProjectDir)Graphics;$(ProjectDir)Math;$(ProjectDir)Input;$(ProjectDir)Audio;$(IncludePath)</IncludePath>
     <SourcePath>$(SolutionDir)Source\SolarianWars;$(SourcePath)</SourcePath>
     <TargetName>$(ProjectName)_d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)Bin\$(ProjectName)_$(Platform)$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)Temp\$(ProjectName)_$(Platform)$(Configuration)\</IntDir>
-    <IncludePath>$(ProjectDir);$(ProjectDir)Engine;$(ProjectDir)Core;$(ProjectDir)Container;$(ProjectDir)Graphics;$(ProjectDir)Math;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(ProjectDir)Engine;$(ProjectDir)Core;$(ProjectDir)Container;$(ProjectDir)Graphics;$(ProjectDir)Math;$(ProjectDir)Input;$(ProjectDir)Audio;$(IncludePath)</IncludePath>
     <SourcePath>$(SourcePath)</SourcePath>
     <TargetName>$(ProjectName)_d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)Bin\$(ProjectName)_$(Platform)$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)Temp\$(ProjectName)_$(Platform)$(Configuration)\</IntDir>
-    <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(ProjectDir)Engine;$(ProjectDir)Core;$(ProjectDir)Container;$(ProjectDir)Graphics;$(ProjectDir)Math;$(ProjectDir)Input;$(ProjectDir)Audio;$(IncludePath)</IncludePath>
     <SourcePath>$(SolutionDir)Source\SolarianWars;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)Bin\$(ProjectName)_$(Platform)$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)Temp\$(ProjectName)_$(Platform)$(Configuration)\</IntDir>
-    <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(ProjectDir)Engine;$(ProjectDir)Core;$(ProjectDir)Container;$(ProjectDir)Graphics;$(ProjectDir)Math;$(ProjectDir)Input;$(ProjectDir)Audio;$(IncludePath)</IncludePath>
     <SourcePath>$(SolutionDir)Source\SolarianWars;$(SourcePath)</SourcePath>
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
@@ -261,8 +261,11 @@
     <ClInclude Include="Core\Context.h" />
     <ClInclude Include="Core\Object.h" />
     <ClInclude Include="Engine\Engine.h" />
+    <ClInclude Include="Engine\EngineEvents.h" />
     <ClInclude Include="Eris.h" />
     <ClInclude Include="Graphics\Graphics.h" />
+    <ClInclude Include="Input\Input.h" />
+    <ClInclude Include="Input\InputEvents.h" />
     <ClInclude Include="Math\AreaAllocator.h" />
     <ClInclude Include="Math\BoundingBox.h" />
     <ClInclude Include="Math\Color.h" />
@@ -303,6 +306,7 @@
     <ClCompile Include="Core\Object.cpp" />
     <ClCompile Include="Engine\Engine.cpp" />
     <ClCompile Include="Graphics\Graphics.cpp" />
+    <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="Math\AreaAllocator.cpp" />
     <ClCompile Include="Math\BoundingBox.cpp" />
     <ClCompile Include="Math\Color.cpp" />
