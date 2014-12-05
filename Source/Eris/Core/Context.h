@@ -83,7 +83,7 @@ namespace Eris
     { 
         HashMap<StringHash, SharedPtr<Object>>::ConstIterator iter = modules_.Find(T::GetTypeStatic());
         if (iter != modules_.End())
-            return static_cast<T*>(iter->second_);
+            return static_cast<T*>(iter->second_.Get());
         return 0;
     }
 }

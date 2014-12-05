@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include "GraphicsImpl.h"
 #include "Object.h"
 
 namespace Eris
@@ -34,7 +35,15 @@ namespace Eris
         Graphics(Context* context);
         virtual ~Graphics();
 
+        void Initialize();
         void Close();
-        bool IsInitialized();
+
+        GraphicsImpl* GetImpl() const { return impl_; }
+
+        bool IsInitialized() const { return inititalized_; }
+
+    private:
+        bool inititalized_;
+        SharedPtr<GraphicsImpl> impl_;
     };
 }

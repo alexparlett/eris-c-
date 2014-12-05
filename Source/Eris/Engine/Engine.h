@@ -58,6 +58,7 @@ namespace Eris
         unsigned GetMaxInactiveFPS() const { return maxInactiveFps_; }
         bool GetAutoExit() const { return autoExit_; }
         bool GetPauseMinimized() const { return pauseMinimized_; }
+        const char* GetVersion() const;
 
         bool IsExiting() const { return exitRequested_; }
         bool IsInitialized() const { return initialized_; }

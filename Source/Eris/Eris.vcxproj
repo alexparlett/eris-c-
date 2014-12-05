@@ -264,6 +264,8 @@
     <ClInclude Include="Engine\EngineEvents.h" />
     <ClInclude Include="Eris.h" />
     <ClInclude Include="Graphics\Graphics.h" />
+    <ClInclude Include="Graphics\GraphicsEvents.h" />
+    <ClInclude Include="Graphics\GraphicsImpl.h" />
     <ClInclude Include="Input\Input.h" />
     <ClInclude Include="Input\InputEvents.h" />
     <ClInclude Include="Math\AreaAllocator.h" />
@@ -306,6 +308,7 @@
     <ClCompile Include="Core\Object.cpp" />
     <ClCompile Include="Engine\Engine.cpp" />
     <ClCompile Include="Graphics\Graphics.cpp" />
+    <ClCompile Include="Graphics\GraphicsImpl.cpp" />
     <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="Math\AreaAllocator.cpp" />
     <ClCompile Include="Math\BoundingBox.cpp" />

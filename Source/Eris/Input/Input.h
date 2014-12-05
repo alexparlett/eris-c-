@@ -26,7 +26,7 @@
 #include "Object.h"
 #include "Ptr.h"
 
-struct GLFWWindow;
+struct GLFWwindow;
 
 namespace Eris
 {

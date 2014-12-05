@@ -85,22 +85,22 @@ namespace Eris
 
     bool Input::KeyDown(int key)
     {
-        keyDown_.Contains(key);
+        return keyDown_.Contains(key);
     }
 
     bool Input::KeyPressed(int key)
     {
-        keyPress_.Contains(key);
+        return keyPress_.Contains(key);
     }
 
     bool Input::ScancodeDown(int scancode)
     {
-        scancodeDown_.Contains(scancode);
+        return scancodeDown_.Contains(scancode);
     }
 
     bool Input::ScancodePressed(int scancode)
     {
-        scancodePress_.Contains(scancode);
+        return scancodePress_.Contains(scancode);
     }
 
     bool Input::ModifierDown(int modifier)
@@ -113,6 +113,8 @@ namespace Eris
             return keyDown_.Contains(KEY_LEFT_SHIFT) || keyDown_.Contains(KEY_RIGHT_SHIFT);
         else if (modifier == MOD_SUPER)
             return keyDown_.Contains(KEY_LEFT_SUPER) || keyDown_.Contains(KEY_RIGHT_SUPER);
+
+        return false;
     }
 
     bool Input::ModifierPressed(int modifier)
@@ -125,6 +127,8 @@ namespace Eris
             return keyPress_.Contains(KEY_LEFT_SHIFT) || keyPress_.Contains(KEY_RIGHT_SHIFT);
         else if (modifier == MOD_SUPER)
             return keyPress_.Contains(KEY_LEFT_SUPER) || keyPress_.Contains(KEY_RIGHT_SUPER);
+
+        return false;
     }
 
     bool Input::MouseButtonDown(int button)

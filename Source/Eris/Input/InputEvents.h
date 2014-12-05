@@ -166,7 +166,7 @@ namespace Eris
     static const int KEY_F20 = GLFW_KEY_F20;
     static const int KEY_F21 = GLFW_KEY_F21;
     static const int KEY_F22 = GLFW_KEY_F22;
-    static const int KEY_F22 = GLFW_KEY_F22;
+    static const int KEY_F23 = GLFW_KEY_F23;
     static const int KEY_F24 = GLFW_KEY_F24;
     static const int KEY_F25 = GLFW_KEY_F25;
     static const int KEY_KP_0 = GLFW_KEY_KP_0;

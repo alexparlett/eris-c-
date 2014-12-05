@@ -20,23 +20,23 @@
 // THE SOFTWARE.
 //
 
-#include "Graphics.h"
+#pragma once
+
+#include "Object.h"
+
+struct GLFWwindow;
 
 namespace Eris
 {
-
-    Graphics::Graphics(Context* context) :
-        Object(context)
+    class GraphicsImpl : public RefCounted
     {
+    public:
+        GraphicsImpl();
+        ~GraphicsImpl();
 
-    }
+        GLFWwindow* GetWindow() const { return window; }
 
-    Graphics::~Graphics()
-    {
-
-    }
-
-    void Graphics::Close()
-    {
-    }
+    private:
+        GLFWwindow* window;
+    };
 }

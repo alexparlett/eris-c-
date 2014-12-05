@@ -28,6 +28,8 @@
 
 #include <glfw3.h>
 
+#include "../gitversion.h"
+
 namespace Eris
 {
 
@@ -137,6 +139,11 @@ namespace Eris
     void Engine::SetPauseMinimized(bool enabled)
     {
         pauseMinimized_ = enabled;
+    }
+
+    const char* Engine::GetVersion() const
+    {
+        return version;
     }
 
     void Engine::HandleExitRequest(const VariantMap& eventData, void* userData)
