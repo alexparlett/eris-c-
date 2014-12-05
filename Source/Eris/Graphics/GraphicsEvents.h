@@ -28,3 +28,7 @@ EVENT(E_SCREENMODE, ScreenMode)
 {
     PARAM(P_SIZE, Size);
 }
+
+EVENT(E_DEVICERESET, DeviceReset)
+{
+}

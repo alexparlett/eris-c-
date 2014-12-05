@@ -22,8 +22,10 @@
 
 #pragma once
 
-#include "GraphicsImpl.h"
 #include "Object.h"
+#include "Ptr.h"
+
+struct GLFWwindow;
 
 namespace Eris
 {
@@ -53,13 +55,14 @@ namespace Eris
         void Show();
         void Close();
 
-        void SetMode(int width, int height, int samples, unsigned flags);
-        void SetMode(int width, int height);
+        void ToggleFullscreen();
 
+        void SetMode(int width, int height, int samples, unsigned hints);
+        void SetMode(int width, int height);
         void SetGamma(float gamma);
         void SetTitle(const String& title);
 
-        GraphicsImpl* GetImpl() const { return impl_; }
+        GLFWwindow* GetWindow() const { return window_; }
         int GetWidth() const { return size_.x_; }
         int GetHeight() const { return size_.y_; }
         PODVector<IntVector2> GetResolutions() const;
@@ -70,17 +73,19 @@ namespace Eris
         float GetGamma() const { return gamma_; }
 
         bool IsInitialized() const { return inititalized_; }
-        bool IsDecorated() const { return (hints_ & WH_DECORATED) != 0; }
-        bool IsResizable() const { return (hints_ & WH_RESIZABLE) != 0; }
-        bool IsVisible() const { return (hints_ & WH_VISIBLE) != 0; }
-        bool IsSRGB() const { return (hints_ & WH_SRGB) != 0; }
-        bool IsVSync() const { return (hints_ & WH_VSYNC) != 0; }
-        bool IsFullscreen() const { return (hints_ & WH_FULLSCREEN) != 0; }
+        bool IsDecorated() const { return IsHintEnabled(WH_DECORATED); }
+        bool IsResizable() const { return IsHintEnabled(WH_RESIZABLE); }
+        bool IsVisible() const { return IsHintEnabled(WH_VISIBLE); }
+        bool IsSRGB() const { return IsHintEnabled(WH_SRGB); }
+        bool IsVSync() const { return IsHintEnabled(WH_VSYNC); }
+        bool IsFullscreen() const { return IsHintEnabled(WH_FULLSCREEN); }
 
     private:
         static void HandleFramebufferCallback(GLFWwindow* window, int width, int height);
 
-        UniquePtr<GraphicsImpl> impl_;
+        int IsHintEnabled(int hint) const;
+
+        GLFWwindow* window_;
         bool inititalized_;
         IntVector2 size_;
         unsigned hints_;

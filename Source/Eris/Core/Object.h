@@ -23,7 +23,6 @@
 #pragma once
 
 #include "LinkedList.h"
-#include "Ptr.h"
 #include "RefCounted.h"
 #include "Variant.h"
 #include "StringHash.h"

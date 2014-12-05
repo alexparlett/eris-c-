@@ -67,7 +67,7 @@ namespace Eris
         if (!graphics_ || !graphics_->IsInitialized())
             return;
 
-        GLFWwindow* window = graphics_->GetImpl()->GetWindow();
+        GLFWwindow* window = graphics_->GetWindow();
 
         switch (cm)
         {
@@ -169,7 +169,7 @@ namespace Eris
 
         SubscribeToEvent(E_BEGINFRAME, HANDLER(Input, HandleBeginFrame));
 
-        GLFWwindow* window = graphics_->GetImpl()->GetWindow();
+        GLFWwindow* window = graphics_->GetWindow();
 
         SetCursorMode(cursorMode_);
 
@@ -206,7 +206,7 @@ namespace Eris
         else
             ResetState();
 
-        GLFWwindow* window = graphics_->GetImpl()->GetWindow();
+        GLFWwindow* window = graphics_->GetWindow();
 
         minimized_ = glfwGetWindowAttrib(window, GLFW_ICONIFIED) == GL_TRUE;
     }

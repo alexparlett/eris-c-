@@ -34,7 +34,7 @@ namespace Eris
     {
     public:
         /// Construct a null unique pointer.
-        explicit UniquePtr(T* ptr)
+        UniquePtr(T* ptr)
             ptr_(ptr)
         {
         }
