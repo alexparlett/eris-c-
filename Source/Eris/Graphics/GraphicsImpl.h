@@ -28,15 +28,15 @@ struct GLFWwindow;
 
 namespace Eris
 {
-    class GraphicsImpl : public RefCounted
+    class GraphicsImpl
     {
     public:
         GraphicsImpl();
         ~GraphicsImpl();
 
-        GLFWwindow* GetWindow() const { return window; }
+        GLFWwindow* GetWindow() const { return window_; }
 
     private:
-        GLFWwindow* window;
+        GLFWwindow* window_;
     };
 }

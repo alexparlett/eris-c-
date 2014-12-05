@@ -20,18 +20,55 @@
 // THE SOFTWARE.
 //
 
+#include "Context.h"
 #include "Graphics.h"
+
+#include <glfw3.h>
 
 namespace Eris
 {
 
     Graphics::Graphics(Context* context) :
-        Object(context)
+        Object(context),
+        impl_(new GraphicsImpl())
     {
 
     }
 
     Graphics::~Graphics()
+    {
+        if (impl_ && impl_->GetWindow())
+        {
+            impl_->DestroyWindow();
+        }
+    }
+
+    void Graphics::Initialize()
+    {
+        
+    }
+
+    void Graphics::Maximize()
+    {
+
+    }
+
+    void Graphics::Minimize()
+    {
+
+    }
+
+    void Graphics::Restore()
+    {
+
+    }
+
+    void Graphics::Hide()
+    {
+
+    }
+
+    void Graphics::Show()
     {
 
     }
@@ -39,4 +76,40 @@ namespace Eris
     void Graphics::Close()
     {
     }
+
+    void Graphics::SetMode(int width, int height, int samples, unsigned flags)
+    {
+
+    }
+
+    void Graphics::SetMode(int width, int height)
+    {
+
+    }
+
+    void Graphics::SetGamma(float gamma)
+    {
+
+    }
+
+    void Graphics::SetTitle(const String& title)
+    {
+
+    }
+
+    PODVector<IntVector2> Graphics::GetResolutions() const
+    {
+
+    }
+
+    Eris::IntVector2 Graphics::GetDesktopResolution() const
+    {
+
+    }
+
+    void Graphics::HandleFramebufferCallback(GLFWwindow* window, int width, int height)
+    {
+
+    }
+
 }

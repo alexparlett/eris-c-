@@ -250,7 +250,9 @@
     <ClInclude Include="Container\RefCounted.h" />
     <ClInclude Include="Container\Sort.h" />
     <ClInclude Include="Container\Str.h" />
+    <ClInclude Include="Container\StringUtils.h" />
     <ClInclude Include="Container\Swap.h" />
+    <ClInclude Include="Container\Variant.h" />
     <ClInclude Include="Core\StringUtils.h" />
     <ClInclude Include="Core\Variant.h" />
     <ClInclude Include="Container\Vector.h" />
@@ -298,7 +300,9 @@
     <ClCompile Include="Container\HashBase.cpp" />
     <ClCompile Include="Container\RefCounted.cpp" />
     <ClCompile Include="Container\Str.cpp" />
+    <ClCompile Include="Container\StringUtils.cpp" />
     <ClCompile Include="Container\Swap.cpp" />
+    <ClCompile Include="Container\Variant.cpp" />
     <ClCompile Include="Core\StringUtils.cpp" />
     <ClCompile Include="Core\Variant.cpp" />
     <ClCompile Include="Container\VectorBase.cpp" />

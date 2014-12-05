@@ -208,6 +208,12 @@
     <ClInclude Include="Graphics\GraphicsImpl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Container\StringUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Container\Variant.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Eris.rc">
@@ -318,6 +324,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\GraphicsImpl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Container\StringUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Container\Variant.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
