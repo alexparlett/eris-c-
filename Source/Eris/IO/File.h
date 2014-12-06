@@ -50,6 +50,7 @@ namespace Eris
         File(Context* context, const String& filename, FileMode mode = FM_READ, WriteMode  = WM_TRUNC);
         virtual ~File();
 
+        File& operator<< (const char* data);
         File& operator<< (const void* data);
         File& operator>> (void* data);
 

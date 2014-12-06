@@ -23,6 +23,7 @@
 #include "Context.h"
 #include "Graphics.h"
 #include "GraphicsEvents.h"
+#include "Log.h"
 
 #include <glfw3.h>
 
@@ -245,8 +246,8 @@ namespace Eris
         graphics->SendEvent(E_SCREENMODE, eventData);
     }
 
-    int Graphics::IsHintEnabled(int hint) const
+    bool Graphics::IsHintEnabled(int hint) const
     {
-        return ((hints_ & hint) == hint) ? GL_TRUE : GL_FALSE;
+        return (hints_ & hint) == hint;
     }
 }

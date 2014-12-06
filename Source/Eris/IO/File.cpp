@@ -126,20 +126,20 @@ namespace Eris
 
         unsigned current = handle_.tellp();
         handle_.seekp(0, handle_.end);
-        unsigned size = handle_.tellp();
+        unsigned total = handle_.tellp();
         handle_.seekp(0, current);
 
-        return size;
+        return total;
     }
 
     unsigned File::GetChecksum() const
     {
-
+        return 0;
     }
 
     bool File::Open(const String& filename, FileMode fm, WriteMode wm)
     {
-
+        return true;
     }
 
     void File::Flush()

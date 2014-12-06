@@ -69,27 +69,27 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)Bin\$(ProjectName)_$(Platform)$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)Temp\$(ProjectName)_$(Platform)$(Configuration)\</IntDir>
-    <IncludePath>$(ProjectDir);$(ProjectDir)Engine;$(ProjectDir)Core;$(ProjectDir)Container;$(ProjectDir)Graphics;$(ProjectDir)Math;$(ProjectDir)Input;$(ProjectDir)Audio;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(ProjectDir)Engine;$(ProjectDir)Core;$(ProjectDir)Container;$(ProjectDir)Graphics;$(ProjectDir)Math;$(ProjectDir)Input;$(ProjectDir)Audio;$(ProjectDir)IO;$(ProjectDir)Thread;$(IncludePath)</IncludePath>
     <SourcePath>$(SolutionDir)Source\SolarianWars;$(SourcePath)</SourcePath>
     <TargetName>$(ProjectName)_d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)Bin\$(ProjectName)_$(Platform)$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)Temp\$(ProjectName)_$(Platform)$(Configuration)\</IntDir>
-    <IncludePath>$(ProjectDir);$(ProjectDir)Engine;$(ProjectDir)Core;$(ProjectDir)Container;$(ProjectDir)Graphics;$(ProjectDir)Math;$(ProjectDir)Input;$(ProjectDir)Audio;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(ProjectDir)Engine;$(ProjectDir)Core;$(ProjectDir)Container;$(ProjectDir)Graphics;$(ProjectDir)Math;$(ProjectDir)Input;$(ProjectDir)Audio;$(ProjectDir)IO;$(ProjectDir)Thread;$(IncludePath)</IncludePath>
     <SourcePath>$(SourcePath)</SourcePath>
     <TargetName>$(ProjectName)_d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)Bin\$(ProjectName)_$(Platform)$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)Temp\$(ProjectName)_$(Platform)$(Configuration)\</IntDir>
-    <IncludePath>$(ProjectDir);$(ProjectDir)Engine;$(ProjectDir)Core;$(ProjectDir)Container;$(ProjectDir)Graphics;$(ProjectDir)Math;$(ProjectDir)Input;$(ProjectDir)Audio;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(ProjectDir)Engine;$(ProjectDir)Core;$(ProjectDir)Container;$(ProjectDir)Graphics;$(ProjectDir)Math;$(ProjectDir)Input;$(ProjectDir)Audio;$(ProjectDir)IO;$(ProjectDir)Thread;$(IncludePath)</IncludePath>
     <SourcePath>$(SolutionDir)Source\SolarianWars;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)Bin\$(ProjectName)_$(Platform)$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)Temp\$(ProjectName)_$(Platform)$(Configuration)\</IntDir>
-    <IncludePath>$(ProjectDir);$(ProjectDir)Engine;$(ProjectDir)Core;$(ProjectDir)Container;$(ProjectDir)Graphics;$(ProjectDir)Math;$(ProjectDir)Input;$(ProjectDir)Audio;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(ProjectDir)Engine;$(ProjectDir)Core;$(ProjectDir)Container;$(ProjectDir)Graphics;$(ProjectDir)Math;$(ProjectDir)Input;$(ProjectDir)Audio;$(ProjectDir)IO;$(ProjectDir)Thread;$(IncludePath)</IncludePath>
     <SourcePath>$(SolutionDir)Source\SolarianWars;$(SourcePath)</SourcePath>
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
@@ -253,8 +253,6 @@
     <ClInclude Include="Container\StringUtils.h" />
     <ClInclude Include="Container\Swap.h" />
     <ClInclude Include="Container\Variant.h" />
-    <ClInclude Include="Core\StringUtils.h" />
-    <ClInclude Include="Core\Variant.h" />
     <ClInclude Include="Container\Vector.h" />
     <ClInclude Include="Container\VectorBase.h" />
     <ClInclude Include="Core\CoreEvents.h" />
@@ -267,9 +265,10 @@
     <ClInclude Include="Eris.h" />
     <ClInclude Include="Graphics\Graphics.h" />
     <ClInclude Include="Graphics\GraphicsEvents.h" />
-    <ClInclude Include="Graphics\GraphicsImpl.h" />
     <ClInclude Include="Input\Input.h" />
     <ClInclude Include="Input\InputEvents.h" />
+    <ClInclude Include="IO\File.h" />
+    <ClInclude Include="IO\Log.h" />
     <ClInclude Include="Math\AreaAllocator.h" />
     <ClInclude Include="Math\BoundingBox.h" />
     <ClInclude Include="Math\Color.h" />
@@ -291,6 +290,7 @@
     <ClInclude Include="Math\Vector3.h" />
     <ClInclude Include="Math\Vector4.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="Thread\Mutex.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Eris.rc" />
@@ -303,8 +303,6 @@
     <ClCompile Include="Container\StringUtils.cpp" />
     <ClCompile Include="Container\Swap.cpp" />
     <ClCompile Include="Container\Variant.cpp" />
-    <ClCompile Include="Core\StringUtils.cpp" />
-    <ClCompile Include="Core\Variant.cpp" />
     <ClCompile Include="Container\VectorBase.cpp" />
     <ClCompile Include="Core\Timer.cpp" />
     <ClCompile Include="Engine\Application.cpp" />
@@ -312,8 +310,9 @@
     <ClCompile Include="Core\Object.cpp" />
     <ClCompile Include="Engine\Engine.cpp" />
     <ClCompile Include="Graphics\Graphics.cpp" />
-    <ClCompile Include="Graphics\GraphicsImpl.cpp" />
     <ClCompile Include="Input\Input.cpp" />
+    <ClCompile Include="IO\File.cpp" />
+    <ClCompile Include="IO\Log.cpp" />
     <ClCompile Include="Math\AreaAllocator.cpp" />
     <ClCompile Include="Math\BoundingBox.cpp" />
     <ClCompile Include="Math\Color.cpp" />
@@ -333,6 +332,7 @@
     <ClCompile Include="Math\Vector2.cpp" />
     <ClCompile Include="Math\Vector3.cpp" />
     <ClCompile Include="Math\Vector4.cpp" />
+    <ClCompile Include="Thread\Mutex.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

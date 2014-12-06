@@ -61,6 +61,7 @@ namespace Eris
         void Warn(const String& msg);
         void Error(const String& msg);
 
+    public:
         static void WriteStatic(const String& msg, LogLevel level);
 
     private:

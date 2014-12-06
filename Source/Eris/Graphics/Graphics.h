@@ -83,7 +83,7 @@ namespace Eris
     private:
         static void HandleFramebufferCallback(GLFWwindow* window, int width, int height);
 
-        int IsHintEnabled(int hint) const;
+        bool IsHintEnabled(int hint) const;
 
         GLFWwindow* window_;
         bool inititalized_;

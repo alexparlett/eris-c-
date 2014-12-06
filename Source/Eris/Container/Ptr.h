@@ -29,69 +29,6 @@
 
 namespace Eris
 {
-    /// Unique pointer template class.
-    template <class T> class UniquePtr
-    {
-    public:
-        /// Construct a null unique pointer.
-        UniquePtr(T* ptr)
-            ptr_(ptr)
-        {
-        }
-
-        ~UniquePtr()
-        {
-            Reset();
-        }
-
-        /// Point to the object.
-        T* operator -> () const { assert(ptr_); return ptr_; }
-        /// Dereference the object.
-        T& operator * () const { assert(ptr_); return *ptr_; }
-        /// Subscript the object if applicable.
-        T& operator [] (const int index) { assert(ptr_); return ptr_[index]; }
-        /// Test for less than with another shared pointer.
-        bool operator < (const UniquePtr<T>& rhs) const { return ptr_ < rhs.ptr_; }
-        /// Test for equality with another shared pointer.
-        bool operator == (const UniquePtr<T>& rhs) const { return ptr_ == rhs.ptr_; }
-        /// Test for inequality with another shared pointer.
-        bool operator != (const UniquePtr<T>& rhs) const { return ptr_ != rhs.ptr_; }
-        /// Convert to a raw pointer.
-        operator T* () const { return ptr_; }
-
-        /// Reset to null and release the object reference.
-        void Reset()
-        {
-            if (ptr_)
-            {
-                delete ptr_;
-                ptr_ = 0;
-            }
-        }
-
-        /// Check if the pointer is null.
-        bool Null() const { return ptr_ == 0; }
-        /// Check if the pointer is not null.
-        bool NotNull() const { return ptr_ != 0; }
-        /// Return the raw pointer.
-        T* Get() const { return ptr_; }
-        /// Return hash value for HashSet & HashMap.
-        unsigned ToHash() const { return ((unsigned)(size_t)ptr_) / sizeof(T); }
-
-    private:
-        /// Prevent direct assignment from a unique pointer of another type.
-        template <class U> UniquePtr<T>& operator = (const UniquePtr<U>& rhs);
-        /// Prevent copy construct from another unique pointer.
-        UniquePtr(const UniquePtr<T>& rhs);
-        /// Prevent direct assignment from another unique pointer.
-        UniquePtr<T>& operator = (const UniquePtr<T>& rhs);
-        /// Prevent direct assignment from a raw pointer.
-        UniquePtr<T>& operator = (T* ptr);
-
-        /// Pointer to the object.
-        T* ptr_;
-    };
-
     /// Shared pointer template class with intrusive reference counting.
     template <class T> class SharedPtr
     {
