@@ -25,6 +25,7 @@
 #include "Graphics.h"
 #include "EngineEvents.h"
 #include "Input.h"
+#include "Log.h"
 
 #include <glfw3.h>
 
@@ -143,12 +144,17 @@ namespace Eris
 
     const char* Engine::GetVersion() const
     {
-        return version;
+        return ERIS_VERSION;
     }
 
     void Engine::HandleExitRequest(const VariantMap& eventData, void* userData)
     {
         DoExit();
+    }
+
+    void Engine::HandleErrorCallback(int code, const char* msg)
+    {
+        LOGERROR(msg);
     }
 
     void Engine::DoExit()
@@ -161,5 +167,4 @@ namespace Eris
             exitRequested_ = true;
         }
     }
-
 }

@@ -104,6 +104,9 @@ public: \
         void SendEvent(StringHash eventType);
         void SendEvent(StringHash eventType, const VariantMap& eventData);
 
+        static void SendStaticEvent(StringHash eventType);
+        static void SendStaticEvent(StringHash eventType, const VariantMap& eventData);
+
         virtual const StringHash& GetType() const = 0;
         virtual const StringHash& GetBaseType() const = 0;
         virtual const String& GetTypeName() const = 0;

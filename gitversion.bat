@@ -14,7 +14,7 @@ IF DEFINED DIRTY GOTO DIRTYBUILD
 (ECHO #define FILEVERSTR %MAJOR%.%MINOR%.%REVISION%.%BUILD%)>>Source/gitversion.h
 (ECHO #define PRODUCTVERSTR %MAJOR%.%MINOR%.%REVISION%.%BUILD%)>>Source/gitversion.h
 (ECHO.)>>Source/gitversion.h
-(ECHO const char* version = "%MAJOR%.%MINOR%.%REVISION%.%BUILD%";)>>Source/gitversion.h
+(ECHO const char* ERIS_VERSION = "%MAJOR%.%MINOR%.%REVISION%.%BUILD%";)>>Source/gitversion.h
 GOTO CLEANUP
 :DIRTYBUILD
 (ECHO #define FILEVER %MAJOR%,%MINOR%,%REVISION%,0)>Source/gitversion.h
@@ -22,7 +22,7 @@ GOTO CLEANUP
 (ECHO #define FILEVERSTR "%MAJOR%.%MINOR%.%REVISION%.%BUILD%M")>>Source/gitversion.h
 (ECHO #define PRODUCTVERSTR "%MAJOR%.%MINOR%.%REVISION%.%BUILD%M")>>Source/gitversion.h
 (ECHO.)>>Source/gitversion.h
-(ECHO const char* version = "%MAJOR%.%MINOR%.%REVISION%.%BUILD%M";)>>Source/gitversion.h
+(ECHO const char* ERIS_VERSION = "%MAJOR%.%MINOR%.%REVISION%.%BUILD%M";)>>Source/gitversion.h
 GOTO CLEANUP
 :CLEANUP
 cd %2

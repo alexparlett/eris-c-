@@ -110,7 +110,7 @@ namespace Eris
             return;
 
         glfwHideWindow(window_);
-    }
+    } 
 
     void Graphics::Show()
     {
@@ -126,7 +126,7 @@ namespace Eris
             return;
 
         Hide();
-        glfwSetWindowShouldClose(window_);
+        glfwSetWindowShouldClose(window_, GL_TRUE);
     }
 
 

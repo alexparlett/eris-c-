@@ -65,6 +65,9 @@ namespace Eris
 
     private:
         void HandleExitRequest(const VariantMap& eventData, void* userData);
+
+        static void HandleErrorCallback(int code, const char* msg);
+
         void DoExit();
 
         Timer frameTimer_;

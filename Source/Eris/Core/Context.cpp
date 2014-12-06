@@ -110,5 +110,4 @@ namespace Eris
         }
         return 0;
     }
-
 }

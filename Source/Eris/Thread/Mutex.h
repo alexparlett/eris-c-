@@ -22,14 +22,32 @@
 
 #pragma once
 
-#include "Object.h"
+#include <mutex>
 
-EVENT(E_ERROR, Error)
+namespace Eris
 {
-    PARAM(P_CODE, Code);
-    PARAM(P_MSG, Msg);
-}
+    class Mutex
+    {
+    public:
+        Mutex() {};
 
-EVENT(E_EXITREQUESTED, ExitRequested)
-{
+        void Lock();
+        void Unlock();
+
+    private:
+        std::mutex handle_;
+    };
+
+    class MutexGuard
+    {
+    public:
+        explicit MutexGuard(Mutex& mutex);
+        ~MutexGuard() _NOEXCEPT;
+
+        MutexGuard(const MutexGuard&) = delete;
+        MutexGuard& operator=(const MutexGuard&) = delete;
+
+    private:
+        Mutex& mutex_;
+    };
 }
