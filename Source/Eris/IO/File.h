@@ -50,20 +50,19 @@ namespace Eris
         File(Context* context, const String& filename, FileMode mode = FM_READ, WriteMode  = WM_TRUNC);
         virtual ~File();
 
-        File& operator<< (const char* data);
-        File& operator<< (const void* data);
-        File& operator>> (void* data);
+        virtual File& operator<< (const void* data);
+        virtual File& operator>> (void* data);
 
         virtual unsigned Read(void* dest, unsigned size);
         virtual unsigned Seek(unsigned position);
         virtual unsigned Write(const void* data, unsigned size);
         virtual const String& GetName() const { return fileName_; }
-        virtual unsigned GetChecksum() const;
+        virtual unsigned GetChecksum();
 
         bool Open(const String& filename, FileMode fm = FM_READ, WriteMode wm = WM_TRUNC);
         void Flush();
         void Close();
-        void SetName();
+        void SetName(const String& name);
 
         FileMode GetFileMode() const { return fileMode_; }
         WriteMode GetWriteMode() const { return writeMode_; }
@@ -74,5 +73,6 @@ namespace Eris
         FileMode fileMode_;
         WriteMode writeMode_;
         String fileName_;
+        unsigned checksum_ = 0;
     };
 }

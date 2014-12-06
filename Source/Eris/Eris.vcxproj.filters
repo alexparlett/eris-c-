@@ -184,12 +184,6 @@
     <ClInclude Include="Core\CoreEvents.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Variant.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\StringUtils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Math\Spline.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -205,9 +199,6 @@
     <ClInclude Include="Graphics\GraphicsEvents.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\GraphicsImpl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Container\StringUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -221,6 +212,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Thread\Mutex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IO\FileSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -320,19 +314,10 @@
     <ClCompile Include="Core\Timer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Core\Variant.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\StringUtils.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Math\Spline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Input\Input.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\GraphicsImpl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Container\StringUtils.cpp">
@@ -348,6 +333,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Thread\Mutex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IO\FileSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

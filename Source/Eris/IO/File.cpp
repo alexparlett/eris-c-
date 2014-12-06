@@ -22,6 +22,7 @@
 
 #include "Context.h"
 #include "File.h"
+#include "FileSystem.h"
 #include "Log.h"
 #include "MathDefs.h"
 
@@ -132,28 +133,111 @@ namespace Eris
         return total;
     }
 
-    unsigned File::GetChecksum() const
+    unsigned File::GetChecksum()
     {
-        return 0;
+        if (checksum_)
+            return checksum_;
+
+        if (!handle_.is_open() || fileMode_ == FM_WRITE)
+            return 0;
+
+        unsigned oldPos = handle_.tellg();
+        checksum_ = 0;
+
+        Seek(0);
+        while (!handle_.eof())
+        {
+            unsigned char block[1024];
+            unsigned readBytes = Read(block, 1024);
+            for (unsigned i = 0; i < readBytes; i++)
+                checksum_ = SDBMHash(checksum_, block[i]);
+        }
+        Seek(oldPos);
+
+        return checksum_;
     }
 
     bool File::Open(const String& filename, FileMode fm, WriteMode wm)
     {
+        if (filename.Empty())
+        {
+            LOGERROR("Could not open file with empty name.");
+            return false;
+        }
+
+        Close();
+
+        FileSystem* fs = context_->GetModule<FileSystem>();
+        if (fs && !fs->CheckAccess(GetPath(fileName)))
+        {
+            LOGERROR("Access denied to %s", filename);
+            return false;
+        }
+
+        unsigned openmode = 0;
+
+        switch (fm)
+        {
+        case FM_READ:
+            openmode |= std::ios::in;
+            break;
+        case FM_WRITE:
+            openmode |= std::ios::out;
+            break;
+        case FM_READWRITE:
+            openmode |= std::ios::in;
+            openmode |= std::ios::out;
+            break;
+        }
+
+        if (fm == FM_READWRITE || fm == FM_WRITE)
+        {
+            switch (wm)
+            {
+            case WM_APPEND:
+                openmode |= std::ios::app;
+                break;
+            case WM_TRUNC:
+                openmode |= std::ios::trunc;
+                break;
+            }
+        }
+
+        handle_.open(filename.CString(), openmode);
+
+        if (handle_.bad())
+        {
+            LOGERROR("Could not open file %s", filename);
+            return false;
+        }
+
+        fileName_ = filename;
+        fileMode_ = fm;
+        writeMode_ = wm;
+        checksum_ = 0;
+
         return true;
     }
 
     void File::Flush()
     {
+        if (!handle_.is_open())
+            return;
 
+        handle_.flush();
     }
 
     void File::Close()
     {
-
+        if (handle_.is_open())
+        {
+            checksum_ = 0;
+            handle_.close();
+        }
     }
 
-    void File::SetName()
+    void File::SetName(const String& name)
     {
-
+        fileName_ = name;
     }
 }
