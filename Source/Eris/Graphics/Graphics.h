@@ -47,7 +47,7 @@ namespace Eris
         Graphics(Context* context);
         virtual ~Graphics();
 
-        void Initialize();
+        void Initialize(const IntVector2& size, int samples, const String& title, unsigned hints);
         void Maximize();
         void Minimize();
         void Restore();

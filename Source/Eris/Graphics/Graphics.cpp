@@ -47,33 +47,51 @@ namespace Eris
         }
     }
 
-    void Graphics::Initialize()
+    void Graphics::Initialize(const IntVector2& size, int samples, const String& title, unsigned hints)
     {
+        // Default Samples, Title and Hints.
+        samples_ = samples;
+        title_ = title;
+        hints_ = hints;
+
+        // OpenGL 3.3 Context.
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
+        // Set Window Hints.
         glfwWindowHint(GLFW_DECORATED, IsHintEnabled(WH_DECORATED));
         glfwWindowHint(GLFW_RESIZABLE, IsHintEnabled(WH_RESIZABLE));
         glfwWindowHint(GLFW_VISIBLE, IsHintEnabled(WH_VISIBLE));
         glfwWindowHint(GLFW_SAMPLES, samples_);
         glfwWindowHint(GLFW_SRGB_CAPABLE, IsHintEnabled(WH_SRGB));
 
+        // Create Window.
         if (IsHintEnabled(WH_FULLSCREEN))
-            window_ = glfwCreateWindow(size_.x_, size_.y_, title_.CString(), glfwGetPrimaryMonitor(), NULL);
+            window_ = glfwCreateWindow(size.x_, size.y_, title_.CString(), glfwGetPrimaryMonitor(), NULL);
         else
-            window_ = glfwCreateWindow(size_.x_, size_.y_, title_.CString(), NULL, NULL);
+            window_ = glfwCreateWindow(size.x_, size.y_, title_.CString(), NULL, NULL);
 
         if (!window_)
+        {
+            LOGERROR("Failed to create window with params: [%i,%i,%i,%x]", size.x_, size.y_, samples_, hints_);
             return;
+        }
 
+        // Recheck the size since it may have changed for fullscreen resolutions.
+        int width, height;
+        glfwGetFramebufferSize(window_, &width, &height);
+        size_ = IntVector2(width, height);
+
+        // Store the Context Ptr and make current.
         glfwSetWindowUserPointer(window_, GetContext());
-
         glfwMakeContextCurrent(window_);
 
+        // Enable Vsync.
         if (IsHintEnabled(WH_VSYNC))
             glfwSwapInterval(1);
 
+        // Set Callbacks.
         glfwSetFramebufferSizeCallback(window_, &Graphics::HandleFramebufferCallback);
         glfwSetWindowCloseCallback(window_, &Graphics::HandleCloseCallback);
 
@@ -173,7 +191,19 @@ namespace Eris
                 return;
             }
 
+            glfwSetWindowUserPointer(window_, GetContext());
             glfwMakeContextCurrent(window_);
+
+            int width, height;
+            glfwGetFramebufferSize(window_, &width, &height);
+            size_ = IntVector2(width, height);
+
+            if (IsHintEnabled(WH_VSYNC))
+                glfwSwapInterval(1);
+
+            glfwSetFramebufferSizeCallback(window_, &Graphics::HandleFramebufferCallback);
+            glfwSetWindowCloseCallback(window_, &Graphics::HandleCloseCallback);
+
             SendEvent(E_DEVICERESET);
         }
         else
