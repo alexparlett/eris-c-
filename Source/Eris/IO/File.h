@@ -22,7 +22,9 @@
 
 #pragma once
 
+#include "Deserializer.h"
 #include "Object.h"
+#include "Serializer.h"
 
 #include <fstream>
 
@@ -41,7 +43,7 @@ namespace Eris
         WM_APPEND
     };
 
-    class File : public Object
+    class File : public Object, public Serializer, public Deserializer
     {
         OBJECT(File)
 
@@ -50,8 +52,8 @@ namespace Eris
         File(Context* context, const String& filename, FileMode mode = FM_READ, WriteMode  = WM_TRUNC);
         virtual ~File();
 
-        virtual File& operator<< (const void* data);
-        virtual File& operator>> (void* data);
+        virtual Serializer& operator<< (const void* data);
+        virtual Deserializer& operator>> (void* data);
 
         virtual unsigned Read(void* dest, unsigned size);
         virtual unsigned Seek(unsigned position);

@@ -47,7 +47,7 @@ namespace Eris
 
     }
 
-    File& File::operator<<(const void * data)
+    Serializer& File::operator<<(const void * data)
     {
         if (handle_.is_open() && (fileMode_ == FM_WRITE || fileMode_ == FM_READWRITE))
             handle_ << data;
@@ -55,7 +55,7 @@ namespace Eris
         return *this;
     }
 
-    File& File::operator>>(void* data)
+    Deserializer& File::operator>>(void* data)
     {
         if (handle_.is_open() && (fileMode_ == FM_READ || fileMode_ == FM_READWRITE))
             handle_ >> data;
