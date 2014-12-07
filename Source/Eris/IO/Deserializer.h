@@ -33,7 +33,5 @@ namespace Eris
 
         virtual unsigned Read(void* dest, unsigned size) = 0;
         virtual unsigned Seek(unsigned position) = 0;
-        virtual const String& GetName() = 0;
-        virtual unsigned GetChecksum() = 0;
     };
 }

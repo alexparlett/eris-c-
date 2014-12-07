@@ -32,7 +32,5 @@ namespace Eris
         virtual Serializer& operator<< (const void* data) = 0;
 
         virtual unsigned Write(const void* data, unsigned size) = 0;
-        virtual const String& GetName() = 0;
-        virtual unsigned GetChecksum() = 0;
     };
 }
