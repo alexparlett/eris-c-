@@ -21,6 +21,7 @@
 //
 
 #include "Context.h"
+#include "EngineEvents.h"
 #include "Graphics.h"
 #include "GraphicsEvents.h"
 #include "Log.h"
@@ -74,6 +75,7 @@ namespace Eris
             glfwSwapInterval(1);
 
         glfwSetFramebufferSizeCallback(window_, &Graphics::HandleFramebufferCallback);
+        glfwSetWindowCloseCallback(window_, &Graphics::HandleCloseCallback);
 
         inititalized_ = true;
     }
@@ -244,6 +246,14 @@ namespace Eris
         VariantMap& eventData = context->GetEventDataMap();
         eventData[P_SIZE] = graphics->size_;
         graphics->SendEvent(E_SCREENMODE, eventData);
+    }
+
+    void Graphics::HandleCloseCallback(GLFWwindow* window)
+    {
+        Context* context = static_cast<Context*>(glfwGetWindowUserPointer(window));
+        Graphics* graphics = context->GetModule<Graphics>();
+
+        graphics->SendEvent(E_EXITREQUESTED);
     }
 
     bool Graphics::IsHintEnabled(int hint) const

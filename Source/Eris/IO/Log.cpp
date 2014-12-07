@@ -120,13 +120,10 @@ namespace Eris
 
             if (timestamp_)
             {
-                *file_ << "[";
-                *file_ << Time::GetTimestamp().CString();
-                *file_ << "] ";
+                *file_ << "[" << Time::GetTimestamp().CString() << "] ";
             }
 
-            *file_ << msg.CString();
-            *file_ << "\n";
+            *file_ << msg.CString() << "\n";
 
             file_->Flush();
         }

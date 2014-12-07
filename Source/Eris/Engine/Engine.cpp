@@ -36,12 +36,18 @@ namespace Eris
 
     Engine::Engine(Context* context) :
         Object(context),
-        exitRequested_(false)
+        exitRequested_(false),
+        autoExit_(true),
+        audioPaused_(false),
+        pauseMinimized_(true),
+        initialized_(false),
+        timeStep_(0.f)
     {
         context->RegisterModule(this);
-        context->RegisterModule(new Input(context));
         context->RegisterModule(new Time(context));
+        context->RegisterModule(new Log(context));
         context->RegisterModule(new Graphics(context));
+        context->RegisterModule(new Input(context));
 
         SubscribeToEvent(E_EXITREQUESTED, HANDLER(Engine, HandleExitRequest));
     }
@@ -53,6 +59,10 @@ namespace Eris
 
     bool Engine::Initialize(VariantMap parameters)
     {
+        Log* log = context_->GetModule<Log>();
+        Graphics* graphics = context_->GetModule<Graphics>();
+        Input* input = context_->GetModule<Input>();
+
         if (!glfwInit())
             return false;
 
@@ -154,7 +164,7 @@ namespace Eris
 
     void Engine::HandleErrorCallback(int code, const char* msg)
     {
-        LOGERROR(msg);
+        LOGERROR("Error %i: %d", msg, code);
     }
 
     void Engine::DoExit()

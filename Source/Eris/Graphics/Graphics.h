@@ -62,7 +62,6 @@ namespace Eris
         void SetGamma(float gamma);
         void SetTitle(const String& title);
 
-        GLFWwindow* GetWindow() const { return window_; }
         int GetWidth() const { return size_.x_; }
         int GetHeight() const { return size_.y_; }
         PODVector<IntVector2> GetResolutions() const;
@@ -82,6 +81,7 @@ namespace Eris
 
     private:
         static void HandleFramebufferCallback(GLFWwindow* window, int width, int height);
+        static void HandleCloseCallback(GLFWwindow* window);
 
         bool IsHintEnabled(int hint) const;
 

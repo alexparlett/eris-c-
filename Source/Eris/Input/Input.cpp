@@ -42,8 +42,6 @@ namespace Eris
         focused_(false),
         minimized_(false)
     {
-        SubscribeToEvent(E_SCREENMODE, HANDLER(Input, HandleScreenMode));
-        Initialize();
     }
 
     Input::~Input()
@@ -64,10 +62,11 @@ namespace Eris
     {
         cursorMode_ = cm;
 
-        if (!graphics_ || !graphics_->IsInitialized())
+        Graphics* graphics = context_->GetModule<Graphics>();
+        if (!graphics || !graphics->IsInitialized())
             return;
 
-        GLFWwindow* window = graphics_->GetWindow();
+        GLFWwindow* window = glfwGetCurrentContext();
 
         switch (cm)
         {
@@ -163,13 +162,12 @@ namespace Eris
         if (!graphics || !graphics->IsInitialized())
             return;
 
-        graphics_ = graphics;
-
         ResetState();
 
         SubscribeToEvent(E_BEGINFRAME, HANDLER(Input, HandleBeginFrame));
+        SubscribeToEvent(E_SCREENMODE, HANDLER(Input, HandleScreenMode));
 
-        GLFWwindow* window = graphics_->GetWindow();
+        GLFWwindow* window = glfwGetCurrentContext();
 
         SetCursorMode(cursorMode_);
 
@@ -206,7 +204,7 @@ namespace Eris
         else
             ResetState();
 
-        GLFWwindow* window = graphics_->GetWindow();
+        GLFWwindow* window = glfwGetCurrentContext();
 
         minimized_ = glfwGetWindowAttrib(window, GLFW_ICONIFIED) == GL_TRUE;
     }

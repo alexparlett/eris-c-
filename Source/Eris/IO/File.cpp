@@ -168,7 +168,7 @@ namespace Eris
         Close();
 
         FileSystem* fs = context_->GetModule<FileSystem>();
-        if (fs && !fs->CheckAccess(GetPath(fileName)))
+        if (fs && !fs->CheckAccess(fileName))
         {
             LOGERROR("Access denied to %s", filename);
             return false;
@@ -234,10 +234,5 @@ namespace Eris
             checksum_ = 0;
             handle_.close();
         }
-    }
-
-    void File::SetName(const String& name)
-    {
-        fileName_ = name;
     }
 }

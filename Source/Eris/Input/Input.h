@@ -79,7 +79,6 @@ namespace Eris
         static void HandleScrollCallback(GLFWwindow* window, double x, double y);
         static void HandleCursorPosCallback(GLFWwindow* window, double x, double y);
 
-        WeakPtr<Graphics> graphics_;
         HashSet<int> keyDown_;
         HashSet<int> keyPress_;
         HashSet<int> scancodeDown_;

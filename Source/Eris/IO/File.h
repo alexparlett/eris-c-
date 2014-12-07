@@ -62,7 +62,6 @@ namespace Eris
         bool Open(const String& filename, FileMode fm = FM_READ, WriteMode wm = WM_TRUNC);
         void Flush();
         void Close();
-        void SetName(const String& name);
 
         FileMode GetFileMode() const { return fileMode_; }
         WriteMode GetWriteMode() const { return writeMode_; }
