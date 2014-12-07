@@ -73,8 +73,8 @@ namespace Eris
         SharedPtr<File> file_;
     };
 
-#define LOGDEBUG(message, ...) Eris::Log::WriteStatic(Eris::ToString(message, __VA_ARGS__), LL_DEBUG);
-#define LOGINFO(message, ...) Eris::Log::WriteStatic(Eris::ToString(message, __VA_ARGS__), LL_INFO);
-#define LOGWARN(message, ...) Eris::Log::WriteStatic(Eris::ToString(message, __VA_ARGS__), LL_WARN);
-#define LOGERROR(message, ...) Eris::Log::WriteStatic(Eris::ToString(message, __VA_ARGS__), LL_ERROR);
+#define LOGDEBUG(message, ...) Eris::Log::WriteStatic(Eris::ToString(message, __VA_ARGS__), LL_DEBUG)
+#define LOGINFO(message, ...) Eris::Log::WriteStatic(Eris::ToString(message, __VA_ARGS__), LL_INFO)
+#define LOGWARN(message, ...) Eris::Log::WriteStatic(Eris::ToString(message, __VA_ARGS__), LL_WARN)
+#define LOGERROR(message, ...) Eris::Log::WriteStatic(Eris::ToString(message, __VA_ARGS__), LL_ERROR)
 }

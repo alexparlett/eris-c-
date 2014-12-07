@@ -97,7 +97,7 @@ namespace Eris
         {
             handle_.seekg(0,position);
             handle_.seekp(0,position);
-            return handle_.tellg() > handle_.tellp() ? handle_.tellg() : handle_.tellp();
+            return Max((int) handle_.tellg(), (int) handle_.tellp());
         }
     }
 
@@ -168,7 +168,7 @@ namespace Eris
         Close();
 
         FileSystem* fs = context_->GetModule<FileSystem>();
-        if (fs && !fs->CheckAccess(fileName))
+        if (fs && !fs->CheckAccess(filename))
         {
             LOGERROR("Access denied to %s", filename);
             return false;
@@ -234,5 +234,39 @@ namespace Eris
             checksum_ = 0;
             handle_.close();
         }
+    }
+
+    int File::GetSize()
+    {
+        int total = 0;
+
+        if (FM_READ)
+        {
+            int current = handle_.tellg();
+            handle_.seekg(0, handle_.end);
+            total = handle_.tellg();
+            handle_.seekg(0, current);
+        }
+        else if (FM_WRITE)
+        {
+            int current = handle_.tellp();
+            handle_.seekp(0, handle_.end);
+            total = handle_.tellp();
+            handle_.seekp(0, current);
+        }
+        else
+        {
+            int current = handle_.tellp();
+            handle_.seekp(0, handle_.end);
+            total = handle_.tellp();
+            handle_.seekp(0, current);
+
+            current = handle_.tellg();
+            handle_.seekg(0, handle_.end);
+            total = Max(total, handle_.tellg());
+            handle_.seekg(0, current);
+        }
+
+        return total;
     }
 }

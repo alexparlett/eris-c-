@@ -65,6 +65,8 @@ namespace Eris
 
         FileMode GetFileMode() const { return fileMode_; }
         WriteMode GetWriteMode() const { return writeMode_; }
+        int GetSize();
+
         bool IsOpen() const { return handle_.is_open(); }
 
     private:

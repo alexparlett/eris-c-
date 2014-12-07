@@ -60,7 +60,7 @@ namespace Eris
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
         // Set Window Hints.
-        glfwWindowHint(GLFW_DECORATED, IsHintEnabled(WH_DECORATED));
+        glfwWindowHint(GLFW_DECORATED, !IsHintEnabled(WH_BORDERLESS));
         glfwWindowHint(GLFW_RESIZABLE, IsHintEnabled(WH_RESIZABLE));
         glfwWindowHint(GLFW_VISIBLE, IsHintEnabled(WH_VISIBLE));
         glfwWindowHint(GLFW_SAMPLES, samples_);
@@ -171,7 +171,7 @@ namespace Eris
             samples_ = samples;
             hints_ = hints;
 
-            glfwWindowHint(GLFW_DECORATED, IsHintEnabled(WH_DECORATED));
+            glfwWindowHint(GLFW_DECORATED, IsHintEnabled(WH_BORDERLESS));
             glfwWindowHint(GLFW_RESIZABLE, IsHintEnabled(WH_RESIZABLE));
             glfwWindowHint(GLFW_VISIBLE, IsHintEnabled(WH_VISIBLE));
             glfwWindowHint(GLFW_SAMPLES, samples_);
@@ -224,7 +224,6 @@ namespace Eris
             return;
 
         gamma_ = Max(gamma, 0.f);
-
         glfwSetGamma(glfwGetPrimaryMonitor(), gamma_);
     }
 

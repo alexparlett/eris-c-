@@ -31,7 +31,7 @@ namespace Eris
 {
     enum WindowHints
     {
-        WH_DECORATED = 1,
+        WH_BORDERLESS = 1,
         WH_RESIZABLE = 2,
         WH_VISIBLE = 4,
         WH_SRGB = 8,
@@ -72,7 +72,7 @@ namespace Eris
         float GetGamma() const { return gamma_; }
 
         bool IsInitialized() const { return inititalized_; }
-        bool IsDecorated() const { return IsHintEnabled(WH_DECORATED); }
+        bool IsDecorated() const { return IsHintEnabled(WH_BORDERLESS); }
         bool IsResizable() const { return IsHintEnabled(WH_RESIZABLE); }
         bool IsVisible() const { return IsHintEnabled(WH_VISIBLE); }
         bool IsSRGB() const { return IsHintEnabled(WH_SRGB); }

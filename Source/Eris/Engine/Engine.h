@@ -69,6 +69,7 @@ namespace Eris
         static void HandleErrorCallback(int code, const char* msg);
 
         void DoExit();
+        const Variant GetParameter(const VariantMap& params, const StringHash& name, const Variant default);
 
         Timer frameTimer_;
         PODVector<float> lastTimeSteps_;

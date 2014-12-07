@@ -63,8 +63,39 @@ namespace Eris
         Graphics* graphics = context_->GetModule<Graphics>();
         Input* input = context_->GetModule<Input>();
 
+        log->Open(GetParameter(parameters, "Log", "Eris.log").GetString());
+
         if (!glfwInit())
             return false;
+
+        IntVector2 resolution = GetParameter(parameters, "Resolution", graphics->GetDesktopResolution()).GetIntVector2();
+        int samples = GetParameter(parameters, "Samples", 4).GetInt();
+        String title = GetParameter(parameters, "Title", "Eris Engine").GetString();
+        unsigned hints = 0;
+
+        if (GetParameter(parameters, "Fullscreen", true).GetBool())
+        {
+            hints |= WH_FULLSCREEN;
+        }
+        else
+        {
+            if (GetParameter(parameters, "Resizable", false).GetBool())
+                hints |= WH_RESIZABLE;
+            if (GetParameter(parameters, "Borderless", false).GetBool())
+                hints |= WH_BORDERLESS;
+        }
+
+        if (GetParameter(parameters, "Vsync", false).GetBool())
+            hints |= WH_VSYNC;
+
+        if (GetParameter(parameters, "SRGB", true).GetBool())
+            hints |= WH_SRGB;
+
+        if (GetParameter(parameters, "Visible", true).GetBool())
+            hints |= WH_VISIBLE;
+
+        graphics->Initialize(resolution, samples, title, hints);
+        input->Initialize();
 
         initialized_ = true;
         return true;
@@ -177,4 +208,13 @@ namespace Eris
             exitRequested_ = true;
         }
     }
+
+    const Variant Engine::GetParameter(const VariantMap& params, const StringHash& name, const Variant default)
+    {
+        VariantMap::ConstIterator iter = params.Find(name);
+        if (iter != params.End())
+            return iter->second_;
+        return default;
+    }
+
 }
