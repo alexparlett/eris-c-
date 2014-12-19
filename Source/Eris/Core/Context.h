@@ -22,19 +22,24 @@
 
 #pragma once
 
-#include "HashMap.h"
-#include "HashSet.h"
-#include "Ptr.h"
-#include "RefCounted.h"
-#include "StringHash.h"
-#include "Variant.h"
+#include <unordered_set>
+#include <unordered_map>
+#include <vector>
+#include <string>
+#include <memory>
 
 namespace Eris
 {
+    // Event handling forward decls.
     class Object;
     class EventHandler;
 
-    class Context : public RefCounted
+    // Module forward decls.
+    class Graphics;
+    class Input;
+    class Time;
+
+    class Context
     {
         friend class Object;
 
@@ -42,48 +47,43 @@ namespace Eris
         Context();
         virtual ~Context();
 
-        void RegisterModule(Object* object);
+        Object* getEventSender() const;
+        EventHandler* getEventHandler() const { return eventHandler_; }
 
-        template<typename T> void RemoveModule();
+        Graphics* getGraphics() { return graphics; }
+        Input* getInput() { return input; }
+        Time* getTime() { return time; }
 
-        VariantMap& GetEventDataMap();
-        Object* GetEventSender() const;
-        EventHandler* GetEventHandler() const { return eventHandler_; }
-        template<typename T> T* GetModule() const;
+        template<class T>
+        T* createEvent()
+        {
+            return nullptr;
+        }
+
+    protected:
+        Graphics* graphics;
+        Input* input;
+        Time* time;
 
     private:
-        void AddEventReceiver(Object* reciever, StringHash eventType);
-        void AddEventReceiver(Object* reciever, Object* sender, StringHash eventType);
+        void addEventReceiver(Object* reciever, const std::string& eventType);
+        void addEventReceiver(Object* reciever, Object* sender, const std::string& eventType);
 
-        void RemoveEventReceiver(Object* reciever, StringHash eventType);
-        void RemoveEventReceiver(Object* reciever, Object* sender, StringHash eventType);
-        void RemoveEventSender(Object* sender);
+        void removeEventReceiver(Object* reciever, const std::string& eventType);
+        void removeEventReceiver(Object* reciever, Object* sender, const std::string& eventType);
+        void removeEventSender(Object* sender);
 
-        HashSet<Object*>* GetEventReceivers(StringHash eventType);
-        HashSet<Object*>* GetEventReceivers(Object* sender, StringHash eventType);
+        std::unordered_set<Object*>* getEventReceivers(const std::string& eventType);
+        std::unordered_set<Object*>* getEventReceivers(Object* sender, const std::string& eventType);
        
-        void SetEventHandler(EventHandler* handler) { eventHandler_ = handler; }
-        void BeginSendEvent(Object* sender) { eventSenders_.Push(sender); }
-        void EndSendEvent() { eventSenders_.Pop(); }
+        void setEventHandler(EventHandler* handler) { eventHandler_ = handler; }
+        void beginSendEvent(Object* sender) { eventSenders_.push_back(sender); }
+        void endSendEvent() { eventSenders_.pop_back(); }
 
-        HashMap<StringHash, SharedPtr<Object>> modules_;
-        HashMap<StringHash, HashSet<Object*>> eventRecievers_;
-        HashMap<Object*, HashMap<StringHash, HashSet<Object*>>> specificEventRecievers_;
-        PODVector<Object*> eventSenders_;
-        PODVector<VariantMap*> eventDataMaps_;
+        std::unordered_map<std::string, std::shared_ptr<Object>> modules_;
+        std::unordered_map<std::string, std::unordered_set<Object*>> eventRecievers_;
+        std::unordered_map<Object*, std::unordered_map<std::string, std::unordered_set<Object*>>> specificEventRecievers_;
+        std::vector<Object*> eventSenders_;
         EventHandler* eventHandler_;
     };
-
-    template<typename T> void Context::RemoveModule() 
-    { 
-        modules_.Erase(T::GetTypeStatic());
-    }
-
-    template<typename T> T* Context::GetModule() const 
-    { 
-        HashMap<StringHash, SharedPtr<Object>>::ConstIterator iter = modules_.Find(T::GetTypeStatic());
-        if (iter != modules_.End())
-            return static_cast<T*>(iter->second_.Get());
-        return 0;
-    }
 }

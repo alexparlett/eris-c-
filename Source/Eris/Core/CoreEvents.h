@@ -22,14 +22,31 @@
 
 #pragma once
 
-#include "Object.h"
+#include "Event.h"
+#include "Context.h"
 
-EVENT(E_BEGINFRAME, BeginFrame)
+namespace Eris
 {
-    PARAM(P_FRAME, Frame);
-    PARAM(P_TIMESTEP, TimeStep);
-}
+    struct BeginFrameEvent : public Event
+    {
+        EVENT(BeginFrame)
 
-EVENT(E_ENDFRAME, EndFrame)
-{
+        glm::uint frame;
+        double timeStep;
+    };
+
+    struct EndFrameEvent : public Event
+    {
+        EVENT(EndFrame)
+    };
+
+    template<> inline BeginFrameEvent* Context::createEvent<BeginFrameEvent>()
+    {
+        return new BeginFrameEvent();
+    }
+
+    template<> inline EndFrameEvent* Context::createEvent<EndFrameEvent>()
+    {
+        return new EndFrameEvent();
+    }
 }

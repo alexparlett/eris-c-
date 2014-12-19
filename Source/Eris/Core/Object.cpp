@@ -23,6 +23,9 @@
 #include "Context.h"
 #include "Object.h"
 
+#include <cassert>
+#include <memory>
+
 namespace Eris
 {
 
@@ -34,27 +37,30 @@ namespace Eris
 
     Object::~Object()
     {
-        UnsubscribeFromEvents();
-        context_->RemoveEventSender(this);
+        unsubscribeFromEvents();
+        context_->removeEventSender(this);
     }
 
-    void Object::SubscribeToEvent(StringHash eventType, EventHandler* handler)
+    void Object::subscribeToEvent(const std::string& eventType, EventHandler* handler)
     {
         if (!handler)
             return;
 
-        handler->SetEventType(eventType);
+        handler->setEventType(eventType);
 
-        EventHandler* oldHandler = FindEventHandler(eventType);
+        EventHandler* oldHandler = findEventHandler(eventType);
         if (oldHandler)
-            eventHandlers_.Erase(oldHandler);
+        {
+            eventHandlers_.remove(oldHandler);
+            delete oldHandler;
+        }
 
-        eventHandlers_.InsertFront(handler);
+        eventHandlers_.push_front(handler);
 
-        context_->AddEventReceiver(this, eventType);
+        context_->addEventReceiver(this, eventType);
     }
 
-    void Object::SubscribeToEvent(Object* sender, StringHash eventType, EventHandler* handler)
+    void Object::subscribeToEvent(Object* sender, const std::string& eventType, EventHandler* handler)
     {
         if (!sender || !handler)
         {
@@ -64,55 +70,60 @@ namespace Eris
             return;
         }
 
-        handler->SetEventType(eventType);
-        handler->SetSender(sender);
+        handler->setEventType(eventType);
+        handler->setSender(sender);
 
-        EventHandler* oldHandler = FindSpecificEventHandler(sender, eventType);
+        EventHandler* oldHandler = findSpecificEventHandler(sender, eventType);
         if (oldHandler)
-            eventHandlers_.Erase(oldHandler);
+        {
+            eventHandlers_.remove(oldHandler);
+            delete oldHandler;
+        }
 
-        eventHandlers_.InsertFront(handler);
+        eventHandlers_.push_front(handler);
 
-        context_->AddEventReceiver(this, sender, eventType);
+        context_->addEventReceiver(this, sender, eventType);
     }
 
-    void Object::UnsubscribeFromEvent(StringHash eventType)
+    void Object::unsubscribeFromEvent(const std::string& eventType)
     {
         for (;;)
         {
             EventHandler* previous;
-            EventHandler* handler = FindEventHandler(eventType, &previous);
+            EventHandler* handler = findEventHandler(eventType, &previous);
 
             if (handler)
             {
-                if (handler->GetSender())
-                    context_->RemoveEventReceiver(this, handler->GetSender(), eventType);
+                if (handler->getSender())
+                    context_->removeEventReceiver(this, handler->getSender(), eventType);
                 else
-                    context_->RemoveEventReceiver(this, eventType);
+                    context_->removeEventReceiver(this, eventType);
 
-                eventHandlers_.Erase(handler, previous);
+                eventHandlers_.remove(handler);
+                delete handler;
             }
             else
                 break;
         }
     }
 
-    void Object::UnsubscribeFromEvent(Object* sender, StringHash eventType)
+    void Object::unsubscribeFromEvent(Object* sender, const std::string& eventType)
     {
         if (!sender)
             return;
 
         EventHandler* previous;
-        EventHandler* handler = FindSpecificEventHandler(sender, eventType, &previous);
+        EventHandler* handler = findSpecificEventHandler(sender, eventType, &previous);
 
         if (handler)
         {
-            context_->RemoveEventReceiver(this, handler->GetSender(), eventType);
-            eventHandlers_.Erase(handler, previous);
+            context_->removeEventReceiver(this, handler->getSender(), eventType);
+            eventHandlers_.remove(handler);
+            delete handler;
         }
     }
 
-    void Object::UnsubscribeFromEvents(Object* sender)
+    void Object::unsubscribeFromEvents(Object* sender)
     {
         if (!sender)
             return;
@@ -120,251 +131,244 @@ namespace Eris
         for (;;)
         {
             EventHandler* previous;
-            EventHandler* handler = FindSpecificEventHandler(sender, &previous);
+            EventHandler* handler = findSpecificEventHandler(sender, &previous);
 
             if (handler)
             {
-                context_->RemoveEventReceiver(this, handler->GetSender(), handler->GetEventType());
-                eventHandlers_.Erase(handler, previous);
+                context_->removeEventReceiver(this, handler->getSender(), handler->getEventType());
+                eventHandlers_.remove(handler);
             }
             else
                 break;
         }
     }
 
-    void Object::UnsubscribeFromEvents()
+    void Object::unsubscribeFromEvents()
     {
         for (;;)
         {
-            EventHandler* handler = eventHandlers_.First();
+            EventHandler* handler = eventHandlers_.front();
 
             if (handler)
             {
-                if (handler->GetSender())
-                    context_->RemoveEventReceiver(this, handler->GetSender(), handler->GetEventType());
+                if (handler->getSender())
+                    context_->removeEventReceiver(this, handler->getSender(), handler->getEventType());
                 else
-                    context_->RemoveEventReceiver(this, handler->GetEventType());
-                eventHandlers_.Erase(handler);
+                    context_->removeEventReceiver(this, handler->getEventType());
+                eventHandlers_.remove(handler);
+                delete handler;
             }
             else
                 break;
         }
     }
 
-    void Object::SendEvent(StringHash eventType)
+    void Object::sendEvent(const std::string& eventType)
     {
-        const VariantMap emptyData = VariantMap();
-        SendEvent(eventType, emptyData);
+        sendEvent(eventType, nullptr);
     }
 
-    void Object::SendEvent(StringHash eventType, const VariantMap& eventData)
+    void Object::sendEvent(const std::string& eventType, Event* eventData)
     {
         // Make a weak pointer to self to check for destruction during event handling
-        WeakPtr<Object> self(this);
+        std::weak_ptr<Object> self(std::make_shared<Object>(this));
         Context* context = context_;
-        HashSet<Object*> processed;
+        std::unordered_set<Object*> processed;
 
-        context->BeginSendEvent(this);
+        context->beginSendEvent(this);
 
         // Check first the specific event receivers
-        const HashSet<Object*>* group = context->GetEventReceivers(this, eventType);
+        const std::unordered_set<Object*>* group = context->getEventReceivers(this, eventType);
         if (group)
         {
-            for (HashSet<Object*>::ConstIterator i = group->Begin(); i != group->End();)
+            for (std::unordered_set<Object*>::const_iterator i = group->begin(); i != group->end();)
             {
-                HashSet<Object*>::ConstIterator current = i++;
+                std::unordered_set<Object*>::const_iterator current = i++;
                 Object* receiver = *current;
                 Object* next = 0;
-                if (i != group->End())
+                if (i != group->end())
                     next = *i;
 
-                unsigned oldSize = group->Size();
-                receiver->OnEvent(this, eventType, eventData);
+                unsigned oldSize = group->size();
+                receiver->onEvent(this, eventType, eventData);
 
                 // If self has been destroyed as a result of event handling, exit
-                if (self.Expired())
+                if (self.expired())
                 {
-                    context->EndSendEvent();
+                    context->endSendEvent();
                     return;
                 }
 
                 // If group has changed size during iteration (removed/added subscribers) try to recover
-                /// \todo This is not entirely foolproof, as a subscriber could have been added to make up for the removed one
-                if (group->Size() != oldSize)
-                    i = group->Find(next);
+               if (group->size() != oldSize)
+                    i = group->find(next);
 
-                processed.Insert(receiver);
+                processed.insert(receiver);
             }
         }
 
         // Then the non-specific receivers
-        group = context->GetEventReceivers(eventType);
+        group = context->getEventReceivers(eventType);
         if (group)
         {
-            if (processed.Empty())
+            if (processed.empty())
             {
-                for (HashSet<Object*>::ConstIterator i = group->Begin(); i != group->End();)
+                for (std::unordered_set<Object*>::const_iterator i = group->begin(); i != group->end();)
                 {
-                    HashSet<Object*>::ConstIterator current = i++;
+                    std::unordered_set<Object*>::const_iterator current = i++;
                     Object* receiver = *current;
                     Object* next = 0;
-                    if (i != group->End())
+                    if (i != group->end())
                         next = *i;
 
-                    unsigned oldSize = group->Size();
-                    receiver->OnEvent(this, eventType, eventData);
+                    unsigned oldSize = group->size();
+                    receiver->onEvent(this, eventType, eventData);
 
-                    if (self.Expired())
+                    if (self.expired())
                     {
-                        context->EndSendEvent();
+                        context->endSendEvent();
                         return;
                     }
 
-                    if (group->Size() != oldSize)
-                        i = group->Find(next);
+                    if (group->size() != oldSize)
+                        i = group->find(next);
                 }
             }
             else
             {
                 // If there were specific receivers, check that the event is not sent doubly to them
-                for (HashSet<Object*>::ConstIterator i = group->Begin(); i != group->End();)
+                for (std::unordered_set<Object*>::const_iterator i = group->begin(); i != group->end();)
                 {
-                    HashSet<Object*>::ConstIterator current = i++;
+                    std::unordered_set<Object*>::const_iterator current = i++;
                     Object* receiver = *current;
                     Object* next = 0;
-                    if (i != group->End())
+                    if (i != group->end())
                         next = *i;
 
-                    if (!processed.Contains(receiver))
+                    if (processed.find(receiver) != processed.end())
                     {
-                        unsigned oldSize = group->Size();
-                        receiver->OnEvent(this, eventType, eventData);
+                        unsigned oldSize = group->size();
+                        receiver->onEvent(this, eventType, eventData);
 
-                        if (self.Expired())
+                        if (self.expired())
                         {
-                            context->EndSendEvent();
+                            context->endSendEvent();
                             return;
                         }
 
-                        if (group->Size() != oldSize)
-                            i = group->Find(next);
+                        if (group->size() != oldSize)
+                            i = group->find(next);
                     }
                 }
             }
         }
 
-        context->EndSendEvent();
+        context->endSendEvent();
     }
 
-    void Object::RemoveEventSender(Object* sender)
+    void Object::removeEventSender(Object* sender)
     {
-        EventHandler* handler = eventHandlers_.First();
-        EventHandler* previous = 0;
+        std::list<EventHandler*>::iterator handler = eventHandlers_.begin();
+        std::list<EventHandler*>::iterator previous;
 
-        while (handler)
+        while (handler != eventHandlers_.end())
         {
-            if (handler->GetSender() == sender)
-            {
-                EventHandler* next = eventHandlers_.Next(handler);
-                eventHandlers_.Erase(handler, previous);
-                handler = next;
-            }
+            if ((*handler)->getSender() == sender)
+                handler = eventHandlers_.erase(handler);
             else
-            {
-                previous = handler;
-                handler = eventHandlers_.Next(handler);
-            }
+                handler++;
         }
     }
 
-    EventHandler* Object::FindEventHandler(StringHash eventType, EventHandler** previous) const
+    EventHandler* Object::findEventHandler(const std::string& eventType, EventHandler** previous) const
     {
-        EventHandler* handler = eventHandlers_.First();
+        std::list<EventHandler*>::const_iterator handler = eventHandlers_.cbegin();
         if (previous)
-            *previous = 0;
+            *previous = nullptr;
 
-        while (handler)
+        while (handler != eventHandlers_.cend())
         {
-            if (handler->GetEventType() == eventType)
-                return handler;
+            if ((*handler)->getEventType() == eventType)
+                return (*handler);
             if (previous)
-                *previous = handler;
-            handler = eventHandlers_.Next(handler);
+                *previous = (*handler);
+            handler++;
         }
 
-        return 0;
+        return nullptr;
     }
-    EventHandler* Object::FindSpecificEventHandler(Object* sender, EventHandler** previous) const
+
+    EventHandler* Object::findSpecificEventHandler(Object* sender, EventHandler** previous) const
     {
-        EventHandler* handler = eventHandlers_.First();
+        std::list<EventHandler*>::const_iterator handler = eventHandlers_.cbegin();
         if (previous)
-            *previous = 0;
+            *previous = nullptr;
 
-        while (handler)
+        while (handler != eventHandlers_.cend())
         {
-            if (handler->GetSender() == sender)
-                return handler;
+            if ((*handler)->getSender() == sender)
+                return (*handler);
             if (previous)
-                *previous = handler;
-            handler = eventHandlers_.Next(handler);
+                *previous = (*handler);
+            handler++;
         }
 
-        return 0;
+        return nullptr;
     }
 
-    EventHandler* Object::FindSpecificEventHandler(Object* sender, StringHash eventType, EventHandler** previous) const
+    EventHandler* Object::findSpecificEventHandler(Object* sender, const std::string& eventType, EventHandler** previous) const
     {
-        EventHandler* handler = eventHandlers_.First();
+        std::list<EventHandler*>::const_iterator handler = eventHandlers_.cbegin();
         if (previous)
-            *previous = 0;
+            *previous = nullptr;
 
-        while (handler)
+        while (handler != eventHandlers_.cend())
         {
-            if (handler->GetSender() == sender && handler->GetEventType() == eventType)
-                return handler;
+            if ((*handler)->getSender() == sender && (*handler)->getEventType() == eventType)
+                return *handler;
             if (previous)
-                *previous = handler;
-            handler = eventHandlers_.Next(handler);
+                *previous = *handler;
+            handler++;
         }
 
-        return 0;
+        return nullptr;
     }
 
-    void Object::OnEvent(Object* sender, StringHash eventType, const VariantMap& eventData)
+    void Object::onEvent(Object* sender, const std::string& eventType, Event* eventData)
     {
         Context* context = context_;
-        EventHandler* specific = 0;
-        EventHandler* nonSpecific = 0;
+        EventHandler* specific = nullptr;
+        EventHandler* nonSpecific = nullptr;
 
-        EventHandler* handler = eventHandlers_.First();
-        while (handler)
+        std::list<EventHandler*>::const_iterator handler = eventHandlers_.cbegin();
+        while (handler != eventHandlers_.end())
         {
-            if (handler->GetEventType() == eventType)
+            if ((*handler)->getEventType() == eventType)
             {
-                if (!handler->GetSender())
-                    nonSpecific = handler;
-                else if (handler->GetSender() == sender)
+                if (!(*handler)->getSender())
+                    nonSpecific = *handler;
+                else if ((*handler)->getSender() == sender)
                 {
-                    specific = handler;
+                    specific = *handler;
                     break;
                 }
             }
-            handler = eventHandlers_.Next(handler);
+            handler++;
         }
 
         if (specific)
         {
-            context->SetEventHandler(specific);
-            specific->Invoke(eventData);
-            context->SetEventHandler(0);
+            context->setEventHandler(specific);
+            specific->invoke(eventData);
+            context->setEventHandler(0);
             return;
         }
 
         if (nonSpecific)
         {
-            context->SetEventHandler(nonSpecific);
-            nonSpecific->Invoke(eventData);
-            context->SetEventHandler(0);
+            context->setEventHandler(nonSpecific);
+            nonSpecific->invoke(eventData);
+            context->setEventHandler(0);
         }
     }
 

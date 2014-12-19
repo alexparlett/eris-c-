@@ -27,7 +27,7 @@
 #include <windows.h>
 #include <mmsystem.h>
 #include <ctime>
-#include <glfw3.h>
+#include <algorithm>
 
 namespace Eris
 {
@@ -40,7 +40,7 @@ namespace Eris
 
     }
 
-    void Time::BeginFrame(float timeStep)
+    void Time::beginFrame(double timeStep)
     {
         frameNumber_++;
         if (!frameNumber_)
@@ -48,35 +48,34 @@ namespace Eris
 
         timeStep_ = timeStep;
 
-        using namespace BeginFrame;
 
-        VariantMap& eventData = context_->GetEventDataMap();
-        eventData[P_FRAME] = frameNumber_;
-        eventData[P_TIMESTEP] = timeStep_;
-        SendEvent(E_BEGINFRAME, eventData);
+        BeginFrameEvent* event = context_->createEvent<BeginFrameEvent>();
+        event->frame = frameNumber_;
+        event->timeStep = timeStep_;
+        sendEvent(BeginFrameEvent::getTypeStatic(), event);
     }
 
-    void Time::EndFrame()
+    void Time::endFrame()
     {
-        SendEvent(E_ENDFRAME);
+        sendEvent(EndFrameEvent::getTypeStatic());
     }
 
-    float Time::GetElapsedTime() const
+    double Time::getElapsedTime() const
     {
-        return glfwGetTime() * 1000.f;
+        return glfwGetTime() * 1000.0;
     }
 
-    unsigned Time::GetSystemTime()
+    glm::uint Time::getSystemTime()
     {
         return timeGetTime();
     }
 
-    unsigned Time::GetTimeSinceEpoch()
+    glm::uint Time::getTimeSinceEpoch()
     {
-        return (unsigned) time(NULL);
+        return (glm::uint) time(NULL);
     }
 
-    String Time::GetTimestamp()
+    std::string Time::getTimestamp()
     {
         time_t sysTime;
         time(&sysTime);
@@ -84,7 +83,15 @@ namespace Eris
 
         ctime_s(dateTime, 32, &sysTime);
 
-        return String(dateTime).Replaced("\n", "").Trimmed();
+        std::string dateString(dateTime);
+
+        std::string::size_type pos = 0; // Must initialize
+        while ((pos = dateString.find("\r\n", pos)) != std::string::npos)
+        {
+            dateString.erase(pos, 2);
+        }
+
+        return dateString;
     }
 
 
@@ -93,10 +100,10 @@ namespace Eris
     {
     }
 
-    long long Timer::GetElapsedTime(bool reset)
+    double Timer::getElapsedTime(bool reset)
     {
-        long long currentTime = glfwGetTime();
-        long long elapsedTime = currentTime - startTime_;
+        double currentTime = glfwGetTime();
+        double elapsedTime = currentTime - startTime_;
 
         if (elapsedTime < 0)
             elapsedTime = 0;
@@ -104,10 +111,10 @@ namespace Eris
         if (reset)
             startTime_ = currentTime;
 
-        return (elapsedTime * 1000000LL) / 1000LL;
+        return elapsedTime * 1000.0;
     }
 
-    void Timer::Reset()
+    void Timer::reset()
     {
         startTime_ = glfwGetTime();
     }

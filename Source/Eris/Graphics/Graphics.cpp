@@ -15,18 +15,16 @@
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 // AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// LIABILITY, WindowHints::WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 //
 
 #include "Context.h"
-#include "EngineEvents.h"
 #include "Graphics.h"
 #include "GraphicsEvents.h"
-#include "Log.h"
 
-#include <glfw3.h>
+#include <common.hpp>
 
 namespace Eris
 {
@@ -47,7 +45,7 @@ namespace Eris
         }
     }
 
-    void Graphics::Initialize(const IntVector2& size, int samples, const String& title, unsigned hints)
+    void Graphics::initialize(const glm::ivec2& size, glm::int32 samples, const std::string& title, glm::int32 hints)
     {
         // Default Samples, Title and Hints.
         samples_ = samples;
@@ -60,17 +58,17 @@ namespace Eris
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
         // Set Window Hints.
-        glfwWindowHint(GLFW_DECORATED, !IsHintEnabled(WH_BORDERLESS));
-        glfwWindowHint(GLFW_RESIZABLE, IsHintEnabled(WH_RESIZABLE));
-        glfwWindowHint(GLFW_VISIBLE, IsHintEnabled(WH_VISIBLE));
+        glfwWindowHint(GLFW_DECORATED, !isHintEnabled(WindowHints::WH_BORDERLESS));
+        glfwWindowHint(GLFW_RESIZABLE, isHintEnabled(WindowHints::WH_RESIZABLE));
+        glfwWindowHint(GLFW_VISIBLE, isHintEnabled(WindowHints::WH_VISIBLE));
         glfwWindowHint(GLFW_SAMPLES, samples_);
-        glfwWindowHint(GLFW_SRGB_CAPABLE, IsHintEnabled(WH_SRGB));
+        glfwWindowHint(GLFW_SRGB_CAPABLE, isHintEnabled(WindowHints::WH_SRGB));
 
         // Create Window.
-        if (IsHintEnabled(WH_FULLSCREEN))
-            window_ = glfwCreateWindow(size.x_, size.y_, title_.CString(), glfwGetPrimaryMonitor(), NULL);
+        if (isHintEnabled(WindowHints::WH_FULLSCREEN))
+            window_ = glfwCreateWindow(size.x, size.y, title_.c_str(), glfwGetPrimaryMonitor(), NULL);
         else
-            window_ = glfwCreateWindow(size.x_, size.y_, title_.CString(), NULL, NULL);
+            window_ = glfwCreateWindow(size.x, size.y, title_.c_str(), NULL, NULL);
 
         if (!window_)
         {
@@ -81,35 +79,37 @@ namespace Eris
         // Recheck the size since it may have changed for fullscreen resolutions.
         int width, height;
         glfwGetFramebufferSize(window_, &width, &height);
-        size_ = IntVector2(width, height);
+        size_ = glm::ivec2(width, height);
 
         // Store the Context Ptr and make current.
-        glfwSetWindowUserPointer(window_, GetContext());
+        glfwSetWindowUserPointer(window_, context_);
         glfwMakeContextCurrent(window_);
 
         // Enable Vsync.
-        if (IsHintEnabled(WH_VSYNC))
+        if (isHintEnabled(WindowHints::WH_VSYNC))
             glfwSwapInterval(1);
 
         // Set Callbacks.
-        glfwSetFramebufferSizeCallback(window_, &Graphics::HandleFramebufferCallback);
-        glfwSetWindowCloseCallback(window_, &Graphics::HandleCloseCallback);
+        glfwSetFramebufferSizeCallback(window_, &Graphics::handleFramebufferCallback);
+        glfwSetWindowCloseCallback(window_, &Graphics::handleCloseCallback);
 
         inititalized_ = true;
     }
 
-    void Graphics::Maximize()
+    void Graphics::maximize()
     {
         if (!inititalized_ || !window_)
             return;
 
-       const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
-       glfwRestoreWindow(window_);
-       glfwSetWindowSize(window_, mode->width, mode->height);
+        glfwRestoreWindow(window_);
+
+        if (!isHintEnabled(WindowHints::WH_FULLSCREEN))
+            glfwSetWindowSize(window_, mode->width, mode->height);
     }
 
-    void Graphics::Minimize()
+    void Graphics::minimize()
     {
         if (!inititalized_ || !window_)
             return;
@@ -117,7 +117,7 @@ namespace Eris
         glfwIconifyWindow(window_);
     }
 
-    void Graphics::Restore()
+    void Graphics::restore()
     {
         if (!inititalized_ || !window_)
             return;
@@ -125,15 +125,15 @@ namespace Eris
         glfwRestoreWindow(window_);
     }
 
-    void Graphics::Hide()
+    void Graphics::hide()
     {
         if (!inititalized_ || !window_)
             return;
 
         glfwHideWindow(window_);
-    } 
+    }
 
-    void Graphics::Show()
+    void Graphics::show()
     {
         if (!inititalized_ || !window_)
             return;
@@ -141,27 +141,27 @@ namespace Eris
         glfwShowWindow(window_);
     }
 
-    void Graphics::Close()
+    void Graphics::close()
     {
         if (!inititalized_ || !window_)
             return;
 
-        Hide();
+        hide();
         glfwSetWindowShouldClose(window_, GL_TRUE);
     }
 
 
-    void Graphics::ToggleFullscreen()
+    void Graphics::toggleFullscreen()
     {
         if (!inititalized_ || !window_)
             return;
 
-        hints_ ^= WH_FULLSCREEN;
+        hints_ ^= (glm::int32) WindowHints::WH_FULLSCREEN;
 
-        SetMode(size_.x_, size_.y_, samples_, hints_);
+        setMode(size_.x, size_.y, samples_, hints_);
     }
 
-    void Graphics::SetMode(int width, int height, int samples, unsigned hints)
+    void Graphics::setMode(glm::int32 width, glm::int32 height, glm::int32 samples, glm::int32 hints)
     {
         if (!inititalized_ || !window_)
             return;
@@ -171,19 +171,19 @@ namespace Eris
             samples_ = samples;
             hints_ = hints;
 
-            glfwWindowHint(GLFW_DECORATED, IsHintEnabled(WH_BORDERLESS));
-            glfwWindowHint(GLFW_RESIZABLE, IsHintEnabled(WH_RESIZABLE));
-            glfwWindowHint(GLFW_VISIBLE, IsHintEnabled(WH_VISIBLE));
+            glfwWindowHint(GLFW_DECORATED, isHintEnabled(WindowHints::WH_BORDERLESS));
+            glfwWindowHint(GLFW_RESIZABLE, isHintEnabled(WindowHints::WH_RESIZABLE));
+            glfwWindowHint(GLFW_VISIBLE, isHintEnabled(WindowHints::WH_VISIBLE));
             glfwWindowHint(GLFW_SAMPLES, samples_);
-            glfwWindowHint(GLFW_SRGB_CAPABLE, IsHintEnabled(WH_SRGB));
+            glfwWindowHint(GLFW_SRGB_CAPABLE, isHintEnabled(WindowHints::WH_SRGB));
 
             glfwMakeContextCurrent(NULL);
             glfwDestroyWindow(window_);
 
-            if (IsHintEnabled(WH_FULLSCREEN))
-                window_ = glfwCreateWindow(width, height, title_.CString(), glfwGetPrimaryMonitor(), NULL);
+            if (isHintEnabled(WindowHints::WH_FULLSCREEN))
+                window_ = glfwCreateWindow(width, height, title_.c_str(), glfwGetPrimaryMonitor(), NULL);
             else
-                window_ = glfwCreateWindow(width, height, title_.CString(), NULL, NULL);
+                window_ = glfwCreateWindow(width, height, title_.c_str(), NULL, NULL);
 
             if (!window_)
             {
@@ -191,26 +191,26 @@ namespace Eris
                 return;
             }
 
-            glfwSetWindowUserPointer(window_, GetContext());
+            glfwSetWindowUserPointer(window_, context_);
             glfwMakeContextCurrent(window_);
 
             int width, height;
             glfwGetFramebufferSize(window_, &width, &height);
-            size_ = IntVector2(width, height);
+            size_ = glm::ivec2(width, height);
 
-            if (IsHintEnabled(WH_VSYNC))
+            if (isHintEnabled(WindowHints::WH_VSYNC))
                 glfwSwapInterval(1);
 
-            glfwSetFramebufferSizeCallback(window_, &Graphics::HandleFramebufferCallback);
-            glfwSetWindowCloseCallback(window_, &Graphics::HandleCloseCallback);
+            glfwSetFramebufferSizeCallback(window_, &Graphics::handleFramebufferCallback);
+            glfwSetWindowCloseCallback(window_, &Graphics::handleCloseCallback);
 
-            SendEvent(E_DEVICERESET);
+            sendEvent(DeviceResetEvent::getTypeStatic());
         }
         else
-            SetMode(width, height);
+            setMode(width, height);
     }
 
-    void Graphics::SetMode(int width, int height)
+    void Graphics::setMode(glm::int32 width, glm::int32 height)
     {
         if (!inititalized_ || !window_)
             return;
@@ -218,75 +218,73 @@ namespace Eris
         glfwSetWindowSize(window_, width, height);
     }
 
-    void Graphics::SetGamma(float gamma)
+    void Graphics::setGamma(glm::f32 gamma)
     {
         if (!inititalized_ || !window_)
             return;
 
-        gamma_ = Max(gamma, 0.f);
+        gamma_ = glm::max(gamma, 0.f);
         glfwSetGamma(glfwGetPrimaryMonitor(), gamma_);
     }
 
-    void Graphics::SetTitle(const String& title)
+    void Graphics::setTitle(const std::string& title)
     {
         if (!inititalized_ || !window_)
             return;
 
         title_ = title_;
-        glfwSetWindowTitle(window_, title_.CString());
+        glfwSetWindowTitle(window_, title_.c_str());
     }
 
-    PODVector<IntVector2> Graphics::GetResolutions() const
+    std::vector<glm::ivec2> Graphics::getResolutions() const
     {
-        PODVector<IntVector2> ret;
+        std::vector<glm::ivec2> ret;
 
         int count;
         const GLFWvidmode* modes = glfwGetVideoModes(glfwGetPrimaryMonitor(), &count);
         for (int i = 0; i < count; i++)
         {
-            IntVector2 mode(modes->width, modes->height);
-            ret.Push(mode);
+            glm::ivec2 mode(modes->width, modes->height);
+            ret.push_back(mode);
         }
 
         return ret;
     }
 
-    Eris::IntVector2 Graphics::GetDesktopResolution() const
+    glm::ivec2 Graphics::getDesktopResolution() const
     {
         const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
         if (mode)
         {
-            return IntVector2(mode->width, mode->height);
+            return glm::ivec2(mode->width, mode->height);
         }
 
-        return IntVector2::ZERO;
+        return glm::ivec2();
     }
 
-    void Graphics::HandleFramebufferCallback(GLFWwindow* window, int width, int height)
-    {
-        using namespace ScreenMode;
-
-        Context* context = static_cast<Context*>(glfwGetWindowUserPointer(window));
-        Graphics* graphics = context->GetModule<Graphics>();
-
-        graphics->size_ = IntVector2(width, height);
-
-        VariantMap& eventData = context->GetEventDataMap();
-        eventData[P_SIZE] = graphics->size_;
-        graphics->SendEvent(E_SCREENMODE, eventData);
-    }
-
-    void Graphics::HandleCloseCallback(GLFWwindow* window)
+    void Graphics::handleFramebufferCallback(GLFWwindow* window, glm::int32 width, glm::int32 height)
     {
         Context* context = static_cast<Context*>(glfwGetWindowUserPointer(window));
-        Graphics* graphics = context->GetModule<Graphics>();
+        Graphics* graphics = context->getGraphics();
 
-        graphics->SendEvent(E_EXITREQUESTED);
+        graphics->size_ = glm::ivec2(width, height);
+
+        ScreenModeEvent* event = context->createEvent<ScreenModeEvent>();
+        event->size = graphics->size_;
+        graphics->sendEvent(ScreenModeEvent::getTypeStatic(), event);
     }
 
-    bool Graphics::IsHintEnabled(int hint) const
+    void Graphics::handleCloseCallback(GLFWwindow* window)
     {
-        return (hints_ & hint) == hint;
+        Context* context = static_cast<Context*>(glfwGetWindowUserPointer(window));
+        Graphics* graphics = context->getGraphics();
+
+        graphics->sendEvent(ExitRequestedEvent::getTypeStatic());
+    }
+
+    bool Graphics::isHintEnabled(WindowHints hint) const
+    {
+        return (hints_ & (glm::int32) hint) == (glm::int32) hint;
     }
 }

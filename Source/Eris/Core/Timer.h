@@ -23,7 +23,6 @@
 #pragma once
 
 #include "Object.h"
-#include "Str.h"
 
 namespace Eris
 {
@@ -32,34 +31,32 @@ namespace Eris
     public:
         Timer();
 
-        long long GetElapsedTime(bool reset);
-        void Reset();
+        double getElapsedTime(bool reset);
+        void reset();
 
     private:
-        long long startTime_;
+        double startTime_;
     };
 
     class Time : public Object
     {
-        OBJECT(Time)
-
     public:
         Time(Context* context);
 
-        void BeginFrame(float timeStep);
-        void EndFrame();
+        void beginFrame(double timeStep);
+        void endFrame();
 
-        float GetElapsedTime() const;
-        float GetTimeStep() const { return timeStep_; }
-        unsigned GetFrameNumber() const { return frameNumber_; }
+        double getElapsedTime() const;
+        double getTimeStep() const { return timeStep_; }
+        glm::uint getFrameNumber() const { return frameNumber_; }
 
-        static unsigned GetSystemTime();
-        static unsigned GetTimeSinceEpoch();
-        static String GetTimestamp();
+        static glm::uint getSystemTime();
+        static glm::uint getTimeSinceEpoch();
+        static std::string getTimestamp();
 
     private:
-        unsigned frameNumber_;
-        float timeStep_;
+        glm::uint frameNumber_;
+        double timeStep_;
     };
 
 }

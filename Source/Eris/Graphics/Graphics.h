@@ -23,13 +23,16 @@
 #pragma once
 
 #include "Object.h"
-#include "Ptr.h"
+
+#include <vector>
+
+#include <vec2.hpp>
 
 struct GLFWwindow;
 
 namespace Eris
 {
-    enum WindowHints
+    enum class WindowHints : glm::int32
     {
         WH_BORDERLESS = 1,
         WH_RESIZABLE = 2,
@@ -41,56 +44,54 @@ namespace Eris
 
     class Graphics : public Object
     {
-        OBJECT(Graphics)
-
     public:
         Graphics(Context* context);
         virtual ~Graphics();
 
-        void Initialize(const IntVector2& size, int samples, const String& title, unsigned hints);
-        void Maximize();
-        void Minimize();
-        void Restore();
-        void Hide();
-        void Show();
-        void Close();
+        void initialize(const glm::ivec2& size, glm::int32 samples, const std::string& title, glm::int32 hints);
+        void maximize();
+        void minimize();
+        void restore();
+        void hide();
+        void show();
+        void close();
 
-        void ToggleFullscreen();
+        void toggleFullscreen();
 
-        void SetMode(int width, int height, int samples, unsigned hints);
-        void SetMode(int width, int height);
-        void SetGamma(float gamma);
-        void SetTitle(const String& title);
+        void setMode(glm::int32 width, glm::int32 height, glm::int32 samples, glm::int32 hints);
+        void setMode(glm::int32 width, glm::int32 height);
+        void setGamma(glm::f32 gamma);
+        void setTitle(const std::string& title);
 
-        int GetWidth() const { return size_.x_; }
-        int GetHeight() const { return size_.y_; }
-        PODVector<IntVector2> GetResolutions() const;
-        IntVector2 GetDesktopResolution() const;
-        unsigned GetHints() const { return hints_; }
-        String GetTitle() const { return title_; }
-        int GetSamples() const { return samples_; }
-        float GetGamma() const { return gamma_; }
+        glm::int32 getWidth() const { return size_.x; }
+        glm::int32 getHeight() const { return size_.y; }
+        std::vector<glm::ivec2> getResolutions() const;
+        glm::ivec2 getDesktopResolution() const;
+        glm::int32 getHints() const { return hints_; }
+        const std::string& GetTitle() const { return title_; }
+        glm::int32 getSamples() const { return samples_; }
+        glm::f32 getGamma() const { return gamma_; }
 
-        bool IsInitialized() const { return inititalized_; }
-        bool IsDecorated() const { return IsHintEnabled(WH_BORDERLESS); }
-        bool IsResizable() const { return IsHintEnabled(WH_RESIZABLE); }
-        bool IsVisible() const { return IsHintEnabled(WH_VISIBLE); }
-        bool IsSRGB() const { return IsHintEnabled(WH_SRGB); }
-        bool IsVSync() const { return IsHintEnabled(WH_VSYNC); }
-        bool IsFullscreen() const { return IsHintEnabled(WH_FULLSCREEN); }
+        bool isInitialized() const { return inititalized_; }
+        bool isDecorated() const { return isHintEnabled(WindowHints::WH_BORDERLESS); }
+        bool isResizable() const { return isHintEnabled(WindowHints::WH_RESIZABLE); }
+        bool isVisible() const { return isHintEnabled(WindowHints::WH_VISIBLE); }
+        bool isSRGB() const { return isHintEnabled(WindowHints::WH_SRGB); }
+        bool isVSync() const { return isHintEnabled(WindowHints::WH_VSYNC); }
+        bool isFullscreen() const { return isHintEnabled(WindowHints::WH_FULLSCREEN); }
 
     private:
-        static void HandleFramebufferCallback(GLFWwindow* window, int width, int height);
-        static void HandleCloseCallback(GLFWwindow* window);
+        static void handleFramebufferCallback(GLFWwindow* window, glm::int32 width, glm::int32 height);
+        static void handleCloseCallback(GLFWwindow* window);
 
-        bool IsHintEnabled(int hint) const;
+        bool isHintEnabled(WindowHints hint) const;
 
         GLFWwindow* window_;
         bool inititalized_;
-        IntVector2 size_;
-        unsigned hints_;
-        String title_;
-        int samples_;
-        float gamma_;
+        glm::ivec2 size_;
+        glm::int32 hints_;
+        std::string title_;
+        glm::int32 samples_;
+        glm::f32 gamma_;
     };
 }

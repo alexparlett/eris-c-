@@ -22,13 +22,30 @@
 
 #pragma once
 
-#include "Object.h"
+#include "Event.h"
+#include "Context.h"
 
-EVENT(E_SCREENMODE, ScreenMode)
+namespace Eris
 {
-    PARAM(P_SIZE, Size);
-}
+    struct ScreenModeEvent : public Event
+    {
+        EVENT(ScreenMode)
 
-EVENT(E_DEVICERESET, DeviceReset)
-{
+        glm::ivec2 size;
+    };
+
+    struct DeviceResetEvent : public Event
+    {
+        EVENT(DeviceReset)
+    };
+
+    template<> ScreenModeEvent* Context::createEvent<ScreenModeEvent>()
+    {
+        return new ScreenModeEvent();
+    }
+
+    template<> DeviceResetEvent* Context::createEvent<DeviceResetEvent>()
+    {
+        return new DeviceResetEvent();
+    }
 }

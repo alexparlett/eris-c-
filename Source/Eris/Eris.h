@@ -22,10 +22,9 @@
 
 #pragma once
 
-#include "HashMap.h"
-#include "HashSet.h"
-#include "Sort.h"
-#include "Str.h"
+#include <glfw3.h>
+#include <glfw3native.h>
+#include <glm.hpp>
 
 namespace Eris
 {

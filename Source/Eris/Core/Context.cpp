@@ -23,91 +23,91 @@
 #include "Context.h"
 #include "Object.h"
 
+#include "Graphics.h"
+#include "Input.h"
+#include "Timer.h"
+
 namespace Eris
 {
-
-    void Context::RegisterModule(Object* object)
+    Context::Context() : 
+        eventHandler_(nullptr),
+        graphics(nullptr),
+        input(nullptr),
+        time(nullptr)
     {
-        if (!object)
-            return;
 
-        modules_[object->GetType()] = object;
     }
 
-    VariantMap& Context::GetEventDataMap()
+    Context::~Context()
     {
-        unsigned nestingLevel = eventSenders_.Size();
-        while (eventDataMaps_.Size() < nestingLevel + 1)
-            eventDataMaps_.Push(new VariantMap());
-
-        VariantMap& ret = *eventDataMaps_[nestingLevel];
-        ret.Clear();
-        return ret;
+        delete graphics;
+        delete input;
+        delete time;
     }
 
-    Object* Context::GetEventSender() const
+    Object* Context::getEventSender() const
     {
-        if (!eventSenders_.Empty())
-            return eventSenders_.Back();
+        if (!eventSenders_.empty())
+            return eventSenders_.back();
         else
-            return 0;
+            return nullptr;
     }
 
-    void Context::AddEventReceiver(Object* reciever, StringHash eventType)
+    void Context::addEventReceiver(Object* reciever, const std::string& eventType)
     {
-        eventRecievers_[eventType].Insert(reciever);
+        eventRecievers_[eventType].insert(reciever);
     }
 
-    void Context::AddEventReceiver(Object* reciever, Object* sender, StringHash eventType)
+    void Context::addEventReceiver(Object* reciever, Object* sender, const std::string& eventType)
     {
-        specificEventRecievers_[sender][eventType].Insert(reciever);
+        specificEventRecievers_[sender][eventType].insert(reciever);
     }
 
-    void Context::RemoveEventReceiver(Object* reciever, StringHash eventType)
+    void Context::removeEventReceiver(Object* reciever, const std::string& eventType)
     {
-        HashSet<Object*>* group = GetEventReceivers(eventType);
+        std::unordered_set<Object*>* group = getEventReceivers(eventType);
         if (group)
-            group->Erase(reciever);
+            group->erase(reciever);
     }
 
-    void Context::RemoveEventReceiver(Object* reciever, Object* sender, StringHash eventType)
+    void Context::removeEventReceiver(Object* reciever, Object* sender, const std::string& eventType)
     {
-        HashSet<Object*>* group = GetEventReceivers(sender, eventType);
+        std::unordered_set<Object*>* group = getEventReceivers(sender, eventType);
         if (group)
-            group->Erase(reciever);
+            group->erase(reciever);
     }
 
-    void Context::RemoveEventSender(Object* sender)
+    void Context::removeEventSender(Object* sender)
     {
-        HashMap<Object*, HashMap<StringHash, HashSet<Object*> > >::Iterator i = specificEventRecievers_.Find(sender);
-        if (i != specificEventRecievers_.End())
+        std::unordered_map<Object*, std::unordered_map<std::string, std::unordered_set<Object*> > >::iterator i = specificEventRecievers_.find(sender);
+        if (i != specificEventRecievers_.end())
         {
-            for (HashMap<StringHash, HashSet<Object*> >::Iterator j = i->second_.Begin(); j != i->second_.End(); ++j)
+            for (std::unordered_map<std::string, std::unordered_set<Object*> >::iterator j = i->second.begin(); j != i->second.end(); ++j)
             {
-                for (HashSet<Object*>::Iterator k = j->second_.Begin(); k != j->second_.End(); ++k)
-                    (*k)->RemoveEventSender(sender);
+                for (std::unordered_set<Object*>::iterator k = j->second.begin(); k != j->second.end(); ++k)
+                    (*k)->removeEventSender(sender);
             }
-            specificEventRecievers_.Erase(i);
+            specificEventRecievers_.erase(i);
         }
     }
 
-    HashSet<Object*>* Context::GetEventReceivers(StringHash eventType)
+    std::unordered_set<Object*>* Context::getEventReceivers(const std::string& eventType)
     {
-        HashMap<StringHash, HashSet<Object*>>::Iterator iter = eventRecievers_.Find(eventType);
-        if (iter != eventRecievers_.End())
-            return &iter->second_;
-        return 0;
+        std::unordered_map<std::string, std::unordered_set<Object*>>::iterator iter = eventRecievers_.find(eventType);
+        if (iter != eventRecievers_.end())
+            return &iter->second;
+        return nullptr;
     }
 
-    HashSet<Object*>* Context::GetEventReceivers(Object* sender, StringHash eventType)
+    std::unordered_set<Object*>* Context::getEventReceivers(Object* sender, const std::string& eventType)
     {
-        HashMap<Object*, HashMap<StringHash, HashSet<Object*>>>::Iterator si = specificEventRecievers_.Find(sender);
-        if (si != specificEventRecievers_.End())
+        std::unordered_map<Object*, std::unordered_map<std::string, std::unordered_set<Object*>>>::iterator si = specificEventRecievers_.find(sender);
+        if (si != specificEventRecievers_.end())
         {
-            HashMap<StringHash, HashSet<Object*>>::Iterator iter = si->second_.Find(eventType);
-            if (iter != eventRecievers_.End())
-                return &iter->second_;
+            std::unordered_map<std::string, std::unordered_set<Object*>>::iterator iter = si->second.find(eventType);
+            if (iter != eventRecievers_.end())
+                return &iter->second;
         }
-        return 0;
+        return nullptr;
     }
 }
