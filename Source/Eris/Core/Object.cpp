@@ -27,7 +27,6 @@ namespace Eris
     Object::Object(Context* context) :
         mContext(context)
     {
-
     }
 
     Object::~Object()

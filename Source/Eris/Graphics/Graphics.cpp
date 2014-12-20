@@ -47,6 +47,9 @@ namespace Eris
 
     void Graphics::initialize()
     {
+        if (mInitialized)
+            return;
+
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -63,7 +66,10 @@ namespace Eris
             mWindow = glfwCreateWindow(mWidth, mHeight, mTitle.c_str(), nullptr, nullptr);
 
         if (!mWindow)
+        {
+            mContext->setErrorCode(-1);
             return;
+        }
         
         glfwMakeContextCurrent(mWindow);
         glfwSetWindowUserPointer(mWindow, mContext);
@@ -78,7 +84,11 @@ namespace Eris
 
         glewExperimental = GL_TRUE;
         if (!glewInit())
+        {
+            glfwDestroyWindow(mWindow);
+            mContext->setErrorCode(-1);
             return;
+        }
 
         glfwSetFramebufferSizeCallback(mWindow, &Graphics::handleFramebufferCallback);
         glfwSetWindowCloseCallback(mWindow, &Graphics::handleCloseCallback);
@@ -89,7 +99,10 @@ namespace Eris
     void Graphics::terminate()
     {
         if (mWindow)
+        {
             glfwDestroyWindow(mWindow);
+            mWindow = nullptr;
+        }
     }
 
     void Graphics::maximize()

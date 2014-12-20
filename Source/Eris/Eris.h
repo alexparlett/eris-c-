@@ -27,6 +27,12 @@
 #include <memory>
 #include <string>
 
+#ifdef _DEBUG
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+#endif
+
 #include <glew/glew.h>
 #include <glm/glm.hpp>
 #include <glfw3/glfw3.h>

@@ -52,4 +52,8 @@ namespace Eris
         glfwTerminate();
     }
 
+    void Context::setErrorCode(glm::i32 errorCode)
+    {
+        mErrorCode = errorCode;
+    }
 }

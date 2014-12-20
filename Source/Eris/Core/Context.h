@@ -38,10 +38,10 @@ namespace Eris
         void initialize();
         void terminate();
 
+        void setErrorCode(glm::i32 errorCode);
         glm::i32 getErrorCode() const { return mErrorCode; }
 
         template<class T> void registerModule(T* module) {}
-
         template<class T> T* getModule() { return nullptr; }
 
     private:

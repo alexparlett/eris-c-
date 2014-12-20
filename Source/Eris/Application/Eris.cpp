@@ -25,8 +25,13 @@
 
 int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow)
 {
+#ifdef _DEBUG
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif
+
     Eris::Context* context = new Eris::Context();
     context->initialize();
+
     if (context->getErrorCode())
         return context->getErrorCode();
 
@@ -36,6 +41,9 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine, int nC
     graphics->setSize(800, 600);
     graphics->setFullscreen(false);
     graphics->initialize();
+
+    if (context->getErrorCode())
+        return context->getErrorCode();
 
     while (!glfwWindowShouldClose(graphics->getWindow()))
     {
