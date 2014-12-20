@@ -53,7 +53,6 @@ namespace Eris
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
         glfwWindowHint(GLFW_SRGB_CAPABLE, GL_TRUE);
 
         glfwWindowHint(GLFW_DECORATED, !mBorderless);
@@ -83,9 +82,14 @@ namespace Eris
             glfwSwapInterval(1);
 
         glewExperimental = GL_TRUE;
-        if (!glewInit())
+        GLenum err = glewInit();
+        if (err != GLEW_OK)
         {
+            const GLubyte* msg = glewGetErrorString(err);
+
             glfwDestroyWindow(mWindow);
+            mWindow = nullptr;
+
             mContext->setErrorCode(-1);
             return;
         }
@@ -98,6 +102,8 @@ namespace Eris
 
     void Graphics::terminate()
     {
+        mInitialized = false;
+
         if (mWindow)
         {
             glfwDestroyWindow(mWindow);

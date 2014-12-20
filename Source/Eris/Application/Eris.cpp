@@ -29,19 +29,28 @@
 #include "Core/Context.h"
 #include "Graphics/Graphics.h"
 
+static std::unique_ptr<Eris::Context> context;
+
+void errorCallback(int error, const char* msg)
+{
+
+}
+
 int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow)
 {
 #ifdef _DEBUG
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
-    Eris::Context* context = new Eris::Context();
+    context = std::make_unique<Eris::Context>();
     context->initialize();
 
     if (context->getErrorCode())
         return context->getErrorCode();
 
-    context->registerModule<Eris::Graphics>(new Eris::Graphics(context));
+    glfwSetErrorCallback(errorCallback);
+
+    context->registerModule<Eris::Graphics>(new Eris::Graphics(context.get()));
 
     Eris::Graphics* graphics = context->getModule<Eris::Graphics>();
     graphics->setSize(800, 600);
@@ -49,7 +58,10 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine, int nC
     graphics->initialize();
 
     if (context->getErrorCode())
+    {
+        context->terminate();
         return context->getErrorCode();
+    }
 
     while (!glfwWindowShouldClose(graphics->getWindow()))
     {
@@ -58,7 +70,6 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine, int nC
     }
 
     context->terminate();
-    delete context;
 
     return 0;
 }
