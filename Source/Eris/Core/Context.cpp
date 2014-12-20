@@ -21,93 +21,35 @@
 //
 
 #include "Context.h"
-#include "Object.h"
-
-#include "Graphics.h"
-#include "Input.h"
-#include "Timer.h"
+#include "Graphics/Graphics.h"
 
 namespace Eris
 {
-    Context::Context() : 
-        eventHandler_(nullptr),
-        graphics(nullptr),
-        input(nullptr),
-        time(nullptr)
+    Context::Context() :
+        mErrorCode(0),
+        mGraphics(nullptr)
     {
 
     }
 
     Context::~Context()
     {
-        delete graphics;
-        delete input;
-        delete time;
+        if (mGraphics)
+            delete mGraphics;
     }
 
-    Object* Context::getEventSender() const
+    void Context::initialize()
     {
-        if (!eventSenders_.empty())
-            return eventSenders_.back();
-        else
-            return nullptr;
+        if (!glfwInit())
+            mErrorCode = -1;
     }
 
-    void Context::addEventReceiver(Object* reciever, const std::string& eventType)
+    void Context::terminate()
     {
-        eventRecievers_[eventType].insert(reciever);
+        if (mGraphics)
+            mGraphics->terminate();
+
+        glfwTerminate();
     }
 
-    void Context::addEventReceiver(Object* reciever, Object* sender, const std::string& eventType)
-    {
-        specificEventRecievers_[sender][eventType].insert(reciever);
-    }
-
-    void Context::removeEventReceiver(Object* reciever, const std::string& eventType)
-    {
-        std::unordered_set<Object*>* group = getEventReceivers(eventType);
-        if (group)
-            group->erase(reciever);
-    }
-
-    void Context::removeEventReceiver(Object* reciever, Object* sender, const std::string& eventType)
-    {
-        std::unordered_set<Object*>* group = getEventReceivers(sender, eventType);
-        if (group)
-            group->erase(reciever);
-    }
-
-    void Context::removeEventSender(Object* sender)
-    {
-        std::unordered_map<Object*, std::unordered_map<std::string, std::unordered_set<Object*> > >::iterator i = specificEventRecievers_.find(sender);
-        if (i != specificEventRecievers_.end())
-        {
-            for (std::unordered_map<std::string, std::unordered_set<Object*> >::iterator j = i->second.begin(); j != i->second.end(); ++j)
-            {
-                for (std::unordered_set<Object*>::iterator k = j->second.begin(); k != j->second.end(); ++k)
-                    (*k)->removeEventSender(sender);
-            }
-            specificEventRecievers_.erase(i);
-        }
-    }
-
-    std::unordered_set<Object*>* Context::getEventReceivers(const std::string& eventType)
-    {
-        std::unordered_map<std::string, std::unordered_set<Object*>>::iterator iter = eventRecievers_.find(eventType);
-        if (iter != eventRecievers_.end())
-            return &iter->second;
-        return nullptr;
-    }
-
-    std::unordered_set<Object*>* Context::getEventReceivers(Object* sender, const std::string& eventType)
-    {
-        std::unordered_map<Object*, std::unordered_map<std::string, std::unordered_set<Object*>>>::iterator si = specificEventRecievers_.find(sender);
-        if (si != specificEventRecievers_.end())
-        {
-            std::unordered_map<std::string, std::unordered_set<Object*>>::iterator iter = si->second.find(eventType);
-            if (iter != eventRecievers_.end())
-                return &iter->second;
-        }
-        return nullptr;
-    }
 }

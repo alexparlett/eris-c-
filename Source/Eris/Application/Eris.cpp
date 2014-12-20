@@ -20,33 +20,31 @@
 // THE SOFTWARE.
 //
 
-#pragma once
+#include "Core/Context.h"
+#include "Graphics/Graphics.h"
 
-#include "Event.h"
-#include "Context.h"
-
-namespace Eris
+int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow)
 {
-    struct BeginFrameEvent : public Event
-    {
-        EVENT(BeginFrame)
+    Eris::Context* context = new Eris::Context();
+    context->initialize();
+    if (context->getErrorCode())
+        return context->getErrorCode();
 
-        glm::uint frame;
-        double timeStep;
-    };
+    context->registerModule<Eris::Graphics>(new Eris::Graphics(context));
 
-    struct EndFrameEvent : public Event
-    {
-        EVENT(EndFrame)
-    };
+    Eris::Graphics* graphics = context->getModule<Eris::Graphics>();
+    graphics->setSize(800, 600);
+    graphics->setFullscreen(false);
+    graphics->initialize();
 
-    template<> inline BeginFrameEvent* Context::createEvent<BeginFrameEvent>()
+    while (!glfwWindowShouldClose(graphics->getWindow()))
     {
-        return new BeginFrameEvent();
+        glfwPollEvents();
+        glfwSwapBuffers(graphics->getWindow());
     }
 
-    template<> inline EndFrameEvent* Context::createEvent<EndFrameEvent>()
-    {
-        return new EndFrameEvent();
-    }
+    context->terminate();
+    delete context;
+
+    return 0;
 }

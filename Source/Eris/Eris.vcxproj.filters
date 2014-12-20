@@ -43,37 +43,16 @@
     <ClInclude Include="..\gitversion.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Object.h">
-      <Filter>Header Files\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\Graphics.h">
-      <Filter>Header Files\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\Context.h">
-      <Filter>Header Files\Core</Filter>
-    </ClInclude>
     <ClInclude Include="Eris.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Timer.h">
+    <ClInclude Include="Graphics\Graphics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\CoreEvents.h">
+    <ClInclude Include="Core\Context.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Input\InputEvents.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Input\Input.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\GraphicsEvents.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="IO\Log.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\Event.h">
+    <ClInclude Include="Core\Object.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -83,22 +62,16 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Core\Object.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
     <ClCompile Include="Graphics\Graphics.cpp">
-      <Filter>Source Files\Graphics</Filter>
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Eris.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Core\Context.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\Timer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Input\Input.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="IO\Log.cpp">
+    <ClCompile Include="Core\Object.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

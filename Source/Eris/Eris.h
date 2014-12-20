@@ -22,10 +22,17 @@
 
 #pragma once
 
-#include <glfw3.h>
-#include <glfw3native.h>
-#include <glm.hpp>
+#include <windows.h>
+
+#include <memory>
+#include <string>
+
+#include <glew/glew.h>
+#include <glm/glm.hpp>
+#include <glfw3/glfw3.h>
+#include <glfw3/glfw3native.h>
 
 namespace Eris
 {
+    static const std::string StringEmpty = std::string();
 }

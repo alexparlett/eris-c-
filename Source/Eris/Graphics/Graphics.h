@@ -22,76 +22,91 @@
 
 #pragma once
 
-#include "Object.h"
-
-#include <vector>
-
-#include <vec2.hpp>
-
-struct GLFWwindow;
+#include "Core/Object.h"
 
 namespace Eris
 {
-    enum class WindowHints : glm::int32
-    {
-        WH_BORDERLESS = 1,
-        WH_RESIZABLE = 2,
-        WH_VISIBLE = 4,
-        WH_SRGB = 8,
-        WH_VSYNC = 16,
-        WH_FULLSCREEN = 32
-    };
-
     class Graphics : public Object
     {
     public:
+        /// Ctor.
         Graphics(Context* context);
+        /// Detor.
         virtual ~Graphics();
 
-        void initialize(const glm::ivec2& size, glm::int32 samples, const std::string& title, glm::int32 hints);
+        /// Initialize graphics module. Creates window and initializes glew.
+        void initialize();
+        /// Terminate graphics module. Destory the window if created.
+        void terminate();
+
+        /// Maximize active window.
         void maximize();
+        /// Minimize active window.
         void minimize();
+        /// Restore active window.
         void restore();
+        /// Hide active window.
         void hide();
+        /// Show active window.
         void show();
+        /// Close active window.
         void close();
 
-        void toggleFullscreen();
-
-        void setMode(glm::int32 width, glm::int32 height, glm::int32 samples, glm::int32 hints);
-        void setMode(glm::int32 width, glm::int32 height);
+        /// Set window size. Resizes window if active.
+        void setSize(glm::i32 width, glm::i32 height);
+        /// Set window samples. Only effective before window initialization.
+        void setSamples(glm::i32 samples);
+        /// Set window gamma. Changes for window if active.
         void setGamma(glm::f32 gamma);
+        /// Set window title. Changes for window if active.
         void setTitle(const std::string& title);
+        /// Set window fullscreen. Only effective before window initialization.
+        void setFullscreen(bool fullscreen);
+        /// Set window resizable. Only effective before window initialization.
+        void setResizable(bool resizable);
+        /// Set window borderless. Only effective before window initialization.
+        void setBorderless(bool borderless);
+        /// Set window vsync. Only effective before window initialization.
+        void setVSync(bool vsync);
 
-        glm::int32 getWidth() const { return size_.x; }
-        glm::int32 getHeight() const { return size_.y; }
-        std::vector<glm::ivec2> getResolutions() const;
-        glm::ivec2 getDesktopResolution() const;
-        glm::int32 getHints() const { return hints_; }
-        const std::string& GetTitle() const { return title_; }
-        glm::int32 getSamples() const { return samples_; }
-        glm::f32 getGamma() const { return gamma_; }
+        /// Get whether fullscreen is set.
+        bool getFullscreen() const { return mFullscreen; }
+        /// Get whether resizable is set.
+        bool getResizable() const { return mResizable; }
+        /// Get whether borderless is set.
+        bool getBorderless() const { return mBorderless; }
+        /// Get whether vsync is set.
+        bool getVSync() const { return mVSync; }
+        /// Get width.
+        glm::i32 getWidth() const { return mWidth; }
+        /// Get height.
+        glm::i32 getHeight() const { return mHeight; }
+        /// Get samples.
+        glm::i32 getSamples() const { return mSamples; }
+        /// Get gamma.
+        glm::f32 getGamma() const { return mGamma; }
+        /// Get title.
+        const std::string& getTitle() const { return mTitle; }
+        /// Get window ptr.
+        GLFWwindow* getWindow() const { return mWindow; }
 
-        bool isInitialized() const { return inititalized_; }
-        bool isDecorated() const { return isHintEnabled(WindowHints::WH_BORDERLESS); }
-        bool isResizable() const { return isHintEnabled(WindowHints::WH_RESIZABLE); }
-        bool isVisible() const { return isHintEnabled(WindowHints::WH_VISIBLE); }
-        bool isSRGB() const { return isHintEnabled(WindowHints::WH_SRGB); }
-        bool isVSync() const { return isHintEnabled(WindowHints::WH_VSYNC); }
-        bool isFullscreen() const { return isHintEnabled(WindowHints::WH_FULLSCREEN); }
+        /// Get initialized.
+        bool isInitialize() const { return mInitialized; }
 
     private:
-        static void handleFramebufferCallback(GLFWwindow* window, glm::int32 width, glm::int32 height);
+        static void handleFramebufferCallback(GLFWwindow* window, glm::i32 width, glm::i32 height);
         static void handleCloseCallback(GLFWwindow* window);
 
-        bool isHintEnabled(WindowHints hint) const;
-
-        GLFWwindow* window_;
-        bool inititalized_;
-        glm::ivec2 size_;
-        glm::int32 hints_;
-        std::string title_;
-        glm::int32 samples_;
-        glm::f32 gamma_;
+        bool mInitialized;
+        bool mFullscreen;
+        bool mResizable;
+        bool mBorderless;
+        bool mVSync;
+        glm::i32 mWidth;
+        glm::i32 mHeight;
+        glm::i32 mSamples;
+        glm::f32 mGamma;
+        std::string mTitle;
+        GLFWwindow* mWindow;
     };
 }

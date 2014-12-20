@@ -22,22 +22,10 @@
 
 #pragma once
 
-#include <unordered_set>
-#include <unordered_map>
-#include <vector>
-#include <string>
-#include <memory>
-
 namespace Eris
 {
-    // Event handling forward decls.
     class Object;
-    class EventHandler;
-
-    // Module forward decls.
     class Graphics;
-    class Input;
-    class Time;
 
     class Context
     {
@@ -45,45 +33,29 @@ namespace Eris
 
     public:
         Context();
-        virtual ~Context();
+        ~Context();
 
-        Object* getEventSender() const;
-        EventHandler* getEventHandler() const { return eventHandler_; }
+        void initialize();
+        void terminate();
 
-        Graphics* getGraphics() { return graphics; }
-        Input* getInput() { return input; }
-        Time* getTime() { return time; }
+        glm::i32 getErrorCode() const { return mErrorCode; }
 
-        template<class T>
-        T* createEvent()
-        {
-            return nullptr;
-        }
+        template<class T> void registerModule(T* module) {}
 
-    protected:
-        Graphics* graphics;
-        Input* input;
-        Time* time;
+        template<class T> T* getModule() { return nullptr; }
 
     private:
-        void addEventReceiver(Object* reciever, const std::string& eventType);
-        void addEventReceiver(Object* reciever, Object* sender, const std::string& eventType);
-
-        void removeEventReceiver(Object* reciever, const std::string& eventType);
-        void removeEventReceiver(Object* reciever, Object* sender, const std::string& eventType);
-        void removeEventSender(Object* sender);
-
-        std::unordered_set<Object*>* getEventReceivers(const std::string& eventType);
-        std::unordered_set<Object*>* getEventReceivers(Object* sender, const std::string& eventType);
-       
-        void setEventHandler(EventHandler* handler) { eventHandler_ = handler; }
-        void beginSendEvent(Object* sender) { eventSenders_.push_back(sender); }
-        void endSendEvent() { eventSenders_.pop_back(); }
-
-        std::unordered_map<std::string, std::shared_ptr<Object>> modules_;
-        std::unordered_map<std::string, std::unordered_set<Object*>> eventRecievers_;
-        std::unordered_map<Object*, std::unordered_map<std::string, std::unordered_set<Object*>>> specificEventRecievers_;
-        std::vector<Object*> eventSenders_;
-        EventHandler* eventHandler_;
+        glm::i32 mErrorCode;
+        Graphics* mGraphics;
     };
+
+    template<> inline void Context::registerModule<Graphics>(Graphics* graphics)
+    {
+        mGraphics = graphics;
+    }
+
+    template<> inline Graphics* Context::getModule<Graphics>()
+    {
+        return mGraphics;
+    }
 }

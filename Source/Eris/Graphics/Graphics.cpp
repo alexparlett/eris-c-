@@ -15,276 +15,203 @@
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 // AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WindowHints::WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 //
 
-#include "Context.h"
+#include "Core/Context.h"
 #include "Graphics.h"
-#include "GraphicsEvents.h"
-
-#include <common.hpp>
 
 namespace Eris
 {
-
     Graphics::Graphics(Context* context) :
         Object(context),
-        window_(0)
+        mInitialized(false),
+        mFullscreen(true),
+        mBorderless(false),
+        mResizable(false),
+        mVSync(true),
+        mWidth(0),
+        mHeight(0),
+        mSamples(4),
+        mGamma(1.0f),
+        mTitle("Eris"),
+        mWindow(nullptr)
     {
-
     }
 
     Graphics::~Graphics()
     {
-        if (window_);
-        {
-            glfwDestroyWindow(window_);
-            window_ = 0;
-        }
     }
 
-    void Graphics::initialize(const glm::ivec2& size, glm::int32 samples, const std::string& title, glm::int32 hints)
+    void Graphics::initialize()
     {
-        // Default Samples, Title and Hints.
-        samples_ = samples;
-        title_ = title;
-        hints_ = hints;
-
-        // OpenGL 3.3 Context.
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+        glfwWindowHint(GLFW_SRGB_CAPABLE, GL_TRUE);
 
-        // Set Window Hints.
-        glfwWindowHint(GLFW_DECORATED, !isHintEnabled(WindowHints::WH_BORDERLESS));
-        glfwWindowHint(GLFW_RESIZABLE, isHintEnabled(WindowHints::WH_RESIZABLE));
-        glfwWindowHint(GLFW_VISIBLE, isHintEnabled(WindowHints::WH_VISIBLE));
-        glfwWindowHint(GLFW_SAMPLES, samples_);
-        glfwWindowHint(GLFW_SRGB_CAPABLE, isHintEnabled(WindowHints::WH_SRGB));
+        glfwWindowHint(GLFW_DECORATED, !mBorderless);
+        glfwWindowHint(GLFW_RESIZABLE, mResizable);
+        glfwWindowHint(GLFW_SAMPLES, mSamples);
 
-        // Create Window.
-        if (isHintEnabled(WindowHints::WH_FULLSCREEN))
-            window_ = glfwCreateWindow(size.x, size.y, title_.c_str(), glfwGetPrimaryMonitor(), NULL);
+        if (mFullscreen)
+            mWindow = glfwCreateWindow(mWidth, mHeight, mTitle.c_str(), glfwGetPrimaryMonitor(), nullptr);
         else
-            window_ = glfwCreateWindow(size.x, size.y, title_.c_str(), NULL, NULL);
+            mWindow = glfwCreateWindow(mWidth, mHeight, mTitle.c_str(), nullptr, nullptr);
 
-        if (!window_)
-        {
-            LOGERROR("Failed to create window with params: [%i,%i,%i,%x]", size.x_, size.y_, samples_, hints_);
+        if (!mWindow)
             return;
-        }
+        
+        glfwMakeContextCurrent(mWindow);
+        glfwSetWindowUserPointer(mWindow, mContext);
 
-        // Recheck the size since it may have changed for fullscreen resolutions.
-        int width, height;
-        glfwGetFramebufferSize(window_, &width, &height);
-        size_ = glm::ivec2(width, height);
+        glm::i32 width, height;
+        glfwGetFramebufferSize(mWindow, &width, &height);
+        mWidth = width;
+        mHeight = height;
 
-        // Store the Context Ptr and make current.
-        glfwSetWindowUserPointer(window_, context_);
-        glfwMakeContextCurrent(window_);
-
-        // Enable Vsync.
-        if (isHintEnabled(WindowHints::WH_VSYNC))
+        if (mVSync)
             glfwSwapInterval(1);
 
-        // Set Callbacks.
-        glfwSetFramebufferSizeCallback(window_, &Graphics::handleFramebufferCallback);
-        glfwSetWindowCloseCallback(window_, &Graphics::handleCloseCallback);
+        glewExperimental = GL_TRUE;
+        if (!glewInit())
+            return;
 
-        inititalized_ = true;
+        glfwSetFramebufferSizeCallback(mWindow, &Graphics::handleFramebufferCallback);
+        glfwSetWindowCloseCallback(mWindow, &Graphics::handleCloseCallback);
+
+        mInitialized = true;
+    }
+
+    void Graphics::terminate()
+    {
+        if (mWindow)
+            glfwDestroyWindow(mWindow);
     }
 
     void Graphics::maximize()
     {
-        if (!inititalized_ || !window_)
+        if (!mInitialized || !mWindow)
             return;
 
-        const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        if (!mFullscreen)
+        {
+            const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+            glfwSetWindowSize(mWindow, mode->width, mode->height);
+        }
 
-        glfwRestoreWindow(window_);
-
-        if (!isHintEnabled(WindowHints::WH_FULLSCREEN))
-            glfwSetWindowSize(window_, mode->width, mode->height);
+        glfwRestoreWindow(mWindow);
     }
 
     void Graphics::minimize()
     {
-        if (!inititalized_ || !window_)
+        if (!mInitialized || !mWindow)
             return;
 
-        glfwIconifyWindow(window_);
+        glfwIconifyWindow(mWindow);
     }
 
     void Graphics::restore()
     {
-        if (!inititalized_ || !window_)
+        if (!mInitialized || !mWindow)
             return;
 
-        glfwRestoreWindow(window_);
+        glfwRestoreWindow(mWindow);
     }
 
     void Graphics::hide()
     {
-        if (!inititalized_ || !window_)
+        if (!mInitialized || !mWindow)
             return;
 
-        glfwHideWindow(window_);
+        glfwHideWindow(mWindow);
     }
 
     void Graphics::show()
     {
-        if (!inititalized_ || !window_)
+        if (!mInitialized || !mWindow)
             return;
 
-        glfwShowWindow(window_);
+        glfwShowWindow(mWindow);
     }
 
     void Graphics::close()
     {
-        if (!inititalized_ || !window_)
+        if (!mInitialized || !mWindow)
             return;
 
-        hide();
-        glfwSetWindowShouldClose(window_, GL_TRUE);
+        glfwSetWindowShouldClose(mWindow, GL_TRUE);
     }
 
-
-    void Graphics::toggleFullscreen()
+    void Graphics::setSize(glm::i32 width, glm::i32 height)
     {
-        if (!inititalized_ || !window_)
+        mWidth = width;
+        mHeight = height;
+
+        if (!mInitialized || !mWindow)
             return;
 
-        hints_ ^= (glm::int32) WindowHints::WH_FULLSCREEN;
-
-        setMode(size_.x, size_.y, samples_, hints_);
+        glfwSetWindowSize(mWindow, mWidth, mHeight);
     }
 
-    void Graphics::setMode(glm::int32 width, glm::int32 height, glm::int32 samples, glm::int32 hints)
+    void Graphics::setSamples(glm::i32 samples)
     {
-        if (!inititalized_ || !window_)
-            return;
-
-        if (hints_ != hints || samples_ != samples)
-        {
-            samples_ = samples;
-            hints_ = hints;
-
-            glfwWindowHint(GLFW_DECORATED, isHintEnabled(WindowHints::WH_BORDERLESS));
-            glfwWindowHint(GLFW_RESIZABLE, isHintEnabled(WindowHints::WH_RESIZABLE));
-            glfwWindowHint(GLFW_VISIBLE, isHintEnabled(WindowHints::WH_VISIBLE));
-            glfwWindowHint(GLFW_SAMPLES, samples_);
-            glfwWindowHint(GLFW_SRGB_CAPABLE, isHintEnabled(WindowHints::WH_SRGB));
-
-            glfwMakeContextCurrent(NULL);
-            glfwDestroyWindow(window_);
-
-            if (isHintEnabled(WindowHints::WH_FULLSCREEN))
-                window_ = glfwCreateWindow(width, height, title_.c_str(), glfwGetPrimaryMonitor(), NULL);
-            else
-                window_ = glfwCreateWindow(width, height, title_.c_str(), NULL, NULL);
-
-            if (!window_)
-            {
-                LOGERROR("Failed to create window with params: [%i,%i,%i,%x]", width, height, samples_, hints);
-                return;
-            }
-
-            glfwSetWindowUserPointer(window_, context_);
-            glfwMakeContextCurrent(window_);
-
-            int width, height;
-            glfwGetFramebufferSize(window_, &width, &height);
-            size_ = glm::ivec2(width, height);
-
-            if (isHintEnabled(WindowHints::WH_VSYNC))
-                glfwSwapInterval(1);
-
-            glfwSetFramebufferSizeCallback(window_, &Graphics::handleFramebufferCallback);
-            glfwSetWindowCloseCallback(window_, &Graphics::handleCloseCallback);
-
-            sendEvent(DeviceResetEvent::getTypeStatic());
-        }
-        else
-            setMode(width, height);
-    }
-
-    void Graphics::setMode(glm::int32 width, glm::int32 height)
-    {
-        if (!inititalized_ || !window_)
-            return;
-
-        glfwSetWindowSize(window_, width, height);
+        mSamples = samples;
     }
 
     void Graphics::setGamma(glm::f32 gamma)
     {
-        if (!inititalized_ || !window_)
+        mGamma = gamma;
+
+        if (!mInitialized || !mWindow)
             return;
 
-        gamma_ = glm::max(gamma, 0.f);
-        glfwSetGamma(glfwGetPrimaryMonitor(), gamma_);
+        glfwSetGamma(glfwGetWindowMonitor(mWindow), mGamma);
     }
 
     void Graphics::setTitle(const std::string& title)
     {
-        if (!inititalized_ || !window_)
+        mTitle = title;
+
+        if (!mInitialized || !mWindow)
             return;
 
-        title_ = title_;
-        glfwSetWindowTitle(window_, title_.c_str());
+        glfwSetWindowTitle(mWindow, mTitle.c_str());
     }
 
-    std::vector<glm::ivec2> Graphics::getResolutions() const
+    void Graphics::setFullscreen(bool fullscreen)
     {
-        std::vector<glm::ivec2> ret;
-
-        int count;
-        const GLFWvidmode* modes = glfwGetVideoModes(glfwGetPrimaryMonitor(), &count);
-        for (int i = 0; i < count; i++)
-        {
-            glm::ivec2 mode(modes->width, modes->height);
-            ret.push_back(mode);
-        }
-
-        return ret;
+        mFullscreen = fullscreen;
     }
 
-    glm::ivec2 Graphics::getDesktopResolution() const
+    void Graphics::setResizable(bool resizable)
     {
-        const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-
-        if (mode)
-        {
-            return glm::ivec2(mode->width, mode->height);
-        }
-
-        return glm::ivec2();
+        mResizable = !mFullscreen && resizable;
     }
 
-    void Graphics::handleFramebufferCallback(GLFWwindow* window, glm::int32 width, glm::int32 height)
+    void Graphics::setBorderless(bool borderless)
+    {
+        mBorderless = !mFullscreen && borderless;
+    }
+
+    void Graphics::setVSync(bool vsync)
+    {
+        mVSync = vsync;
+    }
+
+    void Graphics::handleFramebufferCallback(GLFWwindow* window, glm::i32 width, glm::i32 height)
     {
         Context* context = static_cast<Context*>(glfwGetWindowUserPointer(window));
-        Graphics* graphics = context->getGraphics();
-
-        graphics->size_ = glm::ivec2(width, height);
-
-        ScreenModeEvent* event = context->createEvent<ScreenModeEvent>();
-        event->size = graphics->size_;
-        graphics->sendEvent(ScreenModeEvent::getTypeStatic(), event);
+        Graphics* graphics = context->getModule<Graphics>();
+        graphics->mWidth = width;
+        graphics->mHeight = height;
     }
 
     void Graphics::handleCloseCallback(GLFWwindow* window)
     {
-        Context* context = static_cast<Context*>(glfwGetWindowUserPointer(window));
-        Graphics* graphics = context->getGraphics();
 
-        graphics->sendEvent(ExitRequestedEvent::getTypeStatic());
-    }
-
-    bool Graphics::isHintEnabled(WindowHints hint) const
-    {
-        return (hints_ & (glm::int32) hint) == (glm::int32) hint;
     }
 }
