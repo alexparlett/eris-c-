@@ -245,7 +245,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\gitversion.h" />
+    <ClInclude Include="Application\Application.h" />
     <ClInclude Include="Core\Context.h" />
+    <ClInclude Include="Core\Debug.h" />
     <ClInclude Include="Core\Object.h" />
     <ClInclude Include="Eris.h" />
     <ClInclude Include="Graphics\Graphics.h" />
@@ -255,6 +257,7 @@
     <ResourceCompile Include="Eris.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Application\Application.cpp" />
     <ClCompile Include="Application\Eris.cpp" />
     <ClCompile Include="Core\Context.cpp" />
     <ClCompile Include="Core\Object.cpp" />

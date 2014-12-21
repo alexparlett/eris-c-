@@ -25,6 +25,8 @@
 namespace Eris
 {
     class Object;
+
+    class Application;
     class Graphics;
 
     class Context
@@ -35,17 +37,16 @@ namespace Eris
         Context();
         ~Context();
 
-        void initialize();
-        void terminate();
-
-        void setErrorCode(glm::i32 errorCode);
-        glm::i32 getErrorCode() const { return mErrorCode; }
+        void setExitCode(glm::i32 exitCode);
+        glm::i32 getExitCode() const { return mExitCode; }
 
         template<class T> void registerModule(T* module) {}
         template<class T> T* getModule() { return nullptr; }
 
     private:
-        glm::i32 mErrorCode;
+        glm::i32 mExitCode;
+
+        Application* mApp;
         Graphics* mGraphics;
     };
 
@@ -57,5 +58,15 @@ namespace Eris
     template<> inline Graphics* Context::getModule<Graphics>()
     {
         return mGraphics;
+    }
+
+    template<> inline void Context::registerModule<Application>(Application* app)
+    {
+        mApp = app;
+    }
+
+    template<> inline Application* Context::getModule<Application>()
+    {
+        return mApp;
     }
 }

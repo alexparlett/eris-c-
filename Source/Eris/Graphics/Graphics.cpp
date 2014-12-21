@@ -66,7 +66,7 @@ namespace Eris
 
         if (!mWindow)
         {
-            mContext->setErrorCode(-1);
+            mContext->setExitCode(-1);
             return;
         }
         
@@ -90,7 +90,7 @@ namespace Eris
             glfwDestroyWindow(mWindow);
             mWindow = nullptr;
 
-            mContext->setErrorCode(-1);
+            mContext->setExitCode(-1);
             return;
         }
 

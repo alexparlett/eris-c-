@@ -20,27 +20,20 @@
 // THE SOFTWARE.
 //
 
-#include "Context.h"
-#include "Graphics/Graphics.h"
-#include "Application/Application.h"
+#pragma once
+
+#include "Core/Object.h"
 
 namespace Eris
 {
-    Context::Context() :
-        mExitCode(0),
-        mApp(nullptr),
-        mGraphics(nullptr)
+    class Application : public Object
     {
-    }
+    public:
+        Application(Context* context);
+        virtual ~Application();
 
-    Context::~Context()
-    {
-        delete mGraphics;
-        delete mApp;
-    }
-
-    void Context::setExitCode(glm::i32 exitCode)
-    {
-        mExitCode = exitCode;
-    }
+        void initialize();
+        void run();
+        void terminate();
+    };
 }

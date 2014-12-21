@@ -20,14 +20,8 @@
 // THE SOFTWARE.
 //
 
-#ifdef _DEBUG
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
-#endif
-
 #include "Core/Context.h"
-#include "Graphics/Graphics.h"
+#include "Application/Application.h"
 
 static std::unique_ptr<Eris::Context> context;
 
@@ -43,33 +37,16 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine, int nC
 #endif
 
     context = std::make_unique<Eris::Context>();
-    context->initialize();
-
-    if (context->getErrorCode())
-        return context->getErrorCode();
-
     glfwSetErrorCallback(errorCallback);
 
-    context->registerModule<Eris::Graphics>(new Eris::Graphics(context.get()));
+    Eris::Application* app = new Eris::Application(context.get());
+    app->initialize();
 
-    Eris::Graphics* graphics = context->getModule<Eris::Graphics>();
-    graphics->setSize(800, 600);
-    graphics->setFullscreen(false);
-    graphics->initialize();
+    if (context->getExitCode())
+        return context->getExitCode();
 
-    if (context->getErrorCode())
-    {
-        context->terminate();
-        return context->getErrorCode();
-    }
+    app->run();
+    app->terminate();
 
-    while (!glfwWindowShouldClose(graphics->getWindow()))
-    {
-        glfwPollEvents();
-        glfwSwapBuffers(graphics->getWindow());
-    }
-
-    context->terminate();
-
-    return 0;
+    return context->getExitCode();
 }

@@ -20,27 +20,55 @@
 // THE SOFTWARE.
 //
 
-#include "Context.h"
+#include "Application.h"
+
+#include "Core/Context.h"
 #include "Graphics/Graphics.h"
-#include "Application/Application.h"
 
 namespace Eris
 {
-    Context::Context() :
-        mExitCode(0),
-        mApp(nullptr),
-        mGraphics(nullptr)
+    Application::Application(Context* context) :
+        Object(context)
+    {
+        context->registerModule<Application>(this);
+        context->registerModule<Graphics>(new Graphics(context));
+    }
+
+    Application::~Application()
     {
     }
 
-    Context::~Context()
+    void Application::initialize()
     {
-        delete mGraphics;
-        delete mApp;
+        if (!glfwInit())
+        {
+            mContext->setExitCode(-1);
+            return;
+        }
+
+        Graphics* graphics = mContext->getModule<Graphics>();
+        graphics->setSize(800, 600);
+        graphics->setFullscreen(false);
+        graphics->initialize();
     }
 
-    void Context::setExitCode(glm::i32 exitCode)
+    void Application::run()
     {
-        mExitCode = exitCode;
+        Graphics* graphics = mContext->getModule<Graphics>();
+
+        while (!glfwWindowShouldClose(graphics->getWindow()))
+        {
+            glfwPollEvents();
+            glfwSwapBuffers(graphics->getWindow());
+        }
+    }
+
+    void Application::terminate()
+    {
+        Graphics* graphics = mContext->getModule<Graphics>();
+
+        graphics->terminate();
+
+        glfwTerminate();
     }
 }
