@@ -22,19 +22,16 @@
 
 #pragma once
 
-#include <windows.h>
+#ifdef _DEBUG
+#define _CRTDBG_MAP_ALLOC
 
-#include <memory>
-#include <string>
+#ifdef _malloca
+#undef _malloca
+#endif
 
-#include <glew/glew.h>
-#include <glm/glm.hpp>
-#include <glfw3/glfw3.h>
-#include <glfw3/glfw3native.h>
+#include <stdlib.h>
+#include <crtdbg.h>
 
-#include "Core/Debug.h"
-
-namespace Eris
-{
-    static const std::string StringEmpty = std::string();
-}
+#define _DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
+#define new _DEBUG_NEW
+#endif
