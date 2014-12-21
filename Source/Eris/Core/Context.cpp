@@ -27,7 +27,7 @@
 namespace Eris
 {
     Context::Context() :
-        mExitCode(0),
+        mExitCode(EXIT_OK),
         mApp(nullptr),
         mGraphics(nullptr)
     {

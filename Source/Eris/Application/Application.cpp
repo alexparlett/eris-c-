@@ -42,7 +42,7 @@ namespace Eris
     {
         if (!glfwInit())
         {
-            mContext->setExitCode(-1);
+            mContext->setExitCode(EXIT_GLFW_INIT_ERROR);
             return;
         }
 

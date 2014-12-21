@@ -29,6 +29,12 @@ namespace Eris
     class Application;
     class Graphics;
 
+    static const glm::i32 EXIT_OK = 0;
+    static const glm::i32 EXIT_INITIALIZATION_FAILURE = 1;
+    static const glm::i32 EXIT_GLFW_INIT_ERROR = 2;
+    static const glm::i32 EXIT_GLEW_INIT_ERROR = 3;
+    static const glm::i32 EXIT_WINDOW_CREATE_ERROR = 4;
+
     class Context
     {
         friend class Object;
