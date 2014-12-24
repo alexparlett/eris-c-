@@ -20,6 +20,7 @@
 // THE SOFTWARE.
 //
 
+#include "Application/Engine.h"
 #include "Core/Context.h"
 #include "Graphics.h"
 
@@ -27,17 +28,17 @@ namespace Eris
 {
     Graphics::Graphics(Context* context) :
         Object(context),
-        mInitialized(false),
-        mFullscreen(true),
-        mBorderless(false),
-        mResizable(false),
-        mVSync(true),
-        mWidth(0),
-        mHeight(0),
-        mSamples(4),
-        mGamma(1.0f),
-        mTitle("Eris"),
-        mWindow(nullptr)
+        m_initialized(false),
+        m_fullscreen(true),
+        m_borderless(false),
+        m_resizable(false),
+        m_vsync(true),
+        m_width(0),
+        m_height(0),
+        m_samples(4),
+        m_gamma(1.0f),
+        m_title("Eris"),
+        m_window(nullptr)
     {
     }
 
@@ -47,7 +48,7 @@ namespace Eris
 
     void Graphics::initialize()
     {
-        if (mInitialized)
+        if (m_initialized)
             return;
 
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -55,30 +56,37 @@ namespace Eris
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_SRGB_CAPABLE, GL_TRUE);
 
-        glfwWindowHint(GLFW_DECORATED, !mBorderless);
-        glfwWindowHint(GLFW_RESIZABLE, mResizable);
-        glfwWindowHint(GLFW_SAMPLES, mSamples);
+        glfwWindowHint(GLFW_DECORATED, !m_borderless);
+        glfwWindowHint(GLFW_RESIZABLE, m_resizable);
+        glfwWindowHint(GLFW_SAMPLES, m_samples);
 
-        if (mFullscreen)
-            mWindow = glfwCreateWindow(mWidth, mHeight, mTitle.c_str(), glfwGetPrimaryMonitor(), nullptr);
-        else
-            mWindow = glfwCreateWindow(mWidth, mHeight, mTitle.c_str(), nullptr, nullptr);
-
-        if (!mWindow)
+        if (m_width <= 0 || m_height <= 0)
         {
-            mContext->setExitCode(EXIT_WINDOW_CREATE_ERROR);
+            const GLFWvidmode* desktop = glfwGetVideoMode(glfwGetPrimaryMonitor());
+            m_width = desktop->width;
+            m_height = desktop->height;
+        }
+
+        if (m_fullscreen)
+            m_window = glfwCreateWindow(m_width, m_height, m_title.c_str(), glfwGetPrimaryMonitor(), nullptr);
+        else
+            m_window = glfwCreateWindow(m_width, m_height, m_title.c_str(), nullptr, nullptr);
+
+        if (!m_window)
+        {
+            m_context->getModule<Engine>()->setExitCode(EXIT_WINDOW_CREATE_ERROR);
             return;
         }
         
-        glfwMakeContextCurrent(mWindow);
-        glfwSetWindowUserPointer(mWindow, mContext);
+        glfwMakeContextCurrent(m_window);
+        glfwSetWindowUserPointer(m_window, m_context);
 
         glm::i32 width, height;
-        glfwGetFramebufferSize(mWindow, &width, &height);
-        mWidth = width;
-        mHeight = height;
+        glfwGetFramebufferSize(m_window, &width, &height);
+        m_width = width;
+        m_height = height;
 
-        if (mVSync)
+        if (m_vsync)
             glfwSwapInterval(1);
 
         glewExperimental = GL_TRUE;
@@ -87,146 +95,146 @@ namespace Eris
         {
             const GLubyte* msg = glewGetErrorString(err);
 
-            glfwDestroyWindow(mWindow);
-            mWindow = nullptr;
+            glfwDestroyWindow(m_window);
+            m_window = nullptr;
 
-            mContext->setExitCode(EXIT_GLEW_INIT_ERROR);
+            m_context->getModule<Engine>()->setExitCode(EXIT_GLEW_INIT_ERROR);
             return;
         }
 
-        glfwSetFramebufferSizeCallback(mWindow, &Graphics::handleFramebufferCallback);
-        glfwSetWindowCloseCallback(mWindow, &Graphics::handleCloseCallback);
+        glfwSetFramebufferSizeCallback(m_window, &Graphics::handleFramebufferCallback);
+        glfwSetWindowCloseCallback(m_window, &Graphics::handleCloseCallback);
 
-        mInitialized = true;
+        m_initialized = true;
     }
 
     void Graphics::terminate()
     {
-        mInitialized = false;
+        m_initialized = false;
 
-        if (mWindow)
+        if (m_window)
         {
-            glfwDestroyWindow(mWindow);
-            mWindow = nullptr;
+            glfwDestroyWindow(m_window);
+            m_window = nullptr;
         }
     }
 
     void Graphics::maximize()
     {
-        if (!mInitialized || !mWindow)
+        if (!m_initialized || !m_window)
             return;
 
-        if (!mFullscreen)
+        if (!m_fullscreen)
         {
             const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-            glfwSetWindowSize(mWindow, mode->width, mode->height);
+            glfwSetWindowSize(m_window, mode->width, mode->height);
         }
 
-        glfwRestoreWindow(mWindow);
+        glfwRestoreWindow(m_window);
     }
 
     void Graphics::minimize()
     {
-        if (!mInitialized || !mWindow)
+        if (!m_initialized || !m_window)
             return;
 
-        glfwIconifyWindow(mWindow);
+        glfwIconifyWindow(m_window);
     }
 
     void Graphics::restore()
     {
-        if (!mInitialized || !mWindow)
+        if (!m_initialized || !m_window)
             return;
 
-        glfwRestoreWindow(mWindow);
+        glfwRestoreWindow(m_window);
     }
 
     void Graphics::hide()
     {
-        if (!mInitialized || !mWindow)
+        if (!m_initialized || !m_window)
             return;
 
-        glfwHideWindow(mWindow);
+        glfwHideWindow(m_window);
     }
 
     void Graphics::show()
     {
-        if (!mInitialized || !mWindow)
+        if (!m_initialized || !m_window)
             return;
 
-        glfwShowWindow(mWindow);
+        glfwShowWindow(m_window);
     }
 
     void Graphics::close()
     {
-        if (!mInitialized || !mWindow)
+        if (!m_initialized || !m_window)
             return;
 
-        glfwSetWindowShouldClose(mWindow, GL_TRUE);
+        glfwSetWindowShouldClose(m_window, GL_TRUE);
     }
 
     void Graphics::setSize(glm::i32 width, glm::i32 height)
     {
-        mWidth = width;
-        mHeight = height;
+        m_width = width;
+        m_height = height;
 
-        if (!mInitialized || !mWindow)
+        if (!m_initialized || !m_window)
             return;
 
-        glfwSetWindowSize(mWindow, mWidth, mHeight);
+        glfwSetWindowSize(m_window, m_width, m_height);
     }
 
     void Graphics::setSamples(glm::i32 samples)
     {
-        mSamples = samples;
+        m_samples = samples;
     }
 
     void Graphics::setGamma(glm::f32 gamma)
     {
-        mGamma = gamma;
+        m_gamma = gamma;
 
-        if (!mInitialized || !mWindow)
+        if (!m_initialized || !m_window)
             return;
 
-        glfwSetGamma(glfwGetWindowMonitor(mWindow), mGamma);
+        glfwSetGamma(glfwGetWindowMonitor(m_window), m_gamma);
     }
 
     void Graphics::setTitle(const std::string& title)
     {
-        mTitle = title;
+        m_title = title;
 
-        if (!mInitialized || !mWindow)
+        if (!m_initialized || !m_window)
             return;
 
-        glfwSetWindowTitle(mWindow, mTitle.c_str());
+        glfwSetWindowTitle(m_window, m_title.c_str());
     }
 
     void Graphics::setFullscreen(bool fullscreen)
     {
-        mFullscreen = fullscreen;
+        m_fullscreen = fullscreen;
     }
 
     void Graphics::setResizable(bool resizable)
     {
-        mResizable = !mFullscreen && resizable;
+        m_resizable = !m_fullscreen && resizable;
     }
 
     void Graphics::setBorderless(bool borderless)
     {
-        mBorderless = !mFullscreen && borderless;
+        m_borderless = !m_fullscreen && borderless;
     }
 
     void Graphics::setVSync(bool vsync)
     {
-        mVSync = vsync;
+        m_vsync = vsync;
     }
 
     void Graphics::handleFramebufferCallback(GLFWwindow* window, glm::i32 width, glm::i32 height)
     {
         Context* context = static_cast<Context*>(glfwGetWindowUserPointer(window));
         Graphics* graphics = context->getModule<Graphics>();
-        graphics->mWidth = width;
-        graphics->mHeight = height;
+        graphics->m_width = width;
+        graphics->m_height = height;
     }
 
     void Graphics::handleCloseCallback(GLFWwindow* window)

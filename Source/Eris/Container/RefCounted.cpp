@@ -20,33 +20,54 @@
 // THE SOFTWARE.
 //
 
-#include "Core/Context.h"
-#include "Application/Engine.h"
+#include "RefCounted.h"
 
-static std::unique_ptr<Eris::Context> context;
+#include <cassert>
 
-void errorCallback(int error, const char* msg)
+namespace Eris
 {
 
-}
+    RefCounted::RefCounted() :
+        m_ref_count(new RefCount())
+    {
+        m_ref_count->m_weak_refs++;
+    }
 
-int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow)
-{
-#ifdef _DEBUG
-    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-#endif
+    RefCounted::~RefCounted()
+    {
+        assert(m_ref_count);
+        assert(m_ref_count->m_refs == 0);
+        assert(m_ref_count->m_weak_refs > 0);
 
-    context = std::make_unique<Eris::Context>();
-    glfwSetErrorCallback(errorCallback);
+        m_ref_count->m_refs = -1;
+        m_ref_count->m_weak_refs--;
+        if (!m_ref_count->m_weak_refs)
+            delete m_ref_count;
 
-    Eris::Engine* app = new Eris::Engine(context.get());
-    app->initialize();
+        m_ref_count = nullptr;
+    }
 
-    if (app->getExitCode())
-        return app->getExitCode();
+    void RefCounted::increment()
+    {
+        assert(m_ref_count->m_refs >= 0);
+        m_ref_count->m_refs++;
+    }
 
-    app->run();
-    app->terminate();
+    void RefCounted::release()
+    {
+        assert(m_ref_count->m_refs > 0);
+        m_ref_count->m_refs--;
+        if (!m_ref_count->m_refs)
+            delete this;
+    }
 
-    return app->getExitCode();
+    glm::i32 RefCounted::refs()
+    {
+        return m_ref_count->m_refs;
+    }
+
+    glm::i32 RefCounted::weakRefs()
+    {
+        return m_ref_count->m_weak_refs;
+    }
 }

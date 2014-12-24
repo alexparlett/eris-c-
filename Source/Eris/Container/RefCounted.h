@@ -20,33 +20,48 @@
 // THE SOFTWARE.
 //
 
-#include "Core/Context.h"
-#include "Application/Engine.h"
+#pragma once
 
-static std::unique_ptr<Eris::Context> context;
-
-void errorCallback(int error, const char* msg)
+namespace Eris
 {
+    struct RefCount
+    {
+        RefCount() :
+            m_refs(0),
+            m_weak_refs(0)
+        {
+        }
 
+        ~RefCount()
+        {
+            m_refs = -1;
+            m_weak_refs = -1;
+        }
+
+        glm::i32 m_refs;
+        glm::i32 m_weak_refs;
+    };
+
+    class RefCounted
+    {
+        template<class T> 
+        friend class WeakPtr;
+
+    public:
+        RefCounted();
+        virtual ~RefCounted();
+
+        void increment();
+        void release();
+
+        glm::i32 refs();
+        glm::i32 weakRefs();
+
+    private:
+        RefCounted(const RefCounted& rhs);
+        void operator = (const RefCounted& rhs);
+
+        RefCount* m_ref_count;
+    };
 }
 
-int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow)
-{
-#ifdef _DEBUG
-    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-#endif
-
-    context = std::make_unique<Eris::Context>();
-    glfwSetErrorCallback(errorCallback);
-
-    Eris::Engine* app = new Eris::Engine(context.get());
-    app->initialize();
-
-    if (app->getExitCode())
-        return app->getExitCode();
-
-    app->run();
-    app->terminate();
-
-    return app->getExitCode();
-}

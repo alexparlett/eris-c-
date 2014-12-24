@@ -22,18 +22,16 @@
 
 #pragma once
 
+#include "Container/StringHash.h"
+#include "Container/Memory.h"
+
+#include <unordered_map>
+#include <unordered_set>
+
 namespace Eris
 {
-    class Object;
-
-    class Application;
+    class Engine;
     class Graphics;
-
-    static const glm::i32 EXIT_OK = 0;
-    static const glm::i32 EXIT_INITIALIZATION_FAILURE = 1;
-    static const glm::i32 EXIT_GLFW_INIT_ERROR = 2;
-    static const glm::i32 EXIT_GLEW_INIT_ERROR = 3;
-    static const glm::i32 EXIT_WINDOW_CREATE_ERROR = 4;
 
     class Context
     {
@@ -43,36 +41,21 @@ namespace Eris
         Context();
         ~Context();
 
-        void setExitCode(glm::i32 exitCode);
-        glm::i32 getExitCode() const { return mExitCode; }
-
         template<class T> void registerModule(T* module) {}
         template<class T> T* getModule() { return nullptr; }
 
+        void addEventReciever(Object* reciever, const StringHash& event_type, Object* sender);
+        void removeEventSender(Object* sender);
+        void removeEventReciever(Object* reciever, const StringHash& event_type, Object* sender = nullptr);
+        const std::unordered_set<Object*>* getEventRecievers(const StringHash& event_type, Object* sender = nullptr);
+
     private:
-        glm::i32 mExitCode;
+        std::unordered_set<Object*>* _getEventRecievers(const StringHash& event_type, Object* sender = nullptr);
 
-        Application* mApp;
-        Graphics* mGraphics;
+        std::unordered_map<StringHash, std::unordered_set<Object*>> m_recievers;
+        std::unordered_map<Object*, std::unordered_map<StringHash, std::unordered_set<Object*>>> m_specific_recievers;
+
+        SharedPtr<Engine> m_engine;
+        SharedPtr<Graphics> m_graphics;
     };
-
-    template<> inline void Context::registerModule<Graphics>(Graphics* graphics)
-    {
-        mGraphics = graphics;
-    }
-
-    template<> inline Graphics* Context::getModule<Graphics>()
-    {
-        return mGraphics;
-    }
-
-    template<> inline void Context::registerModule<Application>(Application* app)
-    {
-        mApp = app;
-    }
-
-    template<> inline Application* Context::getModule<Application>()
-    {
-        return mApp;
-    }
 }

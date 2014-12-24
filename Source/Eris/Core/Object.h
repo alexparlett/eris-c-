@@ -22,19 +22,93 @@
 
 #pragma once
 
+#include <functional>
+#include <list>
+
+#include "Container/StringHash.h"
+#include "Container/RefCounted.h"
+#include "Container/Memory.h"
+
 namespace Eris
 {
-    class Context;
+    class Object;
+    class Event;
 
-	class Object
+    class EventHandler : public RefCounted
+    {
+        typedef std::function<void(const StringHash&, const Event*)> HandlerFunctionPtr;
+
+    public:
+        EventHandler(HandlerFunctionPtr function) :
+            RefCounted(),
+            m_sender(0),
+            m_function(function),
+            m_user_data(0)
+        {
+        }
+
+        EventHandler(HandlerFunctionPtr function, void* user_data) :
+            RefCounted(),
+            m_sender(0),
+            m_function(function),
+            m_user_data(user_data)
+        {
+        }
+
+        virtual ~EventHandler() {}
+
+        void setSender(Object* sender) { m_sender = sender; }
+        void setEventType(StringHash event_type) { m_event_type = event_type; }
+
+        Object* getSender() const { return m_sender; }
+        const StringHash& getEventType() const { return m_event_type; }
+
+        void invoke(const Event* event) { m_function(m_event_type, event); }
+
+    private:
+        Object* m_sender;
+        StringHash m_event_type;
+        HandlerFunctionPtr m_function;
+        void* m_user_data;
+    };
+
+	class Object : public RefCounted
 	{
         friend class Context;
+
+        typedef std::list<SharedPtr<EventHandler>>::iterator Iterator;
 
 	public:
 	    Object(Context* context);
 	    virtual ~Object();
 
+        void subscribeToEvent(const StringHash& event_type, EventHandler* handler, Object* sender = nullptr);
+
+        void unsubscribeFromEvent(const StringHash& event_type);
+        void unsubscribeFromEvent(const StringHash& event_type, Object* sender);
+        void unsubscribeFromEvents(Object* sender);
+        void unsubscribeFromEvents();
+
+        void sendEvent(const StringHash& event_type, Event* event = nullptr);
+
+        Context* getContext() const { return m_context; }
+
     protected:
-        Context* mContext;
+        virtual void onEvent(const StringHash& event_type, const Event* event = nullptr, Object* sender = nullptr);
+
+        Context* m_context;
+
+    private:
+        void removeEventSender(Object* sender);
+
+        Iterator findEventHandler(const StringHash& event_type);
+        Iterator findEventHandler(const StringHash& event_type, Object* sender);
+        Iterator findEventHandler(Object* sender);
+
+        std::list<SharedPtr<EventHandler>> m_handlers;
 	};
+
+#define HANDLER(className, function) (new Eris::EventHandler(std::bind(&className::function, this, std::placeholders::_1, std::placeholders::_2)))
+#define HANDLER_USERDATA(className, function, userData) (new Eris::EventHandler(std::bind(&className::function, this, std::placeholders::_1, std::placeholders::_2), userData))
+
 }

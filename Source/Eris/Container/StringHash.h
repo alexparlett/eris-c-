@@ -22,18 +22,45 @@
 
 #pragma once
 
-#include "Core/Object.h"
-
 namespace Eris
 {
-    class Application : public Object
+    class StringHash
     {
     public:
-        Application(Context* context);
-        virtual ~Application();
+        StringHash();
+        StringHash(const std::string& value);
+        StringHash(const char* value);
+        StringHash(const StringHash& rhs);
 
-        void initialize();
-        void run();
-        void terminate();
+        void operator = (const std::string& value);
+        void operator = (const char* value);
+        void operator = (const StringHash& rhs);
+
+        bool operator == (const StringHash& rhs) const;
+        bool operator != (const StringHash& rhs) const;
+        bool operator < (const StringHash& rhs) const;
+        bool operator > (const StringHash& rhs) const;
+        bool operator <= (const StringHash& rhs) const;
+        bool operator >= (const StringHash& rhs) const;
+
+        std::size_t operator()() const;
+
+    private:
+        std::size_t m_value;
+    };
+}
+
+namespace std
+{
+    template<>
+    struct hash<Eris::StringHash>
+    {
+        typedef Eris::StringHash argument_type;
+        typedef std::size_t result_type;
+
+        result_type operator()(const argument_type& value) const
+        {
+            return value();
+        }
     };
 }

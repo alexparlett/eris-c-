@@ -21,26 +21,78 @@
 //
 
 #include "Context.h"
+#include "Object.h"
+
+// Include all module definitions
+#include "Application/Engine.h"
 #include "Graphics/Graphics.h"
-#include "Application/Application.h"
 
 namespace Eris
 {
     Context::Context() :
-        mExitCode(EXIT_OK),
-        mApp(nullptr),
-        mGraphics(nullptr)
+        m_engine(nullptr),
+        m_graphics(nullptr)
     {
     }
 
     Context::~Context()
     {
-        delete mGraphics;
-        delete mApp;
     }
 
-    void Context::setExitCode(glm::i32 exitCode)
+    void Context::addEventReciever(Object* reciever, const StringHash& event_type, Object* sender)
     {
-        mExitCode = exitCode;
+        if (sender)
+            m_specific_recievers[sender][event_type].insert(reciever);
+        else
+            m_recievers[event_type].insert(reciever);
     }
+
+    void Context::removeEventSender(Object* sender)
+    {
+        auto iter = m_specific_recievers.find(sender);
+        if (iter != m_specific_recievers.end())
+        {
+            for (auto i : iter->second)
+            {
+                for (auto j : i.second)
+                    (*j).removeEventSender(sender);
+            }
+            m_specific_recievers.erase(iter);
+        }
+    }
+
+    void Context::removeEventReciever(Object* reciever, const StringHash& event_type, Object* sender)
+    {
+        std::unordered_set<Object*>* group = _getEventRecievers(event_type, sender);
+        if (group)
+            group->insert(reciever);
+    }
+
+    const std::unordered_set<Object*>* Context::getEventRecievers(const StringHash& event_type, Object* sender)
+    {
+        return _getEventRecievers(event_type, sender);
+    }
+
+    std::unordered_set<Object*>* Context::_getEventRecievers(const StringHash& event_type, Object* sender /*= nullptr*/)
+    {
+        if (sender)
+        {
+            auto sm = m_specific_recievers.find(sender);
+            if (sm != m_specific_recievers.end())
+            {
+                auto iter = sm->second.find(event_type);
+                if (iter != m_recievers.end())
+                    return &iter->second;
+            }
+        }
+        else
+        {
+            auto iter = m_recievers.find(event_type);
+            if (iter != m_recievers.end())
+                return &iter->second;
+        }
+
+        return nullptr;
+    }
+
 }

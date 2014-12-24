@@ -20,55 +20,43 @@
 // THE SOFTWARE.
 //
 
-#include "Application.h"
+#pragma once
 
+#include "Core/Object.h"
 #include "Core/Context.h"
-#include "Graphics/Graphics.h"
 
 namespace Eris
 {
-    Application::Application(Context* context) :
-        Object(context)
+    static const glm::i32 EXIT_OK = 0;
+    static const glm::i32 EXIT_INITIALIZATION_FAILURE = 1;
+    static const glm::i32 EXIT_GLFW_INIT_ERROR = 2;
+    static const glm::i32 EXIT_GLEW_INIT_ERROR = 3;
+    static const glm::i32 EXIT_WINDOW_CREATE_ERROR = 4;
+
+    class Engine : public Object
     {
-        context->registerModule<Application>(this);
-        context->registerModule<Graphics>(new Graphics(context));
+    public:
+        Engine(Context* context);
+        virtual ~Engine();
+
+        void initialize();
+        void run();
+        void terminate();
+
+        void setExitCode(glm::i32 exitcode);
+        glm::i32 getExitCode() const { return m_exitcode; }
+
+    private:
+        glm::i32 m_exitcode;
+    };
+
+    template<> inline void Context::registerModule<Engine>(Engine* engine)
+    {
+        m_engine = SharedPtr<Engine>(engine);
     }
 
-    Application::~Application()
+    template<> inline Engine* Context::getModule<Engine>()
     {
-    }
-
-    void Application::initialize()
-    {
-        if (!glfwInit())
-        {
-            mContext->setExitCode(EXIT_GLFW_INIT_ERROR);
-            return;
-        }
-
-        Graphics* graphics = mContext->getModule<Graphics>();
-        graphics->setSize(800, 600);
-        graphics->setFullscreen(false);
-        graphics->initialize();
-    }
-
-    void Application::run()
-    {
-        Graphics* graphics = mContext->getModule<Graphics>();
-
-        while (!glfwWindowShouldClose(graphics->getWindow()))
-        {
-            glfwPollEvents();
-            glfwSwapBuffers(graphics->getWindow());
-        }
-    }
-
-    void Application::terminate()
-    {
-        Graphics* graphics = mContext->getModule<Graphics>();
-
-        graphics->terminate();
-
-        glfwTerminate();
+        return m_engine.get();
     }
 }

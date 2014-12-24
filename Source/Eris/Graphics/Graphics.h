@@ -23,6 +23,7 @@
 #pragma once
 
 #include "Core/Object.h"
+#include "Core/Context.h"
 
 namespace Eris
 {
@@ -70,43 +71,53 @@ namespace Eris
         void setVSync(bool vsync);
 
         /// Get whether fullscreen is set.
-        bool getFullscreen() const { return mFullscreen; }
+        bool getFullscreen() const { return m_fullscreen; }
         /// Get whether resizable is set.
-        bool getResizable() const { return mResizable; }
+        bool getResizable() const { return m_resizable; }
         /// Get whether borderless is set.
-        bool getBorderless() const { return mBorderless; }
+        bool getBorderless() const { return m_borderless; }
         /// Get whether vsync is set.
-        bool getVSync() const { return mVSync; }
+        bool getVSync() const { return m_vsync; }
         /// Get width.
-        glm::i32 getWidth() const { return mWidth; }
+        glm::i32 getWidth() const { return m_width; }
         /// Get height.
-        glm::i32 getHeight() const { return mHeight; }
+        glm::i32 getHeight() const { return m_height; }
         /// Get samples.
-        glm::i32 getSamples() const { return mSamples; }
+        glm::i32 getSamples() const { return m_samples; }
         /// Get gamma.
-        glm::f32 getGamma() const { return mGamma; }
+        glm::f32 getGamma() const { return m_gamma; }
         /// Get title.
-        const std::string& getTitle() const { return mTitle; }
+        const std::string& getTitle() const { return m_title; }
         /// Get window ptr.
-        GLFWwindow* getWindow() const { return mWindow; }
+        GLFWwindow* getWindow() const { return m_window; }
 
         /// Get initialized.
-        bool isInitialize() const { return mInitialized; }
+        bool isInitialize() const { return m_initialized; }
 
     private:
         static void handleFramebufferCallback(GLFWwindow* window, glm::i32 width, glm::i32 height);
         static void handleCloseCallback(GLFWwindow* window);
 
-        bool mInitialized;
-        bool mFullscreen;
-        bool mResizable;
-        bool mBorderless;
-        bool mVSync;
-        glm::i32 mWidth;
-        glm::i32 mHeight;
-        glm::i32 mSamples;
-        glm::f32 mGamma;
-        std::string mTitle;
-        GLFWwindow* mWindow;
+        bool m_initialized;
+        bool m_fullscreen;
+        bool m_resizable;
+        bool m_borderless;
+        bool m_vsync;
+        glm::i32 m_width;
+        glm::i32 m_height;
+        glm::i32 m_samples;
+        glm::f32 m_gamma;
+        std::string m_title;
+        GLFWwindow* m_window;
     };
+
+    template<> inline void Context::registerModule<Graphics>(Graphics* graphics)
+    {
+        m_graphics = SharedPtr<Graphics>(graphics);
+    }
+
+    template<> inline Graphics* Context::getModule<Graphics>()
+    {
+        return m_graphics.get();
+    }
 }
