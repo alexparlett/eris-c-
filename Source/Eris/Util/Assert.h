@@ -22,20 +22,16 @@
 
 #pragma once
 
-#include <windows.h>
+#ifdef _DEBUG
 
-#include <memory>
-#include <string>
+#include <crtdbg.h>
 
-#include <glew/glew.h>
-#include <glm/glm.hpp>
-#include <glfw3/glfw3.h>
-#include <glfw3/glfw3native.h>
-
-#include "Util/Assert.h"
-#include "Util/Debug.h"
-
-namespace Eris
-{
-    static const std::string StringEmpty = std::string();
-}
+#define ERIS_ASSERT(expr) \
+    if (!(expr) && _CrtDbgReport(_CRT_ASSERT, __FILE__, __LINE__, __FUNCTION__, #expr) == 1) \
+    { \
+        _CrtDbgBreak(); \
+    } \
+    else {}
+#else
+#define ERIS_ASSERT(expr)
+#endif

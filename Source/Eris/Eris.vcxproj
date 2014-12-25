@@ -245,16 +245,20 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\gitversion.h" />
+    <ClInclude Include="Core\Event.h" />
+    <ClInclude Include="Memory\Allocator.h" />
     <ClInclude Include="Application\Engine.h" />
-    <ClInclude Include="Container\Memory.h" />
-    <ClInclude Include="Container\RefCounted.h" />
+    <ClInclude Include="Memory\Pointers.h" />
+    <ClInclude Include="Memory\RefCounted.h" />
     <ClInclude Include="Container\StringHash.h" />
     <ClInclude Include="Core\Context.h" />
-    <ClInclude Include="Core\Debug.h" />
+    <ClInclude Include="Util\Assert.h" />
+    <ClInclude Include="Util\Debug.h" />
     <ClInclude Include="Core\Object.h" />
     <ClInclude Include="Eris.h" />
     <ClInclude Include="Graphics\Graphics.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="Util\NonCopyable.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Eris.rc" />
@@ -262,7 +266,7 @@
   <ItemGroup>
     <ClCompile Include="Application\Engine.cpp" />
     <ClCompile Include="Application\Eris.cpp" />
-    <ClCompile Include="Container\RefCounted.cpp" />
+    <ClCompile Include="Memory\RefCounted.cpp" />
     <ClCompile Include="Container\StringHash.cpp" />
     <ClCompile Include="Core\Context.cpp" />
     <ClCompile Include="Core\Object.cpp" />

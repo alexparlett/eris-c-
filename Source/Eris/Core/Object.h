@@ -25,9 +25,9 @@
 #include <functional>
 #include <list>
 
-#include "Container/StringHash.h"
-#include "Container/RefCounted.h"
-#include "Container/Memory.h"
+#include "Collections/StringHash.h"
+#include "Memory/RefCounted.h"
+#include "Memory/Pointers.h"
 
 namespace Eris
 {
@@ -36,11 +36,10 @@ namespace Eris
 
     class EventHandler : public RefCounted
     {
-        typedef std::function<void(const StringHash&, const Event*)> HandlerFunctionPtr;
+        using HandlerFunctionPtr = std::function<void(const StringHash&, const Event*)>;
 
     public:
         EventHandler(HandlerFunctionPtr function) :
-            RefCounted(),
             m_sender(0),
             m_function(function),
             m_user_data(0)
@@ -48,7 +47,6 @@ namespace Eris
         }
 
         EventHandler(HandlerFunctionPtr function, void* user_data) :
-            RefCounted(),
             m_sender(0),
             m_function(function),
             m_user_data(user_data)
@@ -76,7 +74,7 @@ namespace Eris
 	{
         friend class Context;
 
-        typedef std::list<SharedPtr<EventHandler>>::iterator Iterator;
+        using Iterator = std::list<SharedPtr<EventHandler>>::iterator;
 
 	public:
 	    Object(Context* context);

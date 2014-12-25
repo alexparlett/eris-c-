@@ -22,6 +22,7 @@
 
 #include "Context.h"
 #include "Object.h"
+#include "Event.h"
 
 #include <unordered_map>
 #include <unordered_set>
@@ -29,7 +30,6 @@
 namespace Eris
 {
     Object::Object(Context* context) :
-        RefCounted(),
         m_context(context)
     {
     }
@@ -182,7 +182,8 @@ namespace Eris
             }
         }
 
-        delete event;
+        if (event)
+            delete event;
     }
 
     void Object::onEvent(const StringHash& event_type, const Event* event /*= nullptr*/, Object* sender /*= nullptr*/)

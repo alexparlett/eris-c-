@@ -20,54 +20,47 @@
 // THE SOFTWARE.
 //
 
-#include "RefCounted.h"
+#pragma once
 
-#include <cassert>
+#include "Util/NonCopyable.h"
 
 namespace Eris
 {
-
-    RefCounted::RefCounted() :
-        m_ref_count(new RefCount())
+    struct RefCounter
     {
-        m_ref_count->m_weak_refs++;
-    }
+        RefCounter() :
+            m_refs(0),
+            m_weak_refs(0)
+        {
+        }
 
-    RefCounted::~RefCounted()
+        ~RefCounter()
+        {
+            m_refs = -1;
+            m_weak_refs = -1;
+        }
+
+        glm::i32 m_refs;
+        glm::i32 m_weak_refs;
+    };
+
+    class RefCounted : private NonCopyable<RefCounted>
     {
-        assert(m_ref_count);
-        assert(m_ref_count->m_refs == 0);
-        assert(m_ref_count->m_weak_refs > 0);
+        template<class T> 
+        friend class WeakPtr;
 
-        m_ref_count->m_refs = -1;
-        m_ref_count->m_weak_refs--;
-        if (!m_ref_count->m_weak_refs)
-            delete m_ref_count;
+    public:
+        RefCounted();
+        virtual ~RefCounted();
 
-        m_ref_count = nullptr;
-    }
+        void increment();
+        void release();
 
-    void RefCounted::increment()
-    {
-        assert(m_ref_count->m_refs >= 0);
-        m_ref_count->m_refs++;
-    }
+        glm::i32 refs();
+        glm::i32 weakRefs();
 
-    void RefCounted::release()
-    {
-        assert(m_ref_count->m_refs > 0);
-        m_ref_count->m_refs--;
-        if (!m_ref_count->m_refs)
-            delete this;
-    }
-
-    glm::i32 RefCounted::refs()
-    {
-        return m_ref_count->m_refs;
-    }
-
-    glm::i32 RefCounted::weakRefs()
-    {
-        return m_ref_count->m_weak_refs;
-    }
+    private:
+        RefCounter* m_ref_count;
+    };
 }
+

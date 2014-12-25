@@ -76,9 +76,9 @@ namespace Eris
             return *this;
         }
 
-        T* operator -> () const { assert(m_ptr); return m_ptr; }
-        T& operator * () const { assert(m_ptr); return *m_ptr; }
-        T& operator [] (const glm::i32 index) { assert(m_ptr); return m_ptr[index]; }
+        T* operator -> () const { ERIS_ASSERT(m_ptr); return m_ptr; }
+        T& operator * () const { ERIS_ASSERT(m_ptr); return *m_ptr; }
+        T& operator [] (const glm::i32 index) { ERIS_ASSERT(m_ptr); return m_ptr[index]; }
 
         operator T* () const { return m_ptr; }
 
@@ -117,7 +117,6 @@ namespace Eris
         }
 
         T* m_ptr;
-
     };
 
     template<class T>
@@ -214,21 +213,21 @@ namespace Eris
         T* operator -> () const
         {
             T* raw = get();
-            assert(raw);
+            ERIS_ASSERT(raw);
             return raw;
         }
 
         T& operator * () const
         {
             T* raw = get();
-            assert(raw);
+            ERIS_ASSERT(raw);
             return *raw;
         }
 
         T& operator [] (const glm::i32 index)
         {
             T* raw = get();
-            assert(raw);
+            ERIS_ASSERT(raw);
             return raw[index];
         }
 
@@ -257,7 +256,7 @@ namespace Eris
         {
             if (m_ref_count)
             {
-                assert(m_ref_count->m_weak_refs >= 0);
+                ERIS_ASSERT(m_ref_count->m_weak_refs >= 0);
                 m_ref_count->m_weak_refs++;
             }
         }
@@ -266,7 +265,7 @@ namespace Eris
         {
             if (m_ref_count)
             {
-                assert(m_ref_count);
+                ERIS_ASSERT(m_ref_count);
                 m_ref_count->m_weak_refs--;
 
                 if (expired() && !m_ref_count->m_weak_refs)
@@ -278,6 +277,6 @@ namespace Eris
         }
 
         T* m_ptr;
-        RefCount* m_ref_count;
+        RefCounter* m_ref_count;
     };
 }

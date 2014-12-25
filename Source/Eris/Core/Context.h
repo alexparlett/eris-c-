@@ -22,8 +22,9 @@
 
 #pragma once
 
-#include "Container/StringHash.h"
-#include "Container/Memory.h"
+#include "Collections/StringHash.h"
+#include "Memory/Pointers.h"
+#include "Util/NonCopyable.h"
 
 #include <unordered_map>
 #include <unordered_set>
@@ -33,7 +34,7 @@ namespace Eris
     class Engine;
     class Graphics;
 
-    class Context
+    class Context : private NonCopyable<Context>
     {
         friend class Object;
 
@@ -57,5 +58,6 @@ namespace Eris
 
         SharedPtr<Engine> m_engine;
         SharedPtr<Graphics> m_graphics;
+
     };
 }

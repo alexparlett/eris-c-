@@ -20,22 +20,52 @@
 // THE SOFTWARE.
 //
 
-#pragma once
-
-#include <windows.h>
-
-#include <memory>
-#include <string>
-
-#include <glew/glew.h>
-#include <glm/glm.hpp>
-#include <glfw3/glfw3.h>
-#include <glfw3/glfw3native.h>
-
-#include "Util/Assert.h"
-#include "Util/Debug.h"
+#include "RefCounted.h"
 
 namespace Eris
 {
-    static const std::string StringEmpty = std::string();
+
+    RefCounted::RefCounted() :
+        m_ref_count(new RefCounter())
+    {
+        m_ref_count->m_weak_refs++;
+    }
+
+    RefCounted::~RefCounted()
+    {
+        ERIS_ASSERT(m_ref_count);
+        ERIS_ASSERT(m_ref_count->m_refs == 0);
+        ERIS_ASSERT(m_ref_count->m_weak_refs > 0);
+
+        m_ref_count->m_refs = -1;
+        m_ref_count->m_weak_refs--;
+        if (!m_ref_count->m_weak_refs)
+            delete m_ref_count;
+
+        m_ref_count = nullptr;
+    }
+
+    void RefCounted::increment()
+    {
+        ERIS_ASSERT(m_ref_count->m_refs >= 0);
+        m_ref_count->m_refs++;
+    }
+
+    void RefCounted::release()
+    {
+        ERIS_ASSERT(m_ref_count->m_refs > 0);
+        m_ref_count->m_refs--;
+        if (!m_ref_count->m_refs)
+            delete this;
+    }
+
+    glm::i32 RefCounted::refs()
+    {
+        return m_ref_count->m_refs;
+    }
+
+    glm::i32 RefCounted::weakRefs()
+    {
+        return m_ref_count->m_weak_refs;
+    }
 }

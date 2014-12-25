@@ -24,44 +24,15 @@
 
 namespace Eris
 {
-    struct RefCount
+    template <class T>
+    class NonCopyable
     {
-        RefCount() :
-            m_refs(0),
-            m_weak_refs(0)
-        {
-        }
-
-        ~RefCount()
-        {
-            m_refs = -1;
-            m_weak_refs = -1;
-        }
-
-        glm::i32 m_refs;
-        glm::i32 m_weak_refs;
-    };
-
-    class RefCounted
-    {
-        template<class T> 
-        friend class WeakPtr;
-
-    public:
-        RefCounted();
-        virtual ~RefCounted();
-
-        void increment();
-        void release();
-
-        glm::i32 refs();
-        glm::i32 weakRefs();
+    protected:
+        NonCopyable() {}
+        ~NonCopyable() {} /// Protected non-virtual destructor
 
     private:
-        RefCounted(const RefCounted& rhs);
-        void operator = (const RefCounted& rhs);
-
-        RefCount* m_ref_count;
+        NonCopyable(const NonCopyable &) = delete;
+        NonCopyable & operator = (const NonCopyable &) = delete;
     };
 }
-
