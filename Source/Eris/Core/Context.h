@@ -22,8 +22,11 @@
 
 #pragma once
 
+#include "Event.h"
+
 #include "Collections/StringHash.h"
 #include "Memory/Pointers.h"
+#include "Memory/Allocator.h"
 #include "Util/NonCopyable.h"
 
 #include <unordered_map>
@@ -50,11 +53,28 @@ namespace Eris
         void removeEventReciever(Object* reciever, const StringHash& event_type, Object* sender = nullptr);
         const std::unordered_set<Object*>* getEventRecievers(const StringHash& event_type, Object* sender = nullptr);
 
+        StackAllocator<glm::u8>& getFrameAllocator() const { return *m_frame_allocator; }
+        void resetFrameAllocator();
+
+        template<class T>
+        T* createEvent()
+        {
+            return m_frame_allocator->newInstance();
+        }
+
+        template<class T>
+        void destroyEvent(T* event)
+        {
+            m_frame_allocator->deleteInstance(event);
+        }
+
     private:
         std::unordered_set<Object*>* _getEventRecievers(const StringHash& event_type, Object* sender = nullptr);
 
         std::unordered_map<StringHash, std::unordered_set<Object*>> m_recievers;
         std::unordered_map<Object*, std::unordered_map<StringHash, std::unordered_set<Object*>>> m_specific_recievers;
+
+        SharedPtr<StackAllocator<glm::u8>> m_frame_allocator;
 
         SharedPtr<Engine> m_engine;
         SharedPtr<Graphics> m_graphics;

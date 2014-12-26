@@ -50,12 +50,12 @@ namespace Eris
         glm::i32 m_exitcode;
     };
 
-    template<> inline void Context::registerModule<Engine>(Engine* engine)
+    template<> inline void Context::registerModule(Engine* engine)
     {
         m_engine = SharedPtr<Engine>(engine);
     }
 
-    template<> inline Engine* Context::getModule<Engine>()
+    template<> inline Engine* Context::getModule()
     {
         return m_engine.get();
     }

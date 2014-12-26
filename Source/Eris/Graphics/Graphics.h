@@ -111,12 +111,12 @@ namespace Eris
         GLFWwindow* m_window;
     };
 
-    template<> inline void Context::registerModule<Graphics>(Graphics* graphics)
+    template<> inline void Context::registerModule(Graphics* graphics)
     {
         m_graphics = SharedPtr<Graphics>(graphics);
     }
 
-    template<> inline Graphics* Context::getModule<Graphics>()
+    template<> inline Graphics* Context::getModule()
     {
         return m_graphics.get();
     }

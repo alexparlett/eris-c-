@@ -30,6 +30,7 @@
 namespace Eris
 {
     Context::Context() :
+        m_frame_allocator(new StackAllocator<glm::u8>(128)),
         m_engine(nullptr),
         m_graphics(nullptr)
     {
@@ -73,6 +74,11 @@ namespace Eris
         return _getEventRecievers(event_type, sender);
     }
 
+    void Context::resetFrameAllocator()
+    {
+        m_frame_allocator->getMemoryPool().reset();
+    }
+
     std::unordered_set<Object*>* Context::_getEventRecievers(const StringHash& event_type, Object* sender /*= nullptr*/)
     {
         if (sender)
@@ -94,5 +100,4 @@ namespace Eris
 
         return nullptr;
     }
-
 }
