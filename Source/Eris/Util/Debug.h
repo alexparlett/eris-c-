@@ -32,6 +32,9 @@
 #include <stdlib.h>
 #include <crtdbg.h>
 
-#define _DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
-#define new _DEBUG_NEW
+#ifdef ERIS_DEBUG
+#define ERIS_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
+#else
+#define ERIS_NEW new
+#endif
 #endif

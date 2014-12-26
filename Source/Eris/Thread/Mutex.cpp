@@ -20,49 +20,29 @@
 // THE SOFTWARE.
 //
 
-#pragma once
+#include "Mutex.h"
 
-#include "Util/NonCopyable.h"
-
-#include <atomic>
+#include <chrono>
 
 namespace Eris
-{
-    struct RefCounter
+{ 
+    void Mutex::lock()
     {
-        RefCounter() :
-            m_refs(0),
-            m_weak_refs(0)
-        {
-        }
+        m_handle.lock();
+    }
 
-        ~RefCounter()
-        {
-            m_refs = -1;
-            m_weak_refs = -1;
-        }
-
-        std::atomic<glm::i32> m_refs;
-        std::atomic<glm::i32> m_weak_refs;
-    };
-
-    class RefCounted : private NonCopyable<RefCounted>
+    void Mutex::unlock()
     {
-        template<class T> 
-        friend class WeakPtr;
+        m_handle.unlock();
+    }
 
-    public:
-        RefCounted();
-        virtual ~RefCounted();
+    bool Mutex::tryLock()
+    {
+        return m_handle.try_lock();
+    }
 
-        void increment();
-        void release();
-
-        glm::i32 refs();
-        glm::i32 weakRefs();
-
-    private:
-        RefCounter* m_ref_count;
-    };
+    bool Mutex::tryLockFor(glm::i32 duration)
+    {
+        return m_handle.try_lock_for(std::chrono::milliseconds(duration));
+    }
 }
-

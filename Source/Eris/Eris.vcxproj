@@ -248,16 +248,21 @@
     <ClInclude Include="Core\Event.h" />
     <ClInclude Include="Memory\Allocator.h" />
     <ClInclude Include="Application\Engine.h" />
+    <ClInclude Include="Memory\Memory.h" />
     <ClInclude Include="Memory\Pointers.h" />
     <ClInclude Include="Memory\RefCounted.h" />
-    <ClInclude Include="Container\StringHash.h" />
+    <ClInclude Include="Collections\StringHash.h" />
     <ClInclude Include="Core\Context.h" />
+    <ClInclude Include="Thread\Lock.h" />
+    <ClInclude Include="Thread\Mutex.h" />
+    <ClInclude Include="Thread\SpinLock.h" />
     <ClInclude Include="Util\Assert.h" />
     <ClInclude Include="Util\Debug.h" />
     <ClInclude Include="Core\Object.h" />
     <ClInclude Include="Eris.h" />
     <ClInclude Include="Graphics\Graphics.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="Util\Functions.h" />
     <ClInclude Include="Util\NonCopyable.h" />
   </ItemGroup>
   <ItemGroup>
@@ -266,11 +271,14 @@
   <ItemGroup>
     <ClCompile Include="Application\Engine.cpp" />
     <ClCompile Include="Application\Eris.cpp" />
+    <ClCompile Include="Memory\Memory.cpp" />
     <ClCompile Include="Memory\RefCounted.cpp" />
-    <ClCompile Include="Container\StringHash.cpp" />
+    <ClCompile Include="Collections\StringHash.cpp" />
     <ClCompile Include="Core\Context.cpp" />
     <ClCompile Include="Core\Object.cpp" />
     <ClCompile Include="Graphics\Graphics.cpp" />
+    <ClCompile Include="Thread\Mutex.cpp" />
+    <ClCompile Include="Thread\SpinLock.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

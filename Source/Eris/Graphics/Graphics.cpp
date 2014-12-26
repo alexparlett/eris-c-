@@ -239,6 +239,9 @@ namespace Eris
 
     void Graphics::handleCloseCallback(GLFWwindow* window)
     {
+        Context* context = static_cast<Context*>(glfwGetWindowUserPointer(window));
+        Graphics* graphics = context->getModule<Graphics>();
+
 
     }
 }

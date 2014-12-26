@@ -24,45 +24,19 @@
 
 #include "Util/NonCopyable.h"
 
-#include <atomic>
+#include <mutex>
 
 namespace Eris
 {
-    struct RefCounter
+    class Mutex : private NonCopyable<Mutex>
     {
-        RefCounter() :
-            m_refs(0),
-            m_weak_refs(0)
-        {
-        }
-
-        ~RefCounter()
-        {
-            m_refs = -1;
-            m_weak_refs = -1;
-        }
-
-        std::atomic<glm::i32> m_refs;
-        std::atomic<glm::i32> m_weak_refs;
-    };
-
-    class RefCounted : private NonCopyable<RefCounted>
-    {
-        template<class T> 
-        friend class WeakPtr;
-
     public:
-        RefCounted();
-        virtual ~RefCounted();
-
-        void increment();
-        void release();
-
-        glm::i32 refs();
-        glm::i32 weakRefs();
+        void lock();
+        void unlock();
+        bool tryLock();
+        bool tryLockFor(glm::i32 duration);
 
     private:
-        RefCounter* m_ref_count;
+        std::timed_mutex m_handle;
     };
 }
-

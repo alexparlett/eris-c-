@@ -22,47 +22,12 @@
 
 #pragma once
 
-#include "Util/NonCopyable.h"
+#include "RefCounted.h"
 
 #include <atomic>
+#include <utility>
+#include <cstddef>
 
 namespace Eris
 {
-    struct RefCounter
-    {
-        RefCounter() :
-            m_refs(0),
-            m_weak_refs(0)
-        {
-        }
-
-        ~RefCounter()
-        {
-            m_refs = -1;
-            m_weak_refs = -1;
-        }
-
-        std::atomic<glm::i32> m_refs;
-        std::atomic<glm::i32> m_weak_refs;
-    };
-
-    class RefCounted : private NonCopyable<RefCounted>
-    {
-        template<class T> 
-        friend class WeakPtr;
-
-    public:
-        RefCounted();
-        virtual ~RefCounted();
-
-        void increment();
-        void release();
-
-        glm::i32 refs();
-        glm::i32 weakRefs();
-
-    private:
-        RefCounter* m_ref_count;
-    };
 }
-

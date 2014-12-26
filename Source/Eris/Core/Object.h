@@ -32,7 +32,7 @@
 namespace Eris
 {
     class Object;
-    class Event;
+    struct Event;
 
     class EventHandler : public RefCounted
     {

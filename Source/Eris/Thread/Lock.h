@@ -24,45 +24,24 @@
 
 #include "Util/NonCopyable.h"
 
-#include <atomic>
-
 namespace Eris
 {
-    struct RefCounter
+    template<class T>
+    class LockGuard : private NonCopyable <LockGuard<T>>
     {
-        RefCounter() :
-            m_refs(0),
-            m_weak_refs(0)
-        {
-        }
-
-        ~RefCounter()
-        {
-            m_refs = -1;
-            m_weak_refs = -1;
-        }
-
-        std::atomic<glm::i32> m_refs;
-        std::atomic<glm::i32> m_weak_refs;
-    };
-
-    class RefCounted : private NonCopyable<RefCounted>
-    {
-        template<class T> 
-        friend class WeakPtr;
-
     public:
-        RefCounted();
-        virtual ~RefCounted();
+        LockGuard(T& lock) :
+            m_lock(&lock)
+        {
+            m_lock->lock();
+        }
 
-        void increment();
-        void release();
-
-        glm::i32 refs();
-        glm::i32 weakRefs();
+        ~LockGuard() _NOEXCEPT
+        {
+            m_lock->unlock();
+        }
 
     private:
-        RefCounter* m_ref_count;
+        T* m_lock;
     };
 }
-

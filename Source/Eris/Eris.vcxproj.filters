@@ -52,9 +52,6 @@
     <ClInclude Include="Core\Context.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Container\StringHash.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Application\Engine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -82,6 +79,24 @@
     <ClInclude Include="Core\Event.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Collections\StringHash.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\Memory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Functions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Thread\Mutex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Thread\SpinLock.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Thread\Lock.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Eris.rc">
@@ -101,13 +116,22 @@
     <ClCompile Include="Core\Object.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Container\StringHash.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Application\Engine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Memory\RefCounted.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Collections\StringHash.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Memory\Memory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Thread\Mutex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Thread\SpinLock.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

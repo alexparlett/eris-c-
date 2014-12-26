@@ -28,41 +28,15 @@
 
 namespace Eris
 {
-    struct RefCounter
+    class SpinLock : private NonCopyable<SpinLock>
     {
-        RefCounter() :
-            m_refs(0),
-            m_weak_refs(0)
-        {
-        }
-
-        ~RefCounter()
-        {
-            m_refs = -1;
-            m_weak_refs = -1;
-        }
-
-        std::atomic<glm::i32> m_refs;
-        std::atomic<glm::i32> m_weak_refs;
-    };
-
-    class RefCounted : private NonCopyable<RefCounted>
-    {
-        template<class T> 
-        friend class WeakPtr;
-
     public:
-        RefCounted();
-        virtual ~RefCounted();
+        SpinLock();
 
-        void increment();
-        void release();
+        void lock();
+        void unlock();
 
-        glm::i32 refs();
-        glm::i32 weakRefs();
-
-    private:
-        RefCounter* m_ref_count;
+    private:  
+        std::atomic_flag m_handle;
     };
 }
-

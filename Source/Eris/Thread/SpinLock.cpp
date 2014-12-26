@@ -20,49 +20,22 @@
 // THE SOFTWARE.
 //
 
-#pragma once
-
-#include "Util/NonCopyable.h"
-
-#include <atomic>
+#include "SpinLock.h"
 
 namespace Eris
 {
-    struct RefCounter
+    SpinLock::SpinLock()
     {
-        RefCounter() :
-            m_refs(0),
-            m_weak_refs(0)
-        {
-        }
+        m_handle.clear();
+    }
 
-        ~RefCounter()
-        {
-            m_refs = -1;
-            m_weak_refs = -1;
-        }
-
-        std::atomic<glm::i32> m_refs;
-        std::atomic<glm::i32> m_weak_refs;
-    };
-
-    class RefCounted : private NonCopyable<RefCounted>
+    void SpinLock::lock()
     {
-        template<class T> 
-        friend class WeakPtr;
+        while (m_handle.test_and_set(std::memory_order_acquire));
+    }
 
-    public:
-        RefCounted();
-        virtual ~RefCounted();
-
-        void increment();
-        void release();
-
-        glm::i32 refs();
-        glm::i32 weakRefs();
-
-    private:
-        RefCounter* m_ref_count;
-    };
+    void SpinLock::unlock()
+    {
+        m_handle.clear(std::memory_order_release);
+    }
 }
-
