@@ -23,7 +23,9 @@
 #include "Clock.h"
 #include "CoreEvents.h"
 
-#include <chrono>
+#include "Util/Functions.h"
+
+#include <ctime>
 
 namespace Eris
 {
@@ -68,4 +70,16 @@ namespace Eris
     {
         return m_frame_number;
     }
+
+    std::string Clock::getTimestamp() const
+    {
+        time_t sysTime;
+        time(&sysTime);
+        char dateTime[32];
+
+        ctime_s(dateTime, 32, &sysTime);
+
+        return std::string_replace(dateTime, "\n", "");
+    }
+
 }

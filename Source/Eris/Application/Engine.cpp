@@ -23,6 +23,7 @@
 #include "Engine.h"
 
 #include "Core/Clock.h"
+#include "Core/Log.h"
 #include "Graphics/Graphics.h"
 #include "Input/Input.h"
 
@@ -33,6 +34,7 @@ namespace Eris
         m_exitcode(EXIT_OK)
     {
         context->registerModule<Engine>(this);
+        context->registerModule<Log>(new Log(context)),
         context->registerModule<Clock>(new Clock(context));
         context->registerModule<Graphics>(new Graphics(context));
         context->registerModule<Input>(new Input(context));
@@ -44,6 +46,9 @@ namespace Eris
 
     void Engine::initialize()
     {
+        Log* log = m_context->getModule<Log>();
+        log->open("eris.log");
+
         if (!glfwInit())
         {
             setExitCode(EXIT_GLFW_INIT_ERROR);

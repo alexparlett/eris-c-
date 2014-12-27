@@ -34,6 +34,7 @@
 
 namespace Eris
 {
+    class Log;
     class Clock;
     class Engine;
     class Graphics;
@@ -70,5 +71,6 @@ namespace Eris
         SharedPtr<Engine> m_engine;
         SharedPtr<Graphics> m_graphics;
         SharedPtr<Input> m_input;
+        SharedPtr<Log> m_log;
     };
 }

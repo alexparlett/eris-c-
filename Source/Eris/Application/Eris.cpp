@@ -21,13 +21,15 @@
 //
 
 #include "Core/Context.h"
+#include "Core/Log.h"
 #include "Application/Engine.h"
+#include "Util/Functions.h"
 
 static std::unique_ptr<Eris::Context> context;
 
 void errorCallback(int error, const char* msg)
 {
-
+    Eris::Log::fatal(std::string_format("GLFW error: %d %s", error, msg));
 }
 
 int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow)

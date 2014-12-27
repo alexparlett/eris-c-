@@ -250,6 +250,7 @@
     <ClInclude Include="Core\Clock.h" />
     <ClInclude Include="Core\Event.h" />
     <ClInclude Include="Core\CoreEvents.h" />
+    <ClInclude Include="Core\Log.h" />
     <ClInclude Include="Graphics\GraphicsEvents.h" />
     <ClInclude Include="Input\Input.h" />
     <ClInclude Include="Input\InputEvents.h" />
@@ -280,6 +281,7 @@
     <ClCompile Include="Application\Engine.cpp" />
     <ClCompile Include="Application\Eris.cpp" />
     <ClCompile Include="Core\Clock.cpp" />
+    <ClCompile Include="Core\Log.cpp" />
     <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="Memory\Memory.cpp" />
     <ClCompile Include="Memory\RefCounted.cpp" />

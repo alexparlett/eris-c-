@@ -25,6 +25,7 @@
 
 // Include all module definitions
 #include "Clock.h"
+#include "Log.h"
 #include "Application/Engine.h"
 #include "Graphics/Graphics.h"
 #include "Input/Input.h"
@@ -36,7 +37,8 @@ namespace Eris
         m_clock(nullptr),
         m_engine(nullptr),
         m_graphics(nullptr),
-        m_input(nullptr)
+        m_input(nullptr),
+        m_log(nullptr)
     {
     }
 

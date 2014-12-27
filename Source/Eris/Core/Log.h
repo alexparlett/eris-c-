@@ -25,34 +25,59 @@
 #include "Context.h"
 #include "Object.h"
 
+#include "Thread/SpinLock.h"
+
+#include <fstream>
+
 namespace Eris
 {
-    class Clock : public Object
+    class Log : public Object
     {
     public:
-        Clock(Context* context);
+        enum class Level : glm::u8
+        {
+            NONE,
+            ASSERT,
+            DEBUG,
+            INFO,
+            WARNING,
+            FATAL
+        };
 
-        void beginFrame(glm::f32 time_step);
-        void endFrame();
+        Log(Context* context);
+        ~Log();
 
-        glm::f32 getElapsedTime() const;
-        glm::f32 getTimeStep() const;
-        glm::u64 getFrameNumber() const;
-        std::string getTimestamp() const;
+        void open(const std::string& filename, Level level = Level::FATAL, bool timestamp = true);
+        void close();
+
+        void setTimestamp(bool timestamp);
+        void setLevel(Level level);
+        
+        bool isOpen() const { return m_handle.is_open(); }
+
+        static void raw(const std::string& msg);
+        static void debug(const std::string& msg);
+        static void info(const std::string& msg);
+        static void warn(const std::string& msg);
+        static void fatal(const std::string& msg);
 
     private:
-        glm::u64 m_frame_number;
-        glm::f32 m_time_step;
+        void write(const std::string& msg, Level level);
+
+        std::ofstream m_handle;
+        bool m_timestamp;
+        Level m_level;
+        SpinLock m_lock;
     };
 
-    template<> inline void Context::registerModule(Clock* engine)
+    template<> inline void Context::registerModule(Log* engine)
     {
-        m_clock = SharedPtr<Clock>(engine);
+        m_log = SharedPtr<Log>(engine);
     }
 
-    template<> inline Clock* Context::getModule()
+    template<> inline Log* Context::getModule()
     {
         ERIS_ASSERT(m_clock);
-        return m_clock.get();
+        return m_log.get();
     }
 }

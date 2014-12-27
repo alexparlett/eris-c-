@@ -136,14 +136,14 @@ namespace Eris
 
         void destroy(pointer p)
         {
-            ERIS_ASSERT(!p);
+            ERIS_ASSERT(p);
             p->~T();
         }
 
         template<class K>
         void destroy(K* p)
         {
-            ERIS_ASSERT(!p);
+            ERIS_ASSERT(p);
             p->~K();
         }
 

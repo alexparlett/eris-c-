@@ -21,6 +21,7 @@
 //
 
 #include "Memory.h"
+#include "Core/Log.h"
 #include "Thread/Lock.h"
 #include "Util/Functions.h"
 
@@ -90,7 +91,7 @@ namespace Eris
     {
         if (m_allocations != 0)
         {
-            //todo: Log Warning
+            Log::warn("Destruct called with allocations undeleted");
         }
     }
 
@@ -102,7 +103,8 @@ namespace Eris
             ERIS_ASSERT(isAligned(alignment_bits, out));
             m_allocations++;
         }
-        else; //todo: LOG ERROR
+        else
+            Log::fatal("Not enough memory for allocation");
 
         return out;
     }
@@ -133,7 +135,7 @@ namespace Eris
         }
         else
         {
-            //todo: LOG ERROR
+            Log::fatal("Not enough memory for allocation");
         }
     }
 
@@ -165,7 +167,7 @@ namespace Eris
         }
         else
         {
-            //todo: LOG ERROR
+            Log::fatal("Not enough memory for allocation");
             m_head = out;
             out = nullptr;
         }
@@ -197,7 +199,7 @@ namespace Eris
 
         if (!m_deallocation_flag && !exchange)
         {
-            //todo: LOG WARNING
+            Log::warn("Deallocated in wrong order");
         }
     }
 
@@ -248,7 +250,7 @@ namespace Eris
     {
         if (m_allocations != 0)
         {
-            //todo: LOG WARNING
+            Log::warn("Destructed called with allocations undeleted");
         }
 
         Chunk* ch = m_head_chunk;
@@ -427,7 +429,7 @@ namespace Eris
             }
             else
             {
-                //todo: LOG ERROR
+                Log::fatal("Not enough memory for allocation");
                 destruct(ch);
                 _aligned_free(ch);
                 ch = nullptr;
@@ -435,7 +437,7 @@ namespace Eris
         }
         else
         {
-            //todo: LOG WARNING
+            Log::fatal("Not enough memory for allocation");
         }
 
         return ch;
