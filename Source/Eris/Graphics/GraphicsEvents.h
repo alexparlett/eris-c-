@@ -22,13 +22,15 @@
 
 #pragma once
 
-#include "Object.h"
+#include "Core/Event.h"
 
-EVENT(E_SCREENMODE, ScreenMode)
+namespace Eris
 {
-    PARAM(P_SIZE, Size);
-}
+    struct ScreenModeEvent : public Event
+    {
+        EVENT(ScreenModeEvent)
 
-EVENT(E_DEVICERESET, DeviceReset)
-{
+        glm::i32 width;
+        glm::i32 height;
+    };
 }

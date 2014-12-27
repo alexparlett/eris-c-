@@ -22,11 +22,20 @@
 
 #pragma once
 
-#include "HashMap.h"
-#include "HashSet.h"
-#include "Sort.h"
-#include "Str.h"
+#include <windows.h>
+
+#include <memory>
+#include <string>
+
+#include <glew/glew.h>
+#include <glm/glm.hpp>
+#include <glfw3/glfw3.h>
+#include <glfw3/glfw3native.h>
+
+#include "Util/Assert.h"
+#include "Util/Debug.h"
 
 namespace Eris
 {
+    static const std::string StringEmpty = std::string();
 }

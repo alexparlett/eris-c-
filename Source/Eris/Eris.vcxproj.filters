@@ -43,151 +43,73 @@
     <ClInclude Include="..\gitversion.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Object.h">
-      <Filter>Header Files\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\Graphics.h">
-      <Filter>Header Files\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\Context.h">
-      <Filter>Header Files\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Container\RefCounted.h">
-      <Filter>Header Files\Container</Filter>
-    </ClInclude>
-    <ClInclude Include="Container\Ptr.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Application.h">
-      <Filter>Header Files\Core</Filter>
-    </ClInclude>
     <ClInclude Include="Eris.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Math\AreaAllocator.h">
+    <ClInclude Include="Graphics\Graphics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Container\Allocator.h">
+    <ClInclude Include="Core\Context.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Vector4.h">
+    <ClInclude Include="Application\Engine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Math\BoundingBox.h">
+    <ClInclude Include="Core\Object.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Color.h">
+    <ClInclude Include="Memory\Allocator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Frustum.h">
+    <ClInclude Include="Memory\Pointers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Math\MathDefs.h">
+    <ClInclude Include="Memory\RefCounted.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Matrix3.h">
+    <ClInclude Include="Util\NonCopyable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Matrix3x4.h">
+    <ClInclude Include="Util\Debug.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Matrix4.h">
+    <ClInclude Include="Util\Assert.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Plane.h">
+    <ClInclude Include="Core\Event.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Polyhedron.h">
+    <ClInclude Include="Collections\StringHash.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Quaternion.h">
+    <ClInclude Include="Memory\Memory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Random.h">
+    <ClInclude Include="Util\Functions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Ray.h">
+    <ClInclude Include="Thread\Mutex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Rect.h">
+    <ClInclude Include="Thread\SpinLock.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Sphere.h">
+    <ClInclude Include="Thread\Lock.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Math\StringHash.h">
+    <ClInclude Include="Core\Clock.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Vector2.h">
+    <ClInclude Include="Util\Aligned.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Vector3.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Container\ArrayPtr.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Container\DebugNew.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Container\ForEach.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Container\Hash.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Container\HashBase.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Container\HashMap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Container\HashSet.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Container\HashTable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Container\LinkedList.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Container\List.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Container\ListBase.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Container\Pair.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Container\Sort.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Container\Str.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Container\Swap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Container\Vector.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Container\VectorBase.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Engine.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\Timer.h">
+    <ClInclude Include="Graphics\GraphicsEvents.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Core\CoreEvents.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Spline.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\EngineEvents.h">
+    <ClInclude Include="Application\ApplicationEvents.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Input\InputEvents.h">
@@ -196,25 +118,7 @@
     <ClInclude Include="Input\Input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\GraphicsEvents.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Container\StringUtils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Container\Variant.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="IO\File.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="IO\Log.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Thread\Mutex.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="IO\FileSystem.h">
+    <ClInclude Include="Core\Log.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -224,118 +128,43 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Core\Object.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
     <ClCompile Include="Graphics\Graphics.cpp">
-      <Filter>Source Files\Graphics</Filter>
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Eris.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Core\Context.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Container\RefCounted.cpp">
-      <Filter>Source Files\Container</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Application.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\BoundingBox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Math\Color.cpp">
+    <ClCompile Include="Core\Object.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Math\Frustum.cpp">
+    <ClCompile Include="Application\Engine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Math\Matrix3.cpp">
+    <ClCompile Include="Memory\RefCounted.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Math\Matrix3x4.cpp">
+    <ClCompile Include="Collections\StringHash.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Math\Matrix4.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\Plane.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\Polyhedron.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\Quaternion.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\Random.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\Ray.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\Rect.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\Sphere.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\StringHash.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\Vector2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\Vector3.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\Vector4.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\AreaAllocator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Container\Allocator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Container\HashBase.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Container\Str.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Container\Swap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Container\VectorBase.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Engine.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\Timer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\Spline.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Input\Input.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Container\StringUtils.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Container\Variant.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="IO\File.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="IO\Log.cpp">
+    <ClCompile Include="Memory\Memory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Thread\Mutex.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="IO\FileSystem.cpp">
+    <ClCompile Include="Thread\SpinLock.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Clock.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Input\Input.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Log.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

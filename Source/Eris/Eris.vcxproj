@@ -25,26 +25,26 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -69,49 +69,55 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)Bin\$(ProjectName)_$(Platform)$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)Temp\$(ProjectName)_$(Platform)$(Configuration)\</IntDir>
-    <IncludePath>$(ProjectDir);$(ProjectDir)Engine;$(ProjectDir)Core;$(ProjectDir)Container;$(ProjectDir)Graphics;$(ProjectDir)Math;$(ProjectDir)Input;$(ProjectDir)Audio;$(ProjectDir)IO;$(ProjectDir)Thread;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
     <SourcePath>$(SolutionDir)Source\SolarianWars;$(SourcePath)</SourcePath>
     <TargetName>$(ProjectName)_d</TargetName>
+    <TargetExt>.exe</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)Bin\$(ProjectName)_$(Platform)$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)Temp\$(ProjectName)_$(Platform)$(Configuration)\</IntDir>
-    <IncludePath>$(ProjectDir);$(ProjectDir)Engine;$(ProjectDir)Core;$(ProjectDir)Container;$(ProjectDir)Graphics;$(ProjectDir)Math;$(ProjectDir)Input;$(ProjectDir)Audio;$(ProjectDir)IO;$(ProjectDir)Thread;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
     <SourcePath>$(SourcePath)</SourcePath>
     <TargetName>$(ProjectName)_d</TargetName>
+    <TargetExt>.exe</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)Bin\$(ProjectName)_$(Platform)$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)Temp\$(ProjectName)_$(Platform)$(Configuration)\</IntDir>
-    <IncludePath>$(ProjectDir);$(ProjectDir)Engine;$(ProjectDir)Core;$(ProjectDir)Container;$(ProjectDir)Graphics;$(ProjectDir)Math;$(ProjectDir)Input;$(ProjectDir)Audio;$(ProjectDir)IO;$(ProjectDir)Thread;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
     <SourcePath>$(SolutionDir)Source\SolarianWars;$(SourcePath)</SourcePath>
+    <TargetExt>.exe</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)Bin\$(ProjectName)_$(Platform)$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)Temp\$(ProjectName)_$(Platform)$(Configuration)\</IntDir>
-    <IncludePath>$(ProjectDir);$(ProjectDir)Engine;$(ProjectDir)Core;$(ProjectDir)Container;$(ProjectDir)Graphics;$(ProjectDir)Math;$(ProjectDir)Input;$(ProjectDir)Audio;$(ProjectDir)IO;$(ProjectDir)Thread;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
     <SourcePath>$(SolutionDir)Source\SolarianWars;$(SourcePath)</SourcePath>
     <TargetName>$(ProjectName)</TargetName>
+    <TargetExt>.exe</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir);..\ThirdParty\glfw3;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;WIN32;GLFW_EXPOSE_NATIVE_WIN32;GLFW_EXPOSE_NATIVE_WGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Source\ThirdParty</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GLEW_STATIC;_DEBUG;WIN32;GLFW_EXPOSE_NATIVE_WIN32;GLFW_EXPOSE_NATIVE_WGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
       <ProgramDataBaseFileName>$(IntDir)$(TargetName).pdb</ProgramDataBaseFileName>
       <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>Eris.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>Eris.h</ForcedIncludeFiles>
+      <StringPooling>
+      </StringPooling>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(IntDir)$(TargetName).pdb</ProgramDatabaseFile>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(Platform)\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3_d.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3_d.lib;glew32sd.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <LargeAddressAware>true</LargeAddressAware>
     </Link>
     <PreBuildEvent>
@@ -130,20 +136,23 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir);..\ThirdParty\glfw3;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;WIN32;GLFW_EXPOSE_NATIVE_WIN32;GLFW_EXPOSE_NATIVE_WGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Source\ThirdParty</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GLEW_STATIC;_DEBUG;WIN32;GLFW_EXPOSE_NATIVE_WIN32;GLFW_EXPOSE_NATIVE_WGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
       <ProgramDataBaseFileName>$(IntDir)$(TargetName).pdb</ProgramDataBaseFileName>
       <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>Eris.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>Eris.h</ForcedIncludeFiles>
+      <StringPooling>
+      </StringPooling>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(IntDir)$(TargetName).pdb</ProgramDatabaseFile>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(Platform)\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3_d.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3_d.lib;glew32sd.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ProfileGuidedDatabase>$(IntDir)$(TargetName).pgd</ProfileGuidedDatabase>
     </Link>
     <PreBuildEvent>
@@ -167,14 +176,16 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir);..\ThirdParty\glfw3;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;GLFW_EXPOSE_NATIVE_WIN32;GLFW_EXPOSE_NATIVE_WGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Source\ThirdParty</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GLEW_STATIC;WIN32;GLFW_EXPOSE_NATIVE_WIN32;GLFW_EXPOSE_NATIVE_WGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <ProgramDataBaseFileName>$(IntDir)$(TargetName).pdb</ProgramDataBaseFileName>
       <DebugInformationFormat>None</DebugInformationFormat>
       <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>Eris.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>Eris.h</ForcedIncludeFiles>
+      <StringPooling>
+      </StringPooling>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -182,7 +193,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <ProgramDatabaseFile>$(IntDir)$(TargetName).pdb</ProgramDatabaseFile>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(Platform)\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;glew32s.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <LargeAddressAware>true</LargeAddressAware>
     </Link>
     <PreBuildEvent>
@@ -203,14 +214,16 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir);..\ThirdParty\glfw3;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;GLFW_EXPOSE_NATIVE_WIN32;GLFW_EXPOSE_NATIVE_WGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Source\ThirdParty</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GLEW_STATIC;WIN32;GLFW_EXPOSE_NATIVE_WIN32;GLFW_EXPOSE_NATIVE_WGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <ProgramDataBaseFileName>$(IntDir)$(TargetName).pdb</ProgramDataBaseFileName>
       <DebugInformationFormat>None</DebugInformationFormat>
       <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>Eris.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>Eris.h</ForcedIncludeFiles>
+      <StringPooling>
+      </StringPooling>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -218,7 +231,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <ProgramDatabaseFile>$(IntDir)$(TargetName).pdb</ProgramDatabaseFile>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(Platform)\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;glew32s.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>cmd.exe /c "$(SolutionDir)gitversion.bat $(SolutionDir) $(ProjectDir)"</Command>
@@ -233,108 +246,51 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\gitversion.h" />
-    <ClInclude Include="Container\Allocator.h" />
-    <ClInclude Include="Container\ArrayPtr.h" />
-    <ClInclude Include="Container\DebugNew.h" />
-    <ClInclude Include="Container\ForEach.h" />
-    <ClInclude Include="Container\Hash.h" />
-    <ClInclude Include="Container\HashBase.h" />
-    <ClInclude Include="Container\HashMap.h" />
-    <ClInclude Include="Container\HashSet.h" />
-    <ClInclude Include="Container\HashTable.h" />
-    <ClInclude Include="Container\LinkedList.h" />
-    <ClInclude Include="Container\List.h" />
-    <ClInclude Include="Container\ListBase.h" />
-    <ClInclude Include="Container\Pair.h" />
-    <ClInclude Include="Container\Ptr.h" />
-    <ClInclude Include="Container\RefCounted.h" />
-    <ClInclude Include="Container\Sort.h" />
-    <ClInclude Include="Container\Str.h" />
-    <ClInclude Include="Container\StringUtils.h" />
-    <ClInclude Include="Container\Swap.h" />
-    <ClInclude Include="Container\Variant.h" />
-    <ClInclude Include="Container\Vector.h" />
-    <ClInclude Include="Container\VectorBase.h" />
+    <ClInclude Include="Application\ApplicationEvents.h" />
+    <ClInclude Include="Core\Clock.h" />
+    <ClInclude Include="Core\Event.h" />
     <ClInclude Include="Core\CoreEvents.h" />
-    <ClInclude Include="Core\Timer.h" />
-    <ClInclude Include="Engine\Application.h" />
-    <ClInclude Include="Core\Context.h" />
-    <ClInclude Include="Core\Object.h" />
-    <ClInclude Include="Engine\Engine.h" />
-    <ClInclude Include="Engine\EngineEvents.h" />
-    <ClInclude Include="Eris.h" />
-    <ClInclude Include="Graphics\Graphics.h" />
+    <ClInclude Include="Core\Log.h" />
     <ClInclude Include="Graphics\GraphicsEvents.h" />
     <ClInclude Include="Input\Input.h" />
     <ClInclude Include="Input\InputEvents.h" />
-    <ClInclude Include="IO\File.h" />
-    <ClInclude Include="IO\FileSystem.h" />
-    <ClInclude Include="IO\Log.h" />
-    <ClInclude Include="Math\AreaAllocator.h" />
-    <ClInclude Include="Math\BoundingBox.h" />
-    <ClInclude Include="Math\Color.h" />
-    <ClInclude Include="Math\Frustum.h" />
-    <ClInclude Include="Math\MathDefs.h" />
-    <ClInclude Include="Math\Matrix3.h" />
-    <ClInclude Include="Math\Matrix3x4.h" />
-    <ClInclude Include="Math\Matrix4.h" />
-    <ClInclude Include="Math\Plane.h" />
-    <ClInclude Include="Math\Polyhedron.h" />
-    <ClInclude Include="Math\Quaternion.h" />
-    <ClInclude Include="Math\Random.h" />
-    <ClInclude Include="Math\Ray.h" />
-    <ClInclude Include="Math\Rect.h" />
-    <ClInclude Include="Math\Sphere.h" />
-    <ClInclude Include="Math\Spline.h" />
-    <ClInclude Include="Math\StringHash.h" />
-    <ClInclude Include="Math\Vector2.h" />
-    <ClInclude Include="Math\Vector3.h" />
-    <ClInclude Include="Math\Vector4.h" />
-    <ClInclude Include="resource.h" />
+    <ClInclude Include="Memory\Allocator.h" />
+    <ClInclude Include="Application\Engine.h" />
+    <ClInclude Include="Memory\Memory.h" />
+    <ClInclude Include="Memory\Pointers.h" />
+    <ClInclude Include="Memory\RefCounted.h" />
+    <ClInclude Include="Collections\StringHash.h" />
+    <ClInclude Include="Core\Context.h" />
+    <ClInclude Include="Thread\Lock.h" />
     <ClInclude Include="Thread\Mutex.h" />
+    <ClInclude Include="Thread\SpinLock.h" />
+    <ClInclude Include="Util\Aligned.h" />
+    <ClInclude Include="Util\Assert.h" />
+    <ClInclude Include="Util\Debug.h" />
+    <ClInclude Include="Core\Object.h" />
+    <ClInclude Include="Eris.h" />
+    <ClInclude Include="Graphics\Graphics.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="Util\Functions.h" />
+    <ClInclude Include="Util\NonCopyable.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Eris.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Container\Allocator.cpp" />
-    <ClCompile Include="Container\HashBase.cpp" />
-    <ClCompile Include="Container\RefCounted.cpp" />
-    <ClCompile Include="Container\Str.cpp" />
-    <ClCompile Include="Container\StringUtils.cpp" />
-    <ClCompile Include="Container\Swap.cpp" />
-    <ClCompile Include="Container\Variant.cpp" />
-    <ClCompile Include="Container\VectorBase.cpp" />
-    <ClCompile Include="Core\Timer.cpp" />
-    <ClCompile Include="Engine\Application.cpp" />
+    <ClCompile Include="Application\Engine.cpp" />
+    <ClCompile Include="Application\Eris.cpp" />
+    <ClCompile Include="Core\Clock.cpp" />
+    <ClCompile Include="Core\Log.cpp" />
+    <ClCompile Include="Input\Input.cpp" />
+    <ClCompile Include="Memory\Memory.cpp" />
+    <ClCompile Include="Memory\RefCounted.cpp" />
+    <ClCompile Include="Collections\StringHash.cpp" />
     <ClCompile Include="Core\Context.cpp" />
     <ClCompile Include="Core\Object.cpp" />
-    <ClCompile Include="Engine\Engine.cpp" />
     <ClCompile Include="Graphics\Graphics.cpp" />
-    <ClCompile Include="Input\Input.cpp" />
-    <ClCompile Include="IO\File.cpp" />
-    <ClCompile Include="IO\FileSystem.cpp" />
-    <ClCompile Include="IO\Log.cpp" />
-    <ClCompile Include="Math\AreaAllocator.cpp" />
-    <ClCompile Include="Math\BoundingBox.cpp" />
-    <ClCompile Include="Math\Color.cpp" />
-    <ClCompile Include="Math\Frustum.cpp" />
-    <ClCompile Include="Math\Matrix3.cpp" />
-    <ClCompile Include="Math\Matrix3x4.cpp" />
-    <ClCompile Include="Math\Matrix4.cpp" />
-    <ClCompile Include="Math\Plane.cpp" />
-    <ClCompile Include="Math\Polyhedron.cpp" />
-    <ClCompile Include="Math\Quaternion.cpp" />
-    <ClCompile Include="Math\Random.cpp" />
-    <ClCompile Include="Math\Ray.cpp" />
-    <ClCompile Include="Math\Rect.cpp" />
-    <ClCompile Include="Math\Sphere.cpp" />
-    <ClCompile Include="Math\Spline.cpp" />
-    <ClCompile Include="Math\StringHash.cpp" />
-    <ClCompile Include="Math\Vector2.cpp" />
-    <ClCompile Include="Math\Vector3.cpp" />
-    <ClCompile Include="Math\Vector4.cpp" />
     <ClCompile Include="Thread\Mutex.cpp" />
+    <ClCompile Include="Thread\SpinLock.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

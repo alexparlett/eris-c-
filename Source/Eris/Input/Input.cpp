@@ -20,27 +20,30 @@
 // THE SOFTWARE.
 //
 
-#include "CoreEvents.h"
-#include "Context.h"
-#include "Graphics.h"
-#include "GraphicsEvents.h"
 #include "Input.h"
 #include "InputEvents.h"
 
-#include <glfw3.h>
+#include "Core/CoreEvents.h"
+#include "Core/Context.h"
+#include "Graphics/Graphics.h"
+#include "Graphics/GraphicsEvents.h"
 
 namespace Eris
 {
 
     Input::Input(Context* context) :
         Object(context),
-        mouseButtonDown_(0),
-        mouseButtonPress_(0),
-        mouseMoveWheel_(0),
-        mouseMove_(IntVector2::ZERO),
-        cursorMode_(CM_NORMAL),
-        focused_(false),
-        minimized_(false)
+        m_mouse_button_down(0),
+        m_mouse_button_press(0),
+        m_mouse_wheel_move(0),
+        m_mouse_move(glm::ivec2(0,0)),
+        m_cursor_mode(CursorMode::CM_NORMAL),
+        m_focused(false),
+        m_minimized(false),
+        m_key_down(ChainAllocator<glm::i32>(0, 8 * sizeof(glm::i32), 128 * sizeof(glm::i32))),
+        m_key_press(ChainAllocator<glm::i32>(0, 8 * sizeof(glm::i32), 128 * sizeof(glm::i32))),
+        m_scancode_down(ChainAllocator<glm::i32>(0, 8 * sizeof(glm::i32), 128 * sizeof(glm::i32))),
+        m_scancode_press(ChainAllocator<glm::i32>(0, 8 * sizeof(glm::i32), 128 * sizeof(glm::i32)))
     {
     }
 
@@ -49,311 +52,291 @@ namespace Eris
 
     }
 
-    void Input::Update()
+    void Input::update()
     {
-        assert(initialized_);
-
-        ResetState();
-
+        ERIS_ASSERT(m_initialised);
+        resetState();
         glfwPollEvents();
     }
 
-    void Input::SetCursorMode(CursorMode cm)
+    void Input::setCursorMode(CursorMode cm)
     {
-        cursorMode_ = cm;
-
-        Graphics* graphics = context_->GetModule<Graphics>();
-        if (!graphics || !graphics->IsInitialized())
-            return;
+        m_cursor_mode = cm;
 
         GLFWwindow* window = glfwGetCurrentContext();
+        if (!window)
+            return;
 
         switch (cm)
         {
-        case Eris::CM_NORMAL:
+        case CursorMode::CM_NORMAL:
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             break;
-        case Eris::CM_HIDDEN:
+        case CursorMode::CM_HIDDEN:
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
             break;
-        case Eris::CM_DISABLED:
+        case CursorMode::CM_DISABLED:
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
             break;
         }
     }
 
-    bool Input::KeyDown(int key)
+    bool Input::keyDown(glm::int32 key)
     {
-        return keyDown_.Contains(key);
+        return m_key_down.find(key) != m_key_down.end();
     }
 
-    bool Input::KeyPressed(int key)
+    bool Input::keyPressed(glm::int32 key)
     {
-        return keyPress_.Contains(key);
+        return m_key_press.find(key) != m_key_press.end();
     }
 
-    bool Input::ScancodeDown(int scancode)
+    bool Input::scancodeDown(glm::int32 scancode)
     {
-        return scancodeDown_.Contains(scancode);
+        return m_scancode_down.find(scancode) != m_scancode_down.end();
     }
 
-    bool Input::ScancodePressed(int scancode)
+    bool Input::scancodePressed(glm::int32 scancode)
     {
-        return scancodePress_.Contains(scancode);
+        return m_scancode_press.find(scancode) != m_scancode_press.end();
     }
 
-    bool Input::ModifierDown(int modifier)
+    bool Input::modifierDown(glm::int32 modifier)
     {
-        if (modifier == MOD_ALT)
-            return keyDown_.Contains(KEY_LEFT_ALT) || keyDown_.Contains(KEY_RIGHT_ALT);
-        else if (modifier == MOD_CONTROL)
-            return keyDown_.Contains(KEY_LEFT_CONTROL) || keyDown_.Contains(KEY_RIGHT_CONTROL);
-        else if (modifier == MOD_SHIFT)
-            return keyDown_.Contains(KEY_LEFT_SHIFT) || keyDown_.Contains(KEY_RIGHT_SHIFT);
-        else if (modifier == MOD_SUPER)
-            return keyDown_.Contains(KEY_LEFT_SUPER) || keyDown_.Contains(KEY_RIGHT_SUPER);
+        if (modifier == MODIFIER_ALT)
+            return m_key_down.find(KEY_LEFT_ALT) != m_key_down.end() || m_key_down.find(KEY_RIGHT_ALT) != m_key_down.end();
+        else if (modifier == MODIFIER_CONTROL)
+            return m_key_down.find(KEY_LEFT_CONTROL) != m_key_down.end() || m_key_down.find(KEY_RIGHT_CONTROL) != m_key_down.end();
+        else if (modifier == MODIFIER_SHIFT)
+            return m_key_down.find(KEY_LEFT_SHIFT) != m_key_down.end() || m_key_down.find(KEY_RIGHT_SHIFT) != m_key_down.end();
+        else if (modifier == MODIFIER_SUPER)
+            return m_key_down.find(KEY_LEFT_SUPER) != m_key_down.end() || m_key_down.find(KEY_RIGHT_SUPER) != m_key_down.end();
 
         return false;
     }
 
-    bool Input::ModifierPressed(int modifier)
+    bool Input::modifierPressed(glm::int32 modifier)
     {
-        if (modifier == MOD_ALT)
-            return keyPress_.Contains(KEY_LEFT_ALT) || keyPress_.Contains(KEY_RIGHT_ALT);
-        else if (modifier == MOD_CONTROL)
-            return keyPress_.Contains(KEY_LEFT_CONTROL) || keyPress_.Contains(KEY_RIGHT_CONTROL);
-        else if (modifier == MOD_SHIFT)
-            return keyPress_.Contains(KEY_LEFT_SHIFT) || keyPress_.Contains(KEY_RIGHT_SHIFT);
-        else if (modifier == MOD_SUPER)
-            return keyPress_.Contains(KEY_LEFT_SUPER) || keyPress_.Contains(KEY_RIGHT_SUPER);
+        if (modifier == MODIFIER_ALT)
+            return m_key_press.find(KEY_LEFT_ALT) != m_key_press.end() || m_key_press.find(KEY_RIGHT_ALT) != m_key_press.end();
+        else if (modifier == MODIFIER_CONTROL)
+            return m_key_press.find(KEY_LEFT_CONTROL) != m_key_press.end() || m_key_press.find(KEY_RIGHT_CONTROL) != m_key_press.end();
+        else if (modifier == MODIFIER_SHIFT)
+            return m_key_press.find(KEY_LEFT_SHIFT) != m_key_press.end() || m_key_press.find(KEY_RIGHT_SHIFT) != m_key_press.end();
+        else if (modifier == MODIFIER_SUPER)
+            return m_key_press.find(KEY_LEFT_SUPER) != m_key_press.end() || m_key_press.find(KEY_RIGHT_SUPER) != m_key_press.end();
 
         return false;
     }
 
-    bool Input::MouseButtonDown(int button)
+    bool Input::mouseButtonDown(glm::int32 button)
     {
-        return (mouseButtonDown_ & button) != 0;
+        return (m_mouse_button_down & button) != 0;
     }
 
-    bool Input::MouseButtonPressed(int button)
+    bool Input::mouseButtonPressed(glm::int32 button)
     {
-        return (mouseButtonPress_ & button) != 0;
+        return (m_mouse_button_press & button) != 0;
     }
 
-    int Input::ModifiersDown()
+    glm::int32 Input::modifiersDown()
     {
-        int ret = 0;
+        glm::int32 ret = 0;
 
-        if (ModifierDown(MOD_ALT))
-            ret |= MOD_ALT;
-        if (ModifierDown(MOD_CONTROL))
-            ret |= MOD_CONTROL;
-        if (ModifierDown(MOD_SHIFT))
-            ret |= MOD_SHIFT;
-        if (ModifierDown(MOD_SUPER))
-            ret |= MOD_SUPER;
+        if (modifierDown(MODIFIER_ALT))
+            ret |= MODIFIER_ALT;
+        if (modifierDown(MODIFIER_CONTROL))
+            ret |= MODIFIER_CONTROL;
+        if (modifierDown(MODIFIER_SHIFT))
+            ret |= MODIFIER_SHIFT;
+        if (modifierDown(MODIFIER_SUPER))
+            ret |= MODIFIER_SUPER;
 
         return ret;
     }
 
-    void Input::Initialize()
+    void Input::initialize()
     {
-        Graphics* graphics = context_->GetModule<Graphics>();
-        if (!graphics || !graphics->IsInitialized())
-            return;
+        resetState();
 
-        ResetState();
-
-        SubscribeToEvent(E_BEGINFRAME, HANDLER(Input, HandleBeginFrame));
-        SubscribeToEvent(E_SCREENMODE, HANDLER(Input, HandleScreenMode));
+        subscribeToEvent(BeginFrameEvent::getTypeStatic(), HANDLER(Input, handleBeginFrame));
+        subscribeToEvent(ScreenModeEvent::getTypeStatic(), HANDLER(Input, handleScreenMode));
 
         GLFWwindow* window = glfwGetCurrentContext();
+        if (!window)
+            return;
 
-        SetCursorMode(cursorMode_);
+        setCursorMode(m_cursor_mode);
 
         glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_FALSE);
         glfwSetInputMode(window, GLFW_STICKY_MOUSE_BUTTONS, GL_FALSE);
 
-        glfwSetWindowFocusCallback(window, &Input::HandleFocusCallback);
-        glfwSetWindowIconifyCallback(window, &Input::HandleIconifiedCallback);
-        glfwSetMouseButtonCallback(window, &Input::HandleMouseButtonCallback);
-        glfwSetKeyCallback(window, &Input::HandleKeyCallback);
-        glfwSetScrollCallback(window, &Input::HandleScrollCallback);
-        glfwSetCursorPosCallback(window, &Input::HandleCursorPosCallback);        
+        glfwSetWindowFocusCallback(window, &Input::handleFocusCallback);
+        glfwSetWindowIconifyCallback(window, &Input::handleIconifiedCallback);
+        glfwSetMouseButtonCallback(window, &Input::handleMouseButtonCallback);
+        glfwSetKeyCallback(window, &Input::handleKeyCallback);
+        glfwSetScrollCallback(window, &Input::handleScrollCallback);
+        glfwSetCursorPosCallback(window, &Input::handleCursorPosCallback);        
         
-        initialized_ = true;
+        m_initialised = true;
     }
 
-    void Input::ResetState()
+    void Input::resetState()
     {
-        keyDown_.Clear();
-        keyPress_.Clear();
-        scancodeDown_.Clear();
-        scancodePress_.Clear();
+        m_key_down.clear();
+        m_key_press.clear();
+        m_scancode_down.clear();
+        m_scancode_press.clear();
 
-        mouseMove_ = IntVector2::ZERO;
-        mouseMoveWheel_ = 0;
-        mouseButtonPress_ = 0;
-        mouseButtonDown_ = 0;
+        m_mouse_move = glm::ivec2(0, 0);
+        m_mouse_wheel_move = 0;
+        m_mouse_button_press = 0;
+        m_mouse_button_down = 0;
     }
 
-    void Input::HandleScreenMode(const VariantMap& eventData, void* userData)
+    void Input::handleScreenMode(const StringHash& event_type, const Event* event_data)
     {
-        if (!initialized_)
-            Initialize();
+        if (!m_initialised)
+            initialize();
         else
-            ResetState();
+            resetState();
 
         GLFWwindow* window = glfwGetCurrentContext();
 
-        minimized_ = glfwGetWindowAttrib(window, GLFW_ICONIFIED) == GL_TRUE;
+        m_minimized = glfwGetWindowAttrib(window, GLFW_ICONIFIED) == GL_TRUE;
     }
 
-    void Input::HandleBeginFrame(const VariantMap& eventData, void* userData)
+    void Input::handleBeginFrame(const StringHash& event_type, const Event* event_data)
     {
-        Update();
+        update();
     }
 
-    void Input::HandleFocusCallback(GLFWwindow* window, int focused)
-    {
-        Context* context = static_cast<Context*>(glfwGetWindowUserPointer(window));
-        Input* input = context->GetModule<Input>();
-
-        input->focused_ = focused == GL_TRUE;
-    }
-
-    void Input::HandleIconifiedCallback(GLFWwindow* window, int iconified)
+    void Input::handleFocusCallback(GLFWwindow* window, int focused)
     {
         Context* context = static_cast<Context*>(glfwGetWindowUserPointer(window));
-        Input* input = context->GetModule<Input>();
+        Input* input = context->getModule<Input>();
 
-        input->minimized_ = iconified == GL_TRUE;
+        input->m_focused = focused == GL_TRUE;
     }
 
-    void Input::HandleMouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
+    void Input::handleIconifiedCallback(GLFWwindow* window, int iconified)
     {
         Context* context = static_cast<Context*>(glfwGetWindowUserPointer(window));
-        Input* input = context->GetModule<Input>();
+        Input* input = context->getModule<Input>();
+
+        input->m_minimized = iconified == GL_TRUE;
+    }
+
+    void Input::handleMouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
+    {
+        Context* context = static_cast<Context*>(glfwGetWindowUserPointer(window));
+        Input* input = context->getModule<Input>();
 
         if (action == GLFW_PRESS)
         {
-            input->mouseButtonDown_ |= button;
-            input->mouseButtonPress_ |= button;
+            input->m_mouse_button_down |= button;
+            input->m_mouse_button_press |= button;
 
-            using namespace MouseButtonPressed;
-
-            VariantMap& eventData = context->GetEventDataMap();
-            eventData[P_BUTTON] = button;
-            eventData[P_BUTTONS] = input->mouseButtonDown_;
-            eventData[P_MODIFIERS] = mods;
-            input->SendEvent(E_MOUSE_BUTTON_PRESSED, eventData);
+            MouseButtonPressEvent* event = context->getFrameAllocator().newInstance<MouseButtonPressEvent>();
+            event->button = button;
+            event->buttons = input->m_mouse_button_down;
+            event->modifiers = mods;
+            input->sendEvent(MouseButtonPressEvent::getTypeStatic(), event);
         }
         else
         {
-            input->mouseButtonDown_ &= ~button;
+            input->m_mouse_button_down &= ~button;
 
-            using namespace MouseButtonReleased;
-
-            VariantMap& eventData = context->GetEventDataMap();
-            eventData[P_BUTTON] = button;
-            eventData[P_BUTTONS] = input->mouseButtonDown_;
-            eventData[P_MODIFIERS] = mods;
-            input->SendEvent(E_MOUSE_BUTTON_RELEASED, eventData);
+            MouseButtonReleaseEvent* event = context->getFrameAllocator().newInstance<MouseButtonReleaseEvent>();
+            event->button = button;
+            event->buttons = input->m_mouse_button_down;
+            event->modifiers = mods;
+            input->sendEvent(MouseButtonReleaseEvent::getTypeStatic(), event);
         }
     }
 
-    void Input::HandleKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+    void Input::handleKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
     {
         Context* context = static_cast<Context*>(glfwGetWindowUserPointer(window));
-        Input* input = context->GetModule<Input>();
+        Input* input = context->getModule<Input>();
 
         if (action == GLFW_PRESS)
         {
-            input->keyDown_.Insert(key);
-            input->keyPress_.Insert(key);
-            input->scancodeDown_.Insert(scancode);
-            input->scancodePress_.Insert(scancode);
+            input->m_key_down.insert(key);
+            input->m_key_press.insert(key);
+            input->m_scancode_down.insert(scancode);
+            input->m_scancode_press.insert(scancode);
 
-            using namespace KeyPressed;
-
-            VariantMap& eventData = context->GetEventDataMap();
-            eventData[P_KEY] = key;
-            eventData[P_SCANCODE] = scancode;
-            eventData[P_BUTTONS] = input->mouseButtonDown_;
-            eventData[P_MODIFIERS] = mods;
-            eventData[P_REPEAT] = false;
-            input->SendEvent(E_KEY_PRESSED, eventData);
+            KeyPressEvent* event = context->getFrameAllocator().newInstance<KeyPressEvent>();
+            event->key = key;
+            event->scancode = scancode;
+            event->buttons = input->m_mouse_button_down;
+            event->modifiers = mods;
+            event->repeat = false;
+            input->sendEvent(KeyPressEvent::getTypeStatic(), event);
         }
         else if (action == GLFW_REPEAT)
         {
-            input->keyDown_.Insert(key);
-            input->keyPress_.Insert(key);
-            input->scancodeDown_.Insert(scancode);
-            input->scancodePress_.Insert(scancode);
+            input->m_key_down.insert(key);
+            input->m_key_press.insert(key);
+            input->m_scancode_down.insert(scancode);
+            input->m_scancode_press.insert(scancode);
 
-            using namespace KeyPressed;
-
-            VariantMap& eventData = context->GetEventDataMap();
-            eventData[P_KEY] = key;
-            eventData[P_SCANCODE] = scancode;
-            eventData[P_BUTTONS] = input->mouseButtonDown_;
-            eventData[P_MODIFIERS] = mods;
-            eventData[P_REPEAT] = true;
-            input->SendEvent(E_KEY_PRESSED, eventData);
+            KeyPressEvent* event = context->getFrameAllocator().newInstance<KeyPressEvent>();
+            event->key = key;
+            event->scancode = scancode;
+            event->buttons = input->m_mouse_button_down;
+            event->modifiers = mods;
+            event->repeat = true;
+            input->sendEvent(KeyPressEvent::getTypeStatic(), event);
         }
         else
         {
-            input->keyDown_.Erase(key);
-            input->scancodeDown_.Erase(scancode);
+            input->m_key_down.erase(key);
+            input->m_scancode_down.erase(scancode);
 
-            using namespace KeyReleased;
-
-            VariantMap& eventData = context->GetEventDataMap();
-            eventData[P_KEY] = key;
-            eventData[P_SCANCODE] = scancode;
-            eventData[P_BUTTONS] = input->mouseButtonDown_;
-            eventData[P_MODIFIERS] = mods;
-            input->SendEvent(E_KEY_RELEASED, eventData);
+            KeyReleaseEvent* event = context->getFrameAllocator().newInstance<KeyReleaseEvent>();
+            event->key = key;
+            event->scancode = scancode;
+            event->buttons = input->m_mouse_button_down;
+            event->modifiers = mods;
+            input->sendEvent(KeyPressEvent::getTypeStatic(), event);
         }
     }
 
-    void Input::HandleScrollCallback(GLFWwindow* window, double x, double y)
+    void Input::handleScrollCallback(GLFWwindow* window, double x, double y)
     {
         Context* context = static_cast<Context*>(glfwGetWindowUserPointer(window));
-        Input* input = context->GetModule<Input>();
+        Input* input = context->getModule<Input>();
 
         double amount = x > y ? x : -y;
 
-        input->mouseMoveWheel_ += amount;
+        input->m_mouse_wheel_move += amount;
 
-        using namespace MouseScroll;
-
-        VariantMap& eventData = context->GetEventDataMap();
-        eventData[P_AMOUNT] = amount;
-        eventData[P_BUTTONS] = input->mouseButtonDown_;
-        eventData[P_MODIFIERS] = input->ModifiersDown();
-        input->SendEvent(E_MOUSE_SCROLL, eventData);
+        MouseScrollEvent* event = context->getFrameAllocator().newInstance<MouseScrollEvent>();
+        event->amount = amount;
+        event->buttons = input->m_mouse_button_down;
+        event->modifiers = input->modifiersDown();
+        input->sendEvent(MouseScrollEvent::getTypeStatic(), event);
     }
 
-    void Input::HandleCursorPosCallback(GLFWwindow* window, double x, double y)
+    void Input::handleCursorPosCallback(GLFWwindow* window, double x, double y)
     {
         Context* context = static_cast<Context*>(glfwGetWindowUserPointer(window));
-        Input* input = context->GetModule<Input>();
+        Input* input = context->getModule<Input>();
 
-        IntVector2 position = IntVector2(x, y);
-        IntVector2 relative = input->lastMousePosition_ - position;
+        glm::ivec2 position = glm::ivec2(x, y);
+        glm::ivec2 relative = input->m_mouse_last_position - position;
 
-        input->lastMousePosition_ = position;
-        input->mouseMove_ += relative;
+        input->m_mouse_last_position = position;
+        input->m_mouse_move += relative;
 
-        using namespace MouseMove;
-
-        VariantMap& eventData = context->GetEventDataMap();
-        eventData[P_POSITION] = position;
-        eventData[P_RELATIVE] = relative;
-        eventData[P_BUTTONS] = input->mouseButtonDown_;
-        eventData[P_MODIFIERS] = input->ModifiersDown();
-        input->SendEvent(E_MOUSE_MOVE, eventData);
+        MouseMoveEvent* event = context->getFrameAllocator().newInstance<MouseMoveEvent>();
+        event->position = position;
+        event->relative = relative;
+        event->buttons = input->m_mouse_button_down;
+        event->modifiers = input->modifiersDown();
+        input->sendEvent(MouseMoveEvent::getTypeStatic(), event);
     }
 
 }

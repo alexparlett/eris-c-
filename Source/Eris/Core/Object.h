@@ -22,113 +22,91 @@
 
 #pragma once
 
-#include "LinkedList.h"
-#include "RefCounted.h"
-#include "Variant.h"
-#include "StringHash.h"
-
 #include <functional>
+#include <list>
+
+#include "Collections/StringHash.h"
+#include "Memory/RefCounted.h"
+#include "Memory/Pointers.h"
 
 namespace Eris
 {
     class Object;
+    struct Event;
 
-    /// Event Handler
-    class EventHandler : public LinkedListNode
+    class EventHandler : public RefCounted
     {
-        typedef std::function<void(const VariantMap&, void*)> HandlerFunctionPtr;
+        using HandlerFunctionPtr = std::function<void(const StringHash&, const Event*)>;
 
     public:
         EventHandler(HandlerFunctionPtr function) :
-            sender_(0),
-            function_(function),
-            userData_(0)
+            m_sender(0),
+            m_function(function),
+            m_user_data(0)
         {
         }
 
-        EventHandler(HandlerFunctionPtr function, void* userData) :
-            sender_(0),
-            function_(function),
-            userData_(userData)
+        EventHandler(HandlerFunctionPtr function, void* user_data) :
+            m_sender(0),
+            m_function(function),
+            m_user_data(user_data)
         {
         }
 
         virtual ~EventHandler() {}
 
-        void SetSender(Object* sender) { sender_ = sender; }
-        void SetEventType(StringHash eventType) { eventType_ = eventType; }
+        void setSender(Object* sender) { m_sender = sender; }
+        void setEventType(StringHash event_type) { m_event_type = event_type; }
 
-        Object* GetSender() const { return sender_; }
-        const StringHash& GetEventType() const { return eventType_; }
+        Object* getSender() const { return m_sender; }
+        const StringHash& getEventType() const { return m_event_type; }
 
-        void Invoke(const VariantMap& eventData) { function_(eventData, userData_); }
+        void invoke(const Event* event) { m_function(m_event_type, event); }
 
     private:
-        Object* sender_;
-        StringHash eventType_;
-        HandlerFunctionPtr function_;
-        void* userData_;
+        Object* m_sender;
+        StringHash m_event_type;
+        HandlerFunctionPtr m_function;
+        void* m_user_data;
     };
 
-#define OBJECT(typeName) \
-public: \
-    virtual const Eris::StringHash& GetType() const { return GetTypeStatic(); } \
-    virtual const Eris::StringHash& GetBaseType() const { return GetBaseTypeStatic(); } \
-    virtual const Eris::String& GetTypeName() const { return GetTypeNameStatic(); } \
-    static const Eris::StringHash& GetTypeStatic() { static const Eris::StringHash typeStatic(#typeName); return typeStatic; } \
-    static const Eris::String& GetTypeNameStatic() { static const Eris::String typeNameStatic(#typeName); return typeNameStatic; } \
-
-#define BASEOBJECT(typeName) \
-public: \
-    static const Eris::StringHash& GetBaseTypeStatic() { static const Eris::StringHash baseTypeStatic(#typeName); return baseTypeStatic; } \
-
-    /// Object
-    class Object : public RefCounted
-    {
+	class Object : public RefCounted
+	{
         friend class Context;
 
-        BASEOBJECT(Object)
+        using Iterator = std::list<SharedPtr<EventHandler>>::iterator;
 
-    public:
-        Object(Context* context);
-        virtual ~Object();
+	public:
+	    Object(Context* context);
+	    virtual ~Object();
 
-        void SubscribeToEvent(StringHash eventType, EventHandler* handler);
-        void SubscribeToEvent(Object* sender, StringHash eventType, EventHandler* handler);
+        void subscribeToEvent(const StringHash& event_type, EventHandler* handler, Object* sender = nullptr);
 
-        void UnsubscribeFromEvent(StringHash eventType);
-        void UnsubscribeFromEvent(Object* sender, StringHash eventType);
-        void UnsubscribeFromEvents(Object* sender);
-        void UnsubscribeFromEvents();
+        void unsubscribeFromEvent(const StringHash& event_type);
+        void unsubscribeFromEvent(const StringHash& event_type, Object* sender);
+        void unsubscribeFromEvents(Object* sender);
+        void unsubscribeFromEvents();
 
-        void SendEvent(StringHash eventType);
-        void SendEvent(StringHash eventType, const VariantMap& eventData);
+        void sendEvent(const StringHash& event_type, Event* event = nullptr);
 
-        static void SendStaticEvent(StringHash eventType);
-        static void SendStaticEvent(StringHash eventType, const VariantMap& eventData);
-
-        virtual const StringHash& GetType() const = 0;
-        virtual const StringHash& GetBaseType() const = 0;
-        virtual const String& GetTypeName() const = 0;
-        Context* GetContext() { return context_; }
+        Context* getContext() const { return m_context; }
 
     protected:
-        virtual void OnEvent(Object* sender, StringHash eventType, const VariantMap& eventData);
+        virtual void onEvent(const StringHash& event_type, const Event* event = nullptr, Object* sender = nullptr);
 
-        Context* context_;
+        Context* m_context;
 
     private:
-        void RemoveEventSender(Object* sender);
+        void removeEventSender(Object* sender);
 
-        EventHandler* FindEventHandler(StringHash eventType, EventHandler** previous = 0) const;
-        EventHandler* FindSpecificEventHandler(Object* sender, EventHandler** previous = 0) const;
-        EventHandler* FindSpecificEventHandler(Object* sender, StringHash eventType, EventHandler** previous = 0) const;
+        Iterator findEventHandler(const StringHash& event_type);
+        Iterator findEventHandler(const StringHash& event_type, Object* sender);
+        Iterator findEventHandler(Object* sender);
 
-        LinkedList<EventHandler> eventHandlers_;
-    };
+        std::list<SharedPtr<EventHandler>> m_handlers;
+	};
 
-#define EVENT(eventID, eventName) static const Eris::StringHash eventID(#eventName); namespace eventName
-#define PARAM(paramID, paramName) static const Eris::StringHash paramID(#paramName)
 #define HANDLER(className, function) (new Eris::EventHandler(std::bind(&className::function, this, std::placeholders::_1, std::placeholders::_2)))
 #define HANDLER_USERDATA(className, function, userData) (new Eris::EventHandler(std::bind(&className::function, this, std::placeholders::_1, std::placeholders::_2), userData))
+
 }

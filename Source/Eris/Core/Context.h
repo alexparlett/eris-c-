@@ -22,68 +22,55 @@
 
 #pragma once
 
-#include "HashMap.h"
-#include "HashSet.h"
-#include "Ptr.h"
-#include "RefCounted.h"
-#include "StringHash.h"
-#include "Variant.h"
+#include "Event.h"
+
+#include "Collections/StringHash.h"
+#include "Memory/Pointers.h"
+#include "Memory/Allocator.h"
+#include "Util/NonCopyable.h"
+
+#include <unordered_map>
+#include <unordered_set>
 
 namespace Eris
 {
-    class Object;
-    class EventHandler;
+    class Log;
+    class Clock;
+    class Engine;
+    class Graphics;
+    class Input;
 
-    class Context : public RefCounted
+    class Context : public NonCopyable
     {
         friend class Object;
 
     public:
         Context();
-        virtual ~Context();
+        ~Context();
 
-        void RegisterModule(Object* object);
+        template<class T> void registerModule(T* module) {}
+        template<class T> T* getModule() { return nullptr; }
 
-        template<typename T> void RemoveModule();
+        void addEventReciever(Object* reciever, const StringHash& event_type, Object* sender);
+        void removeEventSender(Object* sender);
+        void removeEventReciever(Object* reciever, const StringHash& event_type, Object* sender = nullptr);
+        const std::unordered_set<Object*>* getEventRecievers(const StringHash& event_type, Object* sender = nullptr);
 
-        VariantMap& GetEventDataMap();
-        Object* GetEventSender() const;
-        EventHandler* GetEventHandler() const { return eventHandler_; }
-        template<typename T> T* GetModule() const;
+        StackAllocator<glm::u8>& getFrameAllocator() { return m_frame_allocator; }
+        void resetFrameAllocator();
 
     private:
-        void AddEventReceiver(Object* reciever, StringHash eventType);
-        void AddEventReceiver(Object* reciever, Object* sender, StringHash eventType);
+        std::unordered_set<Object*>* _getEventRecievers(const StringHash& event_type, Object* sender = nullptr);
 
-        void RemoveEventReceiver(Object* reciever, StringHash eventType);
-        void RemoveEventReceiver(Object* reciever, Object* sender, StringHash eventType);
-        void RemoveEventSender(Object* sender);
+        std::unordered_map<StringHash, std::unordered_set<Object*>> m_recievers;
+        std::unordered_map<Object*, std::unordered_map<StringHash, std::unordered_set<Object*>>> m_specific_recievers;
 
-        HashSet<Object*>* GetEventReceivers(StringHash eventType);
-        HashSet<Object*>* GetEventReceivers(Object* sender, StringHash eventType);
-       
-        void SetEventHandler(EventHandler* handler) { eventHandler_ = handler; }
-        void BeginSendEvent(Object* sender) { eventSenders_.Push(sender); }
-        void EndSendEvent() { eventSenders_.Pop(); }
+        StackAllocator<glm::u8> m_frame_allocator;
 
-        HashMap<StringHash, SharedPtr<Object>> modules_;
-        HashMap<StringHash, HashSet<Object*>> eventRecievers_;
-        HashMap<Object*, HashMap<StringHash, HashSet<Object*>>> specificEventRecievers_;
-        PODVector<Object*> eventSenders_;
-        PODVector<VariantMap*> eventDataMaps_;
-        EventHandler* eventHandler_;
+        SharedPtr<Clock> m_clock;
+        SharedPtr<Engine> m_engine;
+        SharedPtr<Graphics> m_graphics;
+        SharedPtr<Input> m_input;
+        SharedPtr<Log> m_log;
     };
-
-    template<typename T> void Context::RemoveModule() 
-    { 
-        modules_.Erase(T::GetTypeStatic());
-    }
-
-    template<typename T> T* Context::GetModule() const 
-    { 
-        HashMap<StringHash, SharedPtr<Object>>::ConstIterator iter = modules_.Find(T::GetTypeStatic());
-        if (iter != modules_.End())
-            return static_cast<T*>(iter->second_.Get());
-        return 0;
-    }
 }

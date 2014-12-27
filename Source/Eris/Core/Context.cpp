@@ -23,91 +23,87 @@
 #include "Context.h"
 #include "Object.h"
 
+// Include all module definitions
+#include "Clock.h"
+#include "Log.h"
+#include "Application/Engine.h"
+#include "Graphics/Graphics.h"
+#include "Input/Input.h"
+
 namespace Eris
 {
-
-    void Context::RegisterModule(Object* object)
+    Context::Context() :
+        m_frame_allocator(0, 4096),
+        m_clock(nullptr),
+        m_engine(nullptr),
+        m_graphics(nullptr),
+        m_input(nullptr),
+        m_log(nullptr)
     {
-        if (!object)
-            return;
-
-        modules_[object->GetType()] = object;
     }
 
-    VariantMap& Context::GetEventDataMap()
+    Context::~Context()
     {
-        unsigned nestingLevel = eventSenders_.Size();
-        while (eventDataMaps_.Size() < nestingLevel + 1)
-            eventDataMaps_.Push(new VariantMap());
-
-        VariantMap& ret = *eventDataMaps_[nestingLevel];
-        ret.Clear();
-        return ret;
     }
 
-    Object* Context::GetEventSender() const
+    void Context::addEventReciever(Object* reciever, const StringHash& event_type, Object* sender)
     {
-        if (!eventSenders_.Empty())
-            return eventSenders_.Back();
+        if (sender)
+            m_specific_recievers[sender][event_type].insert(reciever);
         else
-            return 0;
+            m_recievers[event_type].insert(reciever);
     }
 
-    void Context::AddEventReceiver(Object* reciever, StringHash eventType)
+    void Context::removeEventSender(Object* sender)
     {
-        eventRecievers_[eventType].Insert(reciever);
-    }
-
-    void Context::AddEventReceiver(Object* reciever, Object* sender, StringHash eventType)
-    {
-        specificEventRecievers_[sender][eventType].Insert(reciever);
-    }
-
-    void Context::RemoveEventReceiver(Object* reciever, StringHash eventType)
-    {
-        HashSet<Object*>* group = GetEventReceivers(eventType);
-        if (group)
-            group->Erase(reciever);
-    }
-
-    void Context::RemoveEventReceiver(Object* reciever, Object* sender, StringHash eventType)
-    {
-        HashSet<Object*>* group = GetEventReceivers(sender, eventType);
-        if (group)
-            group->Erase(reciever);
-    }
-
-    void Context::RemoveEventSender(Object* sender)
-    {
-        HashMap<Object*, HashMap<StringHash, HashSet<Object*> > >::Iterator i = specificEventRecievers_.Find(sender);
-        if (i != specificEventRecievers_.End())
+        auto iter = m_specific_recievers.find(sender);
+        if (iter != m_specific_recievers.end())
         {
-            for (HashMap<StringHash, HashSet<Object*> >::Iterator j = i->second_.Begin(); j != i->second_.End(); ++j)
+            for (auto i : iter->second)
             {
-                for (HashSet<Object*>::Iterator k = j->second_.Begin(); k != j->second_.End(); ++k)
-                    (*k)->RemoveEventSender(sender);
+                for (auto j : i.second)
+                    (*j).removeEventSender(sender);
             }
-            specificEventRecievers_.Erase(i);
+            m_specific_recievers.erase(iter);
         }
     }
 
-    HashSet<Object*>* Context::GetEventReceivers(StringHash eventType)
+    void Context::removeEventReciever(Object* reciever, const StringHash& event_type, Object* sender)
     {
-        HashMap<StringHash, HashSet<Object*>>::Iterator iter = eventRecievers_.Find(eventType);
-        if (iter != eventRecievers_.End())
-            return &iter->second_;
-        return 0;
+        std::unordered_set<Object*>* group = _getEventRecievers(event_type, sender);
+        if (group)
+            group->insert(reciever);
     }
 
-    HashSet<Object*>* Context::GetEventReceivers(Object* sender, StringHash eventType)
+    const std::unordered_set<Object*>* Context::getEventRecievers(const StringHash& event_type, Object* sender)
     {
-        HashMap<Object*, HashMap<StringHash, HashSet<Object*>>>::Iterator si = specificEventRecievers_.Find(sender);
-        if (si != specificEventRecievers_.End())
+        return _getEventRecievers(event_type, sender);
+    }
+
+    void Context::resetFrameAllocator()
+    {
+        m_frame_allocator.getMemoryPool().reset();
+    }
+
+    std::unordered_set<Object*>* Context::_getEventRecievers(const StringHash& event_type, Object* sender /*= nullptr*/)
+    {
+        if (sender)
         {
-            HashMap<StringHash, HashSet<Object*>>::Iterator iter = si->second_.Find(eventType);
-            if (iter != eventRecievers_.End())
-                return &iter->second_;
+            auto sm = m_specific_recievers.find(sender);
+            if (sm != m_specific_recievers.end())
+            {
+                auto iter = sm->second.find(event_type);
+                if (iter != m_recievers.end())
+                    return &iter->second;
+            }
         }
-        return 0;
+        else
+        {
+            auto iter = m_recievers.find(event_type);
+            if (iter != m_recievers.end())
+                return &iter->second;
+        }
+
+        return nullptr;
     }
 }

@@ -22,17 +22,18 @@
 
 #pragma once
 
-#include "HashSet.h"
-#include "Object.h"
-#include "Ptr.h"
+#include "Core/Context.h"
+#include "Core/Object.h"
+#include "Memory/Allocator.h"
 
-struct GLFWwindow;
+#include <unordered_set>
+#include <memory>
 
 namespace Eris
 {
     class Graphics;
 
-    enum CursorMode
+    enum class CursorMode : glm::u8
     {
         CM_NORMAL,
         CM_HIDDEN,
@@ -41,56 +42,64 @@ namespace Eris
 
     class Input : public Object
     {
-        OBJECT(Input)
-
     public:
         Input(Context* context);
         virtual ~Input();
 
-        void Initialize();
-        void Update();
-        void ResetState();
+        void initialize();
+        void update();
+        void resetState();
 
-        void SetCursorMode(CursorMode cm);
+        void setCursorMode(CursorMode cm);
+        CursorMode getCursorMode() const { return m_cursor_mode; }
 
-        CursorMode GetCursorMode() const { return cursorMode_; }
+        bool keyDown(glm::int32 key);
+        bool keyPressed(glm::int32 key);
+        bool scancodeDown(glm::int32 scancode);
+        bool scancodePressed(glm::int32 scancode);
+        bool modifierDown(glm::int32 modifier);
+        bool modifierPressed(glm::int32 modifier);
+        bool mouseButtonDown(glm::int32 button);
+        bool mouseButtonPressed(glm::int32 button);
+        glm::int32 modifiersDown();
 
-        bool KeyDown(int key);
-        bool KeyPressed(int key);
-        bool ScancodeDown(int scancode);
-        bool ScancodePressed(int scancode);
-        bool ModifierDown(int modifier);
-        bool ModifierPressed(int modifier);
-        bool MouseButtonDown(int button);
-        bool MouseButtonPressed(int button);
-        int ModifiersDown();
-
-        bool IsFocused() const { return focused_; }
-        bool IsMinimized() const { return minimized_; }
+        bool isFocused() const { return m_focused; }
+        bool isMinimized() const { return m_minimized; }
 
     private:
-        void HandleBeginFrame(const VariantMap& eventData, void* userData);
-        void HandleScreenMode(const VariantMap& eventData, void* userData);
+        void handleBeginFrame(const StringHash& event_type, const Event* event_data);
+        void handleScreenMode(const StringHash& event_type, const Event* event_data);
 
-        static void HandleFocusCallback(GLFWwindow* window, int focused);
-        static void HandleIconifiedCallback(GLFWwindow* window, int iconified);
-        static void HandleMouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
-        static void HandleKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
-        static void HandleScrollCallback(GLFWwindow* window, double x, double y);
-        static void HandleCursorPosCallback(GLFWwindow* window, double x, double y);
+        static void handleFocusCallback(GLFWwindow* window, int focused);
+        static void handleIconifiedCallback(GLFWwindow* window, int iconified);
+        static void handleMouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
+        static void handleKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+        static void handleScrollCallback(GLFWwindow* window, double x, double y);
+        static void handleCursorPosCallback(GLFWwindow* window, double x, double y);
 
-        HashSet<int> keyDown_;
-        HashSet<int> keyPress_;
-        HashSet<int> scancodeDown_;
-        HashSet<int> scancodePress_;
-        unsigned mouseButtonDown_;
-        unsigned mouseButtonPress_;
-        double mouseMoveWheel_;
-        IntVector2 mouseMove_;
-        IntVector2 lastMousePosition_;
-        CursorMode cursorMode_;
-        bool initialized_;
-        bool focused_;
-        bool minimized_;
+        bool m_initialised;
+        bool m_focused;
+        bool m_minimized; 
+        CursorMode m_cursor_mode;       
+        glm::int32 m_mouse_button_down;
+        glm::int32 m_mouse_button_press;
+        double m_mouse_wheel_move;        
+        glm::ivec2 m_mouse_move;
+        glm::ivec2 m_mouse_last_position;
+        std::unordered_set<glm::int32, std::hash<glm::int32>, std::equal_to<glm::i32>, ChainAllocator<glm::i32>> m_key_down;
+        std::unordered_set<glm::int32, std::hash<glm::int32>, std::equal_to<glm::i32>, ChainAllocator<glm::i32>> m_key_press;
+        std::unordered_set<glm::int32, std::hash<glm::int32>, std::equal_to<glm::i32>, ChainAllocator<glm::i32>> m_scancode_down;
+        std::unordered_set<glm::int32, std::hash<glm::int32>, std::equal_to<glm::i32>, ChainAllocator<glm::i32>> m_scancode_press;
     };
+
+    template<> inline void Context::registerModule(Input* module)
+    {
+        m_input = SharedPtr<Input>(module);
+    }
+
+    template<> inline Input* Context::getModule()
+    {
+        ERIS_ASSERT(m_input);
+        return m_input.get();
+    }
 }

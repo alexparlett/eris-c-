@@ -22,32 +22,21 @@
 
 #pragma once
 
+#include "Util/NonCopyable.h"
+
 #include <mutex>
 
 namespace Eris
 {
-    class Mutex
+    class Mutex : public NonCopyable
     {
     public:
-        Mutex() {};
-
-        void Lock();
-        void Unlock();
-
-    private:
-        std::mutex handle_;
-    };
-
-    class MutexGuard
-    {
-    public:
-        explicit MutexGuard(Mutex& mutex);
-        ~MutexGuard() _NOEXCEPT;
-
-        MutexGuard(const MutexGuard&) = delete;
-        MutexGuard& operator=(const MutexGuard&) = delete;
+        void lock();
+        void unlock();
+        bool tryLock();
+        bool tryLockFor(glm::i32 duration);
 
     private:
-        Mutex& mutex_;
+        std::timed_mutex m_handle;
     };
 }

@@ -20,273 +20,239 @@
 // THE SOFTWARE.
 //
 
-#include "Context.h"
-#include "EngineEvents.h"
 #include "Graphics.h"
 #include "GraphicsEvents.h"
-#include "Log.h"
 
-#include <glfw3.h>
+#include "Application/Engine.h"
+#include "Application/ApplicationEvents.h"
+#include "Core/Context.h"
+#include "Core/Log.h"
+#include "Util/Functions.h"
 
 namespace Eris
 {
-
     Graphics::Graphics(Context* context) :
         Object(context),
-        window_(0)
+        m_initialized(false),
+        m_fullscreen(true),
+        m_borderless(false),
+        m_resizable(false),
+        m_vsync(true),
+        m_width(0),
+        m_height(0),
+        m_samples(4),
+        m_gamma(1.0f),
+        m_title("Eris"),
+        m_window(nullptr)
     {
-
     }
 
     Graphics::~Graphics()
     {
-        if (window_);
-        {
-            glfwDestroyWindow(window_);
-            window_ = 0;
-        }
     }
 
-    void Graphics::Initialize(const IntVector2& size, int samples, const String& title, unsigned hints)
+    void Graphics::initialize()
     {
-        // Default Samples, Title and Hints.
-        samples_ = samples;
-        title_ = title;
-        hints_ = hints;
+        if (m_initialized)
+            return;
 
-        // OpenGL 3.3 Context.
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_SRGB_CAPABLE, GL_TRUE);
 
-        // Set Window Hints.
-        glfwWindowHint(GLFW_DECORATED, !IsHintEnabled(WH_BORDERLESS));
-        glfwWindowHint(GLFW_RESIZABLE, IsHintEnabled(WH_RESIZABLE));
-        glfwWindowHint(GLFW_VISIBLE, IsHintEnabled(WH_VISIBLE));
-        glfwWindowHint(GLFW_SAMPLES, samples_);
-        glfwWindowHint(GLFW_SRGB_CAPABLE, IsHintEnabled(WH_SRGB));
+        glfwWindowHint(GLFW_DECORATED, !m_borderless);
+        glfwWindowHint(GLFW_RESIZABLE, m_resizable);
+        glfwWindowHint(GLFW_SAMPLES, m_samples);
 
-        // Create Window.
-        if (IsHintEnabled(WH_FULLSCREEN))
-            window_ = glfwCreateWindow(size.x_, size.y_, title_.CString(), glfwGetPrimaryMonitor(), NULL);
-        else
-            window_ = glfwCreateWindow(size.x_, size.y_, title_.CString(), NULL, NULL);
-
-        if (!window_)
+        if (m_width <= 0 || m_height <= 0)
         {
-            LOGERROR("Failed to create window with params: [%i,%i,%i,%x]", size.x_, size.y_, samples_, hints_);
-            return;
+            const GLFWvidmode* desktop = glfwGetVideoMode(glfwGetPrimaryMonitor());
+            m_width = desktop->width;
+            m_height = desktop->height;
         }
 
-        // Recheck the size since it may have changed for fullscreen resolutions.
-        int width, height;
-        glfwGetFramebufferSize(window_, &width, &height);
-        size_ = IntVector2(width, height);
+        if (m_fullscreen)
+            m_window = glfwCreateWindow(m_width, m_height, m_title.c_str(), glfwGetPrimaryMonitor(), nullptr);
+        else
+            m_window = glfwCreateWindow(m_width, m_height, m_title.c_str(), nullptr, nullptr);
 
-        // Store the Context Ptr and make current.
-        glfwSetWindowUserPointer(window_, GetContext());
-        glfwMakeContextCurrent(window_);
+        if (!m_window)
+        {
+            m_context->getModule<Engine>()->setExitCode(EXIT_WINDOW_CREATE_ERROR);
+            return;
+        }
+        
+        glfwMakeContextCurrent(m_window);
+        glfwSetWindowUserPointer(m_window, m_context);
 
-        // Enable Vsync.
-        if (IsHintEnabled(WH_VSYNC))
+        glm::i32 width, height;
+        glfwGetFramebufferSize(m_window, &width, &height);
+        m_width = width;
+        m_height = height;
+
+        if (m_vsync)
             glfwSwapInterval(1);
 
-        // Set Callbacks.
-        glfwSetFramebufferSizeCallback(window_, &Graphics::HandleFramebufferCallback);
-        glfwSetWindowCloseCallback(window_, &Graphics::HandleCloseCallback);
-
-        inititalized_ = true;
-    }
-
-    void Graphics::Maximize()
-    {
-        if (!inititalized_ || !window_)
-            return;
-
-       const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-
-       glfwRestoreWindow(window_);
-       glfwSetWindowSize(window_, mode->width, mode->height);
-    }
-
-    void Graphics::Minimize()
-    {
-        if (!inititalized_ || !window_)
-            return;
-
-        glfwIconifyWindow(window_);
-    }
-
-    void Graphics::Restore()
-    {
-        if (!inititalized_ || !window_)
-            return;
-
-        glfwRestoreWindow(window_);
-    }
-
-    void Graphics::Hide()
-    {
-        if (!inititalized_ || !window_)
-            return;
-
-        glfwHideWindow(window_);
-    } 
-
-    void Graphics::Show()
-    {
-        if (!inititalized_ || !window_)
-            return;
-
-        glfwShowWindow(window_);
-    }
-
-    void Graphics::Close()
-    {
-        if (!inititalized_ || !window_)
-            return;
-
-        Hide();
-        glfwSetWindowShouldClose(window_, GL_TRUE);
-    }
-
-
-    void Graphics::ToggleFullscreen()
-    {
-        if (!inititalized_ || !window_)
-            return;
-
-        hints_ ^= WH_FULLSCREEN;
-
-        SetMode(size_.x_, size_.y_, samples_, hints_);
-    }
-
-    void Graphics::SetMode(int width, int height, int samples, unsigned hints)
-    {
-        if (!inititalized_ || !window_)
-            return;
-
-        if (hints_ != hints || samples_ != samples)
+        glewExperimental = GL_TRUE;
+        GLenum err = glewInit();
+        if (err != GLEW_OK)
         {
-            samples_ = samples;
-            hints_ = hints;
+            const GLubyte* msg = glewGetErrorString(err);
+            Log::fatal(std::string_format("GLEW error: %s", msg));
 
-            glfwWindowHint(GLFW_DECORATED, IsHintEnabled(WH_BORDERLESS));
-            glfwWindowHint(GLFW_RESIZABLE, IsHintEnabled(WH_RESIZABLE));
-            glfwWindowHint(GLFW_VISIBLE, IsHintEnabled(WH_VISIBLE));
-            glfwWindowHint(GLFW_SAMPLES, samples_);
-            glfwWindowHint(GLFW_SRGB_CAPABLE, IsHintEnabled(WH_SRGB));
+            glfwDestroyWindow(m_window);
+            m_window = nullptr;
 
-            glfwMakeContextCurrent(NULL);
-            glfwDestroyWindow(window_);
-
-            if (IsHintEnabled(WH_FULLSCREEN))
-                window_ = glfwCreateWindow(width, height, title_.CString(), glfwGetPrimaryMonitor(), NULL);
-            else
-                window_ = glfwCreateWindow(width, height, title_.CString(), NULL, NULL);
-
-            if (!window_)
-            {
-                LOGERROR("Failed to create window with params: [%i,%i,%i,%x]", width, height, samples_, hints);
-                return;
-            }
-
-            glfwSetWindowUserPointer(window_, GetContext());
-            glfwMakeContextCurrent(window_);
-
-            int width, height;
-            glfwGetFramebufferSize(window_, &width, &height);
-            size_ = IntVector2(width, height);
-
-            if (IsHintEnabled(WH_VSYNC))
-                glfwSwapInterval(1);
-
-            glfwSetFramebufferSizeCallback(window_, &Graphics::HandleFramebufferCallback);
-            glfwSetWindowCloseCallback(window_, &Graphics::HandleCloseCallback);
-
-            SendEvent(E_DEVICERESET);
-        }
-        else
-            SetMode(width, height);
-    }
-
-    void Graphics::SetMode(int width, int height)
-    {
-        if (!inititalized_ || !window_)
+            m_context->getModule<Engine>()->setExitCode(EXIT_GLEW_INIT_ERROR);
             return;
-
-        glfwSetWindowSize(window_, width, height);
-    }
-
-    void Graphics::SetGamma(float gamma)
-    {
-        if (!inititalized_ || !window_)
-            return;
-
-        gamma_ = Max(gamma, 0.f);
-        glfwSetGamma(glfwGetPrimaryMonitor(), gamma_);
-    }
-
-    void Graphics::SetTitle(const String& title)
-    {
-        if (!inititalized_ || !window_)
-            return;
-
-        title_ = title_;
-        glfwSetWindowTitle(window_, title_.CString());
-    }
-
-    PODVector<IntVector2> Graphics::GetResolutions() const
-    {
-        PODVector<IntVector2> ret;
-
-        int count;
-        const GLFWvidmode* modes = glfwGetVideoModes(glfwGetPrimaryMonitor(), &count);
-        for (int i = 0; i < count; i++)
-        {
-            IntVector2 mode(modes->width, modes->height);
-            ret.Push(mode);
         }
 
-        return ret;
+        glfwSetFramebufferSizeCallback(m_window, &Graphics::handleFramebufferCallback);
+        glfwSetWindowCloseCallback(m_window, &Graphics::handleCloseCallback);
+
+        m_initialized = true;
     }
 
-    Eris::IntVector2 Graphics::GetDesktopResolution() const
+    void Graphics::terminate()
     {
-        const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        m_initialized = false;
 
-        if (mode)
+        if (m_window)
         {
-            return IntVector2(mode->width, mode->height);
+            glfwDestroyWindow(m_window);
+            m_window = nullptr;
+        }
+    }
+
+    void Graphics::maximize()
+    {
+        if (!m_initialized || !m_window)
+            return;
+
+        if (!m_fullscreen)
+        {
+            const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+            glfwSetWindowSize(m_window, mode->width, mode->height);
         }
 
-        return IntVector2::ZERO;
+        glfwRestoreWindow(m_window);
     }
 
-    void Graphics::HandleFramebufferCallback(GLFWwindow* window, int width, int height)
+    void Graphics::minimize()
     {
-        using namespace ScreenMode;
+        if (!m_initialized || !m_window)
+            return;
 
-        Context* context = static_cast<Context*>(glfwGetWindowUserPointer(window));
-        Graphics* graphics = context->GetModule<Graphics>();
-
-        graphics->size_ = IntVector2(width, height);
-
-        VariantMap& eventData = context->GetEventDataMap();
-        eventData[P_SIZE] = graphics->size_;
-        graphics->SendEvent(E_SCREENMODE, eventData);
+        glfwIconifyWindow(m_window);
     }
 
-    void Graphics::HandleCloseCallback(GLFWwindow* window)
+    void Graphics::restore()
+    {
+        if (!m_initialized || !m_window)
+            return;
+
+        glfwRestoreWindow(m_window);
+    }
+
+    void Graphics::hide()
+    {
+        if (!m_initialized || !m_window)
+            return;
+
+        glfwHideWindow(m_window);
+    }
+
+    void Graphics::show()
+    {
+        if (!m_initialized || !m_window)
+            return;
+
+        glfwShowWindow(m_window);
+    }
+
+    void Graphics::close()
+    {
+        if (!m_initialized || !m_window)
+            return;
+
+        glfwSetWindowShouldClose(m_window, GL_TRUE);
+    }
+
+    void Graphics::setSize(glm::i32 width, glm::i32 height)
+    {
+        m_width = width;
+        m_height = height;
+
+        if (!m_initialized || !m_window)
+            return;
+
+        glfwSetWindowSize(m_window, m_width, m_height);
+    }
+
+    void Graphics::setSamples(glm::i32 samples)
+    {
+        m_samples = samples;
+    }
+
+    void Graphics::setGamma(glm::f32 gamma)
+    {
+        m_gamma = gamma;
+
+        if (!m_initialized || !m_window)
+            return;
+
+        glfwSetGamma(glfwGetWindowMonitor(m_window), m_gamma);
+    }
+
+    void Graphics::setTitle(const std::string& title)
+    {
+        m_title = title;
+
+        if (!m_initialized || !m_window)
+            return;
+
+        glfwSetWindowTitle(m_window, m_title.c_str());
+    }
+
+    void Graphics::setFullscreen(bool fullscreen)
+    {
+        m_fullscreen = fullscreen;
+    }
+
+    void Graphics::setResizable(bool resizable)
+    {
+        m_resizable = !m_fullscreen && resizable;
+    }
+
+    void Graphics::setBorderless(bool borderless)
+    {
+        m_borderless = !m_fullscreen && borderless;
+    }
+
+    void Graphics::setVSync(bool vsync)
+    {
+        m_vsync = vsync;
+    }
+
+    void Graphics::handleFramebufferCallback(GLFWwindow* window, glm::i32 width, glm::i32 height)
     {
         Context* context = static_cast<Context*>(glfwGetWindowUserPointer(window));
-        Graphics* graphics = context->GetModule<Graphics>();
+        Graphics* graphics = context->getModule<Graphics>();
+        graphics->m_width = width;
+        graphics->m_height = height;
 
-        graphics->SendEvent(E_EXITREQUESTED);
+        ScreenModeEvent* event = context->getFrameAllocator().newInstance<ScreenModeEvent>();
+        event->width = graphics->m_width;
+        event->height = graphics->m_height;
+        graphics->sendEvent(ScreenModeEvent::getTypeStatic(), event);
     }
 
-    bool Graphics::IsHintEnabled(int hint) const
+    void Graphics::handleCloseCallback(GLFWwindow* window)
     {
-        return (hints_ & hint) == hint;
+        Context* context = static_cast<Context*>(glfwGetWindowUserPointer(window));
+        Graphics* graphics = context->getModule<Graphics>();
+
+        graphics->sendEvent(ExitRequestedEvent::getTypeStatic());
     }
 }

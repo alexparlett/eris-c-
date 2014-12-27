@@ -22,75 +22,103 @@
 
 #pragma once
 
-#include "Object.h"
-#include "Ptr.h"
-
-struct GLFWwindow;
+#include "Core/Object.h"
+#include "Core/Context.h"
 
 namespace Eris
 {
-    enum WindowHints
-    {
-        WH_BORDERLESS = 1,
-        WH_RESIZABLE = 2,
-        WH_VISIBLE = 4,
-        WH_SRGB = 8,
-        WH_VSYNC = 16,
-        WH_FULLSCREEN = 32
-    };
-
     class Graphics : public Object
     {
-        OBJECT(Graphics)
-
     public:
+        /// Ctor.
         Graphics(Context* context);
+        /// Detor.
         virtual ~Graphics();
 
-        void Initialize(const IntVector2& size, int samples, const String& title, unsigned hints);
-        void Maximize();
-        void Minimize();
-        void Restore();
-        void Hide();
-        void Show();
-        void Close();
+        /// Initialize graphics module. Creates window and initializes glew.
+        void initialize();
+        /// Terminate graphics module. Destory the window if created.
+        void terminate();
 
-        void ToggleFullscreen();
+        /// Maximize active window.
+        void maximize();
+        /// Minimize active window.
+        void minimize();
+        /// Restore active window.
+        void restore();
+        /// Hide active window.
+        void hide();
+        /// Show active window.
+        void show();
+        /// Close active window.
+        void close();
 
-        void SetMode(int width, int height, int samples, unsigned hints);
-        void SetMode(int width, int height);
-        void SetGamma(float gamma);
-        void SetTitle(const String& title);
+        /// Set window size. Resizes window if active.
+        void setSize(glm::i32 width, glm::i32 height);
+        /// Set window samples. Only effective before window initialization.
+        void setSamples(glm::i32 samples);
+        /// Set window gamma. Changes for window if active.
+        void setGamma(glm::f32 gamma);
+        /// Set window title. Changes for window if active.
+        void setTitle(const std::string& title);
+        /// Set window fullscreen. Only effective before window initialization.
+        void setFullscreen(bool fullscreen);
+        /// Set window resizable. Only effective before window initialization.
+        void setResizable(bool resizable);
+        /// Set window borderless. Only effective before window initialization.
+        void setBorderless(bool borderless);
+        /// Set window vsync. Only effective before window initialization.
+        void setVSync(bool vsync);
 
-        int GetWidth() const { return size_.x_; }
-        int GetHeight() const { return size_.y_; }
-        PODVector<IntVector2> GetResolutions() const;
-        IntVector2 GetDesktopResolution() const;
-        unsigned GetHints() const { return hints_; }
-        String GetTitle() const { return title_; }
-        int GetSamples() const { return samples_; }
-        float GetGamma() const { return gamma_; }
+        /// Get whether fullscreen is set.
+        bool getFullscreen() const { return m_fullscreen; }
+        /// Get whether resizable is set.
+        bool getResizable() const { return m_resizable; }
+        /// Get whether borderless is set.
+        bool getBorderless() const { return m_borderless; }
+        /// Get whether vsync is set.
+        bool getVSync() const { return m_vsync; }
+        /// Get width.
+        glm::i32 getWidth() const { return m_width; }
+        /// Get height.
+        glm::i32 getHeight() const { return m_height; }
+        /// Get samples.
+        glm::i32 getSamples() const { return m_samples; }
+        /// Get gamma.
+        glm::f32 getGamma() const { return m_gamma; }
+        /// Get title.
+        const std::string& getTitle() const { return m_title; }
+        /// Get window ptr.
+        GLFWwindow* getWindow() const { return m_window; }
 
-        bool IsInitialized() const { return inititalized_; }
-        bool IsDecorated() const { return IsHintEnabled(WH_BORDERLESS); }
-        bool IsResizable() const { return IsHintEnabled(WH_RESIZABLE); }
-        bool IsVisible() const { return IsHintEnabled(WH_VISIBLE); }
-        bool IsSRGB() const { return IsHintEnabled(WH_SRGB); }
-        bool IsVSync() const { return IsHintEnabled(WH_VSYNC); }
-        bool IsFullscreen() const { return IsHintEnabled(WH_FULLSCREEN); }
+        /// Get initialized.
+        bool isInitialize() const { return m_initialized; }
 
     private:
-        static void HandleFramebufferCallback(GLFWwindow* window, int width, int height);
-        static void HandleCloseCallback(GLFWwindow* window);
+        static void handleFramebufferCallback(GLFWwindow* window, glm::i32 width, glm::i32 height);
+        static void handleCloseCallback(GLFWwindow* window);
 
-        bool IsHintEnabled(int hint) const;
-
-        GLFWwindow* window_;
-        bool inititalized_;
-        IntVector2 size_;
-        unsigned hints_;
-        String title_;
-        int samples_;
-        float gamma_;
+        bool m_initialized;
+        bool m_fullscreen;
+        bool m_resizable;
+        bool m_borderless;
+        bool m_vsync;
+        glm::i32 m_width;
+        glm::i32 m_height;
+        glm::i32 m_samples;
+        glm::f32 m_gamma;
+        std::string m_title;
+        GLFWwindow* m_window;
     };
+
+    template<> inline void Context::registerModule(Graphics* graphics)
+    {
+        m_graphics = SharedPtr<Graphics>(graphics);
+    }
+
+    template<> inline Graphics* Context::getModule()
+    {
+        ERIS_ASSERT(m_graphics);
+        return m_graphics.get();
+    }
 }
