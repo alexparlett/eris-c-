@@ -39,7 +39,11 @@ namespace Eris
         m_mouse_move(glm::ivec2(0,0)),
         m_cursor_mode(CursorMode::CM_NORMAL),
         m_focused(false),
-        m_minimized(false)
+        m_minimized(false),
+        m_key_down(ChainAllocator<glm::i32>(0, 8 * sizeof(glm::i32), 128 * sizeof(glm::i32))),
+        m_key_press(ChainAllocator<glm::i32>(0, 8 * sizeof(glm::i32), 128 * sizeof(glm::i32))),
+        m_scancode_down(ChainAllocator<glm::i32>(0, 8 * sizeof(glm::i32), 128 * sizeof(glm::i32))),
+        m_scancode_press(ChainAllocator<glm::i32>(0, 8 * sizeof(glm::i32), 128 * sizeof(glm::i32)))
     {
     }
 

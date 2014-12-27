@@ -86,10 +86,10 @@ namespace Eris
         double m_mouse_wheel_move;        
         glm::ivec2 m_mouse_move;
         glm::ivec2 m_mouse_last_position;
-        std::unordered_set<glm::int32> m_key_down;
-        std::unordered_set<glm::int32> m_key_press;
-        std::unordered_set<glm::int32> m_scancode_down;
-        std::unordered_set<glm::int32> m_scancode_press;
+        std::unordered_set<glm::int32, std::hash<glm::int32>, std::equal_to<glm::i32>, ChainAllocator<glm::i32>> m_key_down;
+        std::unordered_set<glm::int32, std::hash<glm::int32>, std::equal_to<glm::i32>, ChainAllocator<glm::i32>> m_key_press;
+        std::unordered_set<glm::int32, std::hash<glm::int32>, std::equal_to<glm::i32>, ChainAllocator<glm::i32>> m_scancode_down;
+        std::unordered_set<glm::int32, std::hash<glm::int32>, std::equal_to<glm::i32>, ChainAllocator<glm::i32>> m_scancode_press;
     };
 
     template<> inline void Context::registerModule(Input* module)

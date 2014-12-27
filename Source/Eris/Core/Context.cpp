@@ -32,7 +32,7 @@
 namespace Eris
 {
     Context::Context() :
-        m_frame_allocator(4096),
+        m_frame_allocator(0, 4096),
         m_clock(nullptr),
         m_engine(nullptr),
         m_graphics(nullptr),

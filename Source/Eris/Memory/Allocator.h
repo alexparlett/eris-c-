@@ -26,6 +26,8 @@
 #include "Memory.h"
 #include "Pointers.h"
 
+#include <functional>
+
 namespace Eris
 {
     template<class T, class TPool>
@@ -60,13 +62,13 @@ namespace Eris
         }
 
         template<class Y>
-        GenericPoolAllocator(GenericPoolAllocator<Y, TPool>& rhs)
+        GenericPoolAllocator(const GenericPoolAllocator<Y, TPool>& rhs)
         {
             copy(rhs);
         }
 
         template<class... TArgs>
-        explicit GenericPoolAllocator(TArgs&&... args) :
+        explicit GenericPoolAllocator(std::size_t initial, TArgs&&... args) :
             m_pool(new TPool(std::forward<TArgs>(args)...))
         {
         }
@@ -104,11 +106,7 @@ namespace Eris
             (void) hint;
 
             size_type size = n * sizeof(value_type);
-
-            std::size_t alignment = (hint != nullptr)
-                ? *reinterpret_cast<const std::size_t*>(hint)
-                : __alignof(value_type);
-
+            std::size_t alignment = hint ? *reinterpret_cast<const std::size_t*>(hint) : __alignof(value_type);
             void* out = m_pool->allocate(size, alignment);
 
             if (!out)
