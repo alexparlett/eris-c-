@@ -24,6 +24,7 @@
 
 #include "Core/Clock.h"
 #include "Graphics/Graphics.h"
+#include "Input/Input.h"
 
 namespace Eris
 {
@@ -34,6 +35,7 @@ namespace Eris
         context->registerModule<Engine>(this);
         context->registerModule<Clock>(new Clock(context));
         context->registerModule<Graphics>(new Graphics(context));
+        context->registerModule<Input>(new Input(context));
     }
 
     Engine::~Engine()
@@ -52,6 +54,9 @@ namespace Eris
         graphics->setSize(800, 600);
         graphics->setFullscreen(false);
         graphics->initialize();
+
+        Input* input = m_context->getModule<Input>();
+        input->initialize();
     }
 
     void Engine::run()
@@ -63,7 +68,6 @@ namespace Eris
         {
             clock->beginFrame(0.f);
 
-            glfwPollEvents();
             glfwSwapBuffers(graphics->getWindow());
 
             clock->endFrame();

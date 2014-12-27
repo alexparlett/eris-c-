@@ -167,7 +167,7 @@ namespace Eris
                 if (iter != group->cend())
                     next = *iter;
 
-                if (!processed.empty() && processed.find(reciever) != processed.end())
+                if (processed.empty() || processed.find(reciever) == processed.end())
                 {
                     std::size_t oldSize = group->size();
 

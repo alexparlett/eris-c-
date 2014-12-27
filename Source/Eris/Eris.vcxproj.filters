@@ -100,10 +100,22 @@
     <ClInclude Include="Core\Clock.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Events.h">
+    <ClInclude Include="Util\Aligned.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Util\Aligned.h">
+    <ClInclude Include="Graphics\GraphicsEvents.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\CoreEvents.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\ApplicationEvents.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\InputEvents.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\Input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -144,6 +156,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Core\Clock.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Input\Input.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -37,6 +37,7 @@ namespace Eris
     class Clock;
     class Engine;
     class Graphics;
+    class Input;
 
     class Context : public NonCopyable
     {
@@ -68,6 +69,6 @@ namespace Eris
         SharedPtr<Clock> m_clock;
         SharedPtr<Engine> m_engine;
         SharedPtr<Graphics> m_graphics;
-
+        SharedPtr<Input> m_input;
     };
 }

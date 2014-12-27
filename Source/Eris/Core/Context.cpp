@@ -27,6 +27,7 @@
 #include "Clock.h"
 #include "Application/Engine.h"
 #include "Graphics/Graphics.h"
+#include "Input/Input.h"
 
 namespace Eris
 {
@@ -34,7 +35,8 @@ namespace Eris
         m_frame_allocator(4096),
         m_clock(nullptr),
         m_engine(nullptr),
-        m_graphics(nullptr)
+        m_graphics(nullptr),
+        m_input(nullptr)
     {
     }
 

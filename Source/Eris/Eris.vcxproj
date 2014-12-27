@@ -246,9 +246,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\gitversion.h" />
+    <ClInclude Include="Application\ApplicationEvents.h" />
     <ClInclude Include="Core\Clock.h" />
     <ClInclude Include="Core\Event.h" />
-    <ClInclude Include="Core\Events.h" />
+    <ClInclude Include="Core\CoreEvents.h" />
+    <ClInclude Include="Graphics\GraphicsEvents.h" />
+    <ClInclude Include="Input\Input.h" />
+    <ClInclude Include="Input\InputEvents.h" />
     <ClInclude Include="Memory\Allocator.h" />
     <ClInclude Include="Application\Engine.h" />
     <ClInclude Include="Memory\Memory.h" />
@@ -276,6 +280,7 @@
     <ClCompile Include="Application\Engine.cpp" />
     <ClCompile Include="Application\Eris.cpp" />
     <ClCompile Include="Core\Clock.cpp" />
+    <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="Memory\Memory.cpp" />
     <ClCompile Include="Memory\RefCounted.cpp" />
     <ClCompile Include="Collections\StringHash.cpp" />
