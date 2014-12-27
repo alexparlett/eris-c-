@@ -20,9 +20,12 @@
 // THE SOFTWARE.
 //
 
-#include "Application/Engine.h"
-#include "Core/Context.h"
 #include "Graphics.h"
+#include "GraphicsEvents.h"
+
+#include "Application/Engine.h"
+#include "Application/ApplicationEvents.h"
+#include "Core/Context.h"
 
 namespace Eris
 {
@@ -235,6 +238,11 @@ namespace Eris
         Graphics* graphics = context->getModule<Graphics>();
         graphics->m_width = width;
         graphics->m_height = height;
+
+        ScreenModeEvent* event = context->getFrameAllocator().newInstance<ScreenModeEvent>();
+        event->width = graphics->m_width;
+        event->height = graphics->m_height;
+        graphics->sendEvent(ScreenModeEvent::getTypeStatic(), event);
     }
 
     void Graphics::handleCloseCallback(GLFWwindow* window)
@@ -242,6 +250,6 @@ namespace Eris
         Context* context = static_cast<Context*>(glfwGetWindowUserPointer(window));
         Graphics* graphics = context->getModule<Graphics>();
 
-
+        graphics->sendEvent(ExitRequestedEvent::getTypeStatic());
     }
 }

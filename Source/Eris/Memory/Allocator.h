@@ -26,16 +26,12 @@
 #include "Memory.h"
 #include "Pointers.h"
 
-#include <atomic>
-#include <utility>
-#include <cstddef>
-
 namespace Eris
 {
     template<class T, class TPool>
-    class GenericPoolAllocator : public RefCounted
+    class GenericPoolAllocator
     {
-        template<class K, class KPool>
+        template<class Y, class YPool>
         friend class GenericPoolAllocator;
 
     public:
@@ -49,27 +45,24 @@ namespace Eris
 
         using propagate_on_container_move_assignment = std::true_type;
 
-        template<class K>
+        template<class Y>
         struct rebind
         {
-            using other = GenericPoolAllocator < K, TPool > ;
+            using other = GenericPoolAllocator<Y, TPool> ;
         };
 
     public:
-        GenericPoolAllocator() :
-            m_pool(nullptr)
-        {
-        }
+        GenericPoolAllocator();
 
         GenericPoolAllocator(const GenericPoolAllocator& rhs)
         {
-            *this = rhs;
+            copy(rhs);
         }
 
-        template<class K>
-        GenericPoolAllocator(const GenericPoolAllocator<K, TPool>& rhs)
+        template<class Y>
+        GenericPoolAllocator(GenericPoolAllocator<Y, TPool>& rhs)
         {
-            *this = rhs;
+            copy(rhs);
         }
 
         template<class... TArgs>
@@ -89,8 +82,8 @@ namespace Eris
             return *this;
         }
 
-        template<class K>
-        GenericPoolAllocator operator = (const GenericPoolAllocator<K, TPool>& rhs)
+        template<class Y>
+        GenericPoolAllocator& operator = (const GenericPoolAllocator<Y, TPool>& rhs)
         {
             copy(rhs);
             return *this;
@@ -134,7 +127,7 @@ namespace Eris
 
         void construct(pointer p, const T& val)
         {
-            new ((T*) p) T(val);
+            new (p) T(val);
         }
 
         template<class K, class... Args>
@@ -255,13 +248,13 @@ namespace Eris
         }
 
     private:
-        template<typename K>
-        void copy(const GenericPoolAllocator<K, TPool>& b)
+        template<typename Y>
+        void copy(const GenericPoolAllocator<Y, TPool>& rhs)
         {
             clear();
-            if (b.m_pool)
+            if (rhs.m_pool)
             {
-                m_pool = b.m_pool;
+                m_pool = rhs.m_pool;
             }
         }
 

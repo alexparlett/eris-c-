@@ -28,7 +28,7 @@
 
 namespace Eris
 {
-    class SpinLock : private NonCopyable<SpinLock>
+    class SpinLock : public NonCopyable
     {
     public:
         SpinLock();

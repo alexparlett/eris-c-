@@ -19,22 +19,39 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 //
- 
+
 #pragma once
 
-#include "Collections/StringHash.h"
-#include "Util/Aligned.h"
+#include "Context.h"
+#include "Object.h"
 
 namespace Eris
 {
-#define EVENT(typeName) \
-    virtual const StringHash& getType() const { return getTypeStatic(); } \
-    static const StringHash& getTypeStatic() { static const StringHash typeStatic(#typeName); return typeStatic; } \
-
-    struct Event : Aligned<4>
+    class Clock : public Object
     {
-        virtual ~Event() { }
+    public:
+        Clock(Context* context);
 
-        virtual const StringHash& getType() const = 0;
+        void beginFrame(glm::f32 time_step);
+        void endFrame();
+
+        glm::f32 getElapsedTime() const;
+        glm::f32 getTimeStep() const;
+        glm::u64 getFrameNumber() const;
+
+    private:
+        glm::u64 m_frame_number;
+        glm::f32 m_time_step;
     };
+
+    template<> inline void Context::registerModule(Clock* engine)
+    {
+        m_clock = SharedPtr<Clock>(engine);
+    }
+
+    template<> inline Clock* Context::getModule()
+    {
+        ERIS_ASSERT(m_clock);
+        return m_clock.get();
+    }
 }

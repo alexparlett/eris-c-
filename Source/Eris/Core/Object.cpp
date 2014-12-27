@@ -181,9 +181,6 @@ namespace Eris
                 }
             }
         }
-
-        if (event)
-            delete event;
     }
 
     void Object::onEvent(const StringHash& event_type, const Event* event /*= nullptr*/, Object* sender /*= nullptr*/)

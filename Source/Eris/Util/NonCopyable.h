@@ -24,15 +24,11 @@
 
 namespace Eris
 {
-    template <class T>
     class NonCopyable
     {
-    protected:
-        NonCopyable() {}
-        ~NonCopyable() {} /// Protected non-virtual destructor
-
-    private:
+    public:
+        NonCopyable() = default;
         NonCopyable(const NonCopyable &) = delete;
-        NonCopyable & operator = (const NonCopyable &) = delete;
+        const NonCopyable& operator = (const NonCopyable &) = delete;
     };
 }

@@ -19,22 +19,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 //
- 
+
 #pragma once
 
-#include "Collections/StringHash.h"
-#include "Util/Aligned.h"
+#include "Core/Event.h"
 
 namespace Eris
 {
-#define EVENT(typeName) \
-    virtual const StringHash& getType() const { return getTypeStatic(); } \
-    static const StringHash& getTypeStatic() { static const StringHash typeStatic(#typeName); return typeStatic; } \
-
-    struct Event : Aligned<4>
+    struct ScreenModeEvent : public Event
     {
-        virtual ~Event() { }
+        EVENT(ScreenModeEvent)
 
-        virtual const StringHash& getType() const = 0;
+        glm::i32 width;
+        glm::i32 height;
     };
 }

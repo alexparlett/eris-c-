@@ -57,6 +57,7 @@ namespace Eris
 
     template<> inline Engine* Context::getModule()
     {
+        ERIS_ASSERT(m_engine);
         return m_engine.get();
     }
 }

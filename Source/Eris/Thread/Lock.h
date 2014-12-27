@@ -27,7 +27,7 @@
 namespace Eris
 {
     template<class T>
-    class LockGuard : private NonCopyable <LockGuard<T>>
+    class LockGuard : public NonCopyable
     {
     public:
         LockGuard(T& lock) :

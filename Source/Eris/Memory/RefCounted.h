@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "Util/NonCopyable.h"
+#include "Util/Aligned.h"
 
 #include <atomic>
 
@@ -46,7 +46,7 @@ namespace Eris
         std::atomic<glm::i32> m_weak_refs;
     };
 
-    class RefCounted : private NonCopyable<RefCounted>
+    class RefCounted : public Aligned<>
     {
         template<class T> 
         friend class WeakPtr;

@@ -24,7 +24,6 @@
 
 namespace Eris 
 {
-
     StringHash::StringHash() :
         m_value(0)
     {

@@ -19,22 +19,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 //
- 
-#pragma once
 
-#include "Collections/StringHash.h"
-#include "Util/Aligned.h"
+#pragma once
 
 namespace Eris
 {
-#define EVENT(typeName) \
-    virtual const StringHash& getType() const { return getTypeStatic(); } \
-    static const StringHash& getTypeStatic() { static const StringHash typeStatic(#typeName); return typeStatic; } \
-
-    struct Event : Aligned<4>
+    template<std::size_t alignment = 16>
+    class Aligned
     {
-        virtual ~Event() { }
+    public:
+        static void* operator new (std::size_t size)
+        {
+            return _aligned_malloc(size, alignment);
+        }
 
-        virtual const StringHash& getType() const = 0;
+        static void operator delete (void* ptr)
+        {
+            _aligned_free(ptr);
+        }
     };
 }

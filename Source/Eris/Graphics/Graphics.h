@@ -118,6 +118,7 @@ namespace Eris
 
     template<> inline Graphics* Context::getModule()
     {
+        ERIS_ASSERT(m_graphics);
         return m_graphics.get();
     }
 }

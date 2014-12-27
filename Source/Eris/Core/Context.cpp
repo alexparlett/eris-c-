@@ -24,13 +24,15 @@
 #include "Object.h"
 
 // Include all module definitions
+#include "Clock.h"
 #include "Application/Engine.h"
 #include "Graphics/Graphics.h"
 
 namespace Eris
 {
     Context::Context() :
-        m_frame_allocator(new StackAllocator<glm::u8>(128)),
+        m_frame_allocator(4096),
+        m_clock(nullptr),
         m_engine(nullptr),
         m_graphics(nullptr)
     {
@@ -76,7 +78,7 @@ namespace Eris
 
     void Context::resetFrameAllocator()
     {
-        m_frame_allocator->getMemoryPool().reset();
+        m_frame_allocator.getMemoryPool().reset();
     }
 
     std::unordered_set<Object*>* Context::_getEventRecievers(const StringHash& event_type, Object* sender /*= nullptr*/)

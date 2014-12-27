@@ -28,7 +28,7 @@
 
 namespace Eris
 {
-    class Mutex : private NonCopyable<Mutex>
+    class Mutex : public NonCopyable
     {
     public:
         void lock();

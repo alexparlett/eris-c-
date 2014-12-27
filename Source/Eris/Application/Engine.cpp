@@ -22,6 +22,7 @@
 
 #include "Engine.h"
 
+#include "Core/Clock.h"
 #include "Graphics/Graphics.h"
 
 namespace Eris
@@ -31,6 +32,7 @@ namespace Eris
         m_exitcode(EXIT_OK)
     {
         context->registerModule<Engine>(this);
+        context->registerModule<Clock>(new Clock(context));
         context->registerModule<Graphics>(new Graphics(context));
     }
 
@@ -55,11 +57,17 @@ namespace Eris
     void Engine::run()
     {
         Graphics* graphics = m_context->getModule<Graphics>();
+        Clock* clock = m_context->getModule<Clock>();
 
         while (!glfwWindowShouldClose(graphics->getWindow()))
         {
+            clock->beginFrame(0.f);
+
             glfwPollEvents();
             glfwSwapBuffers(graphics->getWindow());
+
+            clock->endFrame();
+            m_context->resetFrameAllocator();
         }
     }
 

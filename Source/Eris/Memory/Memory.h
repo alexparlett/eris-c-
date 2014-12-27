@@ -30,7 +30,7 @@
 
 namespace Eris
 {
-    class BaseMemoryPool : public RefCounted, private NonCopyable<BaseMemoryPool>
+    class BaseMemoryPool : public RefCounted, public NonCopyable
     {
     public:
         enum class Type : glm::u8

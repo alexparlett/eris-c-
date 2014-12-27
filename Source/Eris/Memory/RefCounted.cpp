@@ -66,6 +66,6 @@ namespace Eris
 
     glm::i32 RefCounted::weakRefs()
     {
-        return m_ref_count->m_weak_refs;
+        return m_ref_count->m_weak_refs - 1;
     }
 }

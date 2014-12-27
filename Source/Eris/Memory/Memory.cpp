@@ -28,6 +28,8 @@ namespace Eris
 {
 
     BaseMemoryPool::BaseMemoryPool(Type type) :
+        RefCounted(),
+        NonCopyable(),
         m_type(type),
         m_allocations(0)
     {
@@ -164,6 +166,7 @@ namespace Eris
         else
         {
             //todo: LOG ERROR
+            m_head = out;
             out = nullptr;
         }
 

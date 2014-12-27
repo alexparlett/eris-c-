@@ -19,22 +19,53 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 //
- 
-#pragma once
 
-#include "Collections/StringHash.h"
-#include "Util/Aligned.h"
+#include "Clock.h"
+#include "CoreEvents.h"
+
+#include <chrono>
 
 namespace Eris
 {
-#define EVENT(typeName) \
-    virtual const StringHash& getType() const { return getTypeStatic(); } \
-    static const StringHash& getTypeStatic() { static const StringHash typeStatic(#typeName); return typeStatic; } \
 
-    struct Event : Aligned<4>
+
+    Clock::Clock(Context* context) :
+        Object(context),
+        m_time_step(0.f),
+        m_frame_number(0)
     {
-        virtual ~Event() { }
 
-        virtual const StringHash& getType() const = 0;
-    };
+    }
+
+    void Clock::beginFrame(glm::f32 time_step)
+    {
+        m_frame_number++;
+        m_time_step = time_step;
+
+        BeginFrameEvent* event = m_context->getFrameAllocator().newInstance<BeginFrameEvent>();
+        event->frame_number = m_frame_number;
+        event->time_step = m_time_step;
+
+        sendEvent(BeginFrameEvent::getTypeStatic(), event);
+    }
+
+    void Clock::endFrame()
+    {
+        sendEvent(EndFrameEvent::getTypeStatic());
+    }
+
+    glm::f32 Clock::getElapsedTime() const
+    {
+        return glfwGetTime() * 1000.f;
+    }
+
+    glm::f32 Clock::getTimeStep() const
+    {
+        return m_time_step;
+    }
+
+    glm::u64 Clock::getFrameNumber() const
+    {
+        return m_frame_number;
+    }
 }

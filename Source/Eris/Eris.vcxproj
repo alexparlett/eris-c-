@@ -146,6 +146,7 @@
       <ForcedIncludeFiles>Eris.h</ForcedIncludeFiles>
       <StringPooling>
       </StringPooling>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -245,7 +246,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\gitversion.h" />
+    <ClInclude Include="Core\Clock.h" />
     <ClInclude Include="Core\Event.h" />
+    <ClInclude Include="Core\Events.h" />
     <ClInclude Include="Memory\Allocator.h" />
     <ClInclude Include="Application\Engine.h" />
     <ClInclude Include="Memory\Memory.h" />
@@ -256,6 +259,7 @@
     <ClInclude Include="Thread\Lock.h" />
     <ClInclude Include="Thread\Mutex.h" />
     <ClInclude Include="Thread\SpinLock.h" />
+    <ClInclude Include="Util\Aligned.h" />
     <ClInclude Include="Util\Assert.h" />
     <ClInclude Include="Util\Debug.h" />
     <ClInclude Include="Core\Object.h" />
@@ -271,6 +275,7 @@
   <ItemGroup>
     <ClCompile Include="Application\Engine.cpp" />
     <ClCompile Include="Application\Eris.cpp" />
+    <ClCompile Include="Core\Clock.cpp" />
     <ClCompile Include="Memory\Memory.cpp" />
     <ClCompile Include="Memory\RefCounted.cpp" />
     <ClCompile Include="Collections\StringHash.cpp" />
