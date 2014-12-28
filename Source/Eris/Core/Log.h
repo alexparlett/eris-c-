@@ -36,12 +36,12 @@ namespace Eris
     public:
         enum class Level : glm::u8
         {
-            NONE,
             ASSERT,
             DEBUG,
             INFO,
             WARNING,
-            FATAL
+            FATAL,
+            NONE
         };
 
         Log(Context* context);
