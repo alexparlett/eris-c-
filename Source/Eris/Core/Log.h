@@ -26,7 +26,9 @@
 #include "Object.h"
 
 #include "Thread/SpinLock.h"
+#include "Util/Functions.h"
 
+#include <functional>
 #include <fstream>
 
 namespace Eris
@@ -36,10 +38,9 @@ namespace Eris
     public:
         enum class Level : glm::u8
         {
-            ASSERT,
             DEBUG,
             INFO,
-            WARNING,
+            WARN,
             FATAL,
             NONE
         };
@@ -59,10 +60,41 @@ namespace Eris
         static void debug(const std::string& msg);
         static void info(const std::string& msg);
         static void warn(const std::string& msg);
-        static void fatal(const std::string& msg);
+        static void error(const std::string& msg);
+
+        template<typename... Args>
+        static void rawf(const std::string& msg, Args... args)
+        {
+            raw(std::string_format(msg, std::forward<Args>(args)...));
+        }
+
+        template<typename... Args>
+        static void debugf(const std::string& msg, Args... args)
+        {
+            debug(std::string_format(msg, std::forward<Args>(args)...));
+        }
+
+        template<typename... Args>
+        static void infof(const std::string& msg, Args... args)
+        {
+            info(std::string_format(msg, std::forward<Args>(args)...));
+        }
+
+        template<typename... Args>
+        static void warnf(const std::string& msg, Args... args)
+        {
+            warn(std::string_format(msg, std::forward<Args>(args)...));
+        }
+
+        template<typename... Args>
+        static void errorf(const std::string& msg, Args... args)
+        {
+            error(std::string_format(msg, std::forward<Args>(args)...));
+        }
 
     private:
         void write(const std::string& msg, Level level);
+        static void errorCallback(int error, const char* msg);
 
         std::ofstream m_handle;
         bool m_timestamp;

@@ -39,6 +39,7 @@ namespace Eris
     class Engine;
     class Graphics;
     class Input;
+    class FileSystem;
 
     class Context : public NonCopyable
     {
@@ -72,5 +73,6 @@ namespace Eris
         SharedPtr<Graphics> m_graphics;
         SharedPtr<Input> m_input;
         SharedPtr<Log> m_log;
+        SharedPtr<FileSystem> m_fs;
     };
 }

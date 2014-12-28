@@ -24,6 +24,7 @@
 
 #include "Core/Context.h"
 #include "Core/Clock.h"
+#include "IO/FileSystem.h"
 #include "Util/Functions.h"
 #include "Thread/Lock.h"
 
@@ -39,6 +40,7 @@ namespace Eris
         m_timestamp(true)
     {
         log = this;
+        glfwSetErrorCallback(&Log::errorCallback);
     }
 
     Log::~Log()
@@ -49,7 +51,10 @@ namespace Eris
 
     void Log::open(const std::string& filename, Level level /*= Level::FATAL*/, bool timestamp /*= true*/)
     {
-        m_handle.open(filename.c_str(), std::ios::trunc | std::ios::out);
+        Path path = m_context->getModule<FileSystem>()->getApplicationPreferencesDir();
+        path /= filename;
+
+        m_handle.open(path, std::ios::trunc | std::ios::out);
         ERIS_ASSERT(m_handle.good());
         if (!m_handle.good())
         {
@@ -58,7 +63,7 @@ namespace Eris
             return;
         }
 
-        write(std::string_format("Eris %s", ERIS_VERSION), Level::NONE);
+        rawf("Solarian Wars %s", ERIS_VERSION);
     }
 
     void Log::close()
@@ -100,10 +105,10 @@ namespace Eris
     void Log::warn(const std::string& msg)
     {
         if (log && log->isOpen())
-            log->write(msg, Level::WARNING);
+            log->write(msg, Level::WARN);
     }
 
-    void Log::fatal(const std::string& msg)
+    void Log::error(const std::string& msg)
     {
         if (log && log->isOpen())
             log->write(msg, Level::FATAL);
@@ -111,7 +116,7 @@ namespace Eris
 
     void Log::write(const std::string& msg, Level level)
     {
-        if (level <= m_level)
+        if (level >= m_level)
         {
             LockGuard<SpinLock> lock(m_lock);
 
@@ -122,20 +127,17 @@ namespace Eris
             {
             case Level::NONE:
                 break;
-            case Level::ASSERT:
-                m_handle << "[ASSERT] ";
-                break;
             case Level::DEBUG:
                 m_handle << "[DEBUG] ";
                 break;
             case Level::INFO:
                 m_handle << "[INFO] ";
                 break;
-            case Level::WARNING:
-                m_handle << "[WARNING] ";
+            case Level::WARN:
+                m_handle << "[WARN] ";
                 break;
             case Level::FATAL:
-                m_handle << "[FATAL] ";
+                m_handle << "[ERROR] ";
                 break;
             default:
                 break;
@@ -146,4 +148,8 @@ namespace Eris
         }
     }
 
+    void Log::errorCallback(int error, const char* msg)
+    {
+        Eris::Log::errorf("GLFW error: %d %s", error, msg);
+    }
 }

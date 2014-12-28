@@ -30,6 +30,7 @@ namespace Eris
     {
         EVENT(ScreenModeEvent)
 
+    public:
         glm::i32 width;
         glm::i32 height;
     };

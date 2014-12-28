@@ -31,5 +31,5 @@
         _CrtDbgBreak(); \
     else
 #else
-#define ERIS_ASSERT(expr)
+#define ERIS_ASSERT(expr) Eris::Log::debugf("Assertation failed. File: %s | Line: %s | Module: %s | Expr: %s", __FILE__, __LINE__, __FUNCTION__, #expr)
 #endif

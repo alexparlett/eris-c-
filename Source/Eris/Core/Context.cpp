@@ -29,6 +29,7 @@
 #include "Application/Engine.h"
 #include "Graphics/Graphics.h"
 #include "Input/Input.h"
+#include "IO/FileSystem.h"
 
 namespace Eris
 {
@@ -38,7 +39,8 @@ namespace Eris
         m_engine(nullptr),
         m_graphics(nullptr),
         m_input(nullptr),
-        m_log(nullptr)
+        m_log(nullptr),
+        m_fs(nullptr)
     {
     }
 

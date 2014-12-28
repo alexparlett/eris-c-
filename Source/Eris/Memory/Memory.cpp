@@ -104,7 +104,7 @@ namespace Eris
             m_allocations++;
         }
         else
-            Log::fatal("Not enough memory for allocation");
+            Log::error("Not enough memory for allocation");
 
         return out;
     }
@@ -135,7 +135,7 @@ namespace Eris
         }
         else
         {
-            Log::fatal("Not enough memory for allocation");
+            Log::error("Not enough memory for allocation");
         }
     }
 
@@ -167,7 +167,7 @@ namespace Eris
         }
         else
         {
-            Log::fatal("Not enough memory for allocation");
+            Log::error("Not enough memory for allocation");
             m_head = out;
             out = nullptr;
         }
@@ -429,7 +429,7 @@ namespace Eris
             }
             else
             {
-                Log::fatal("Not enough memory for allocation");
+                Log::error("Not enough memory for allocation");
                 destruct(ch);
                 _aligned_free(ch);
                 ch = nullptr;
@@ -437,7 +437,7 @@ namespace Eris
         }
         else
         {
-            Log::fatal("Not enough memory for allocation");
+            Log::error("Not enough memory for allocation");
         }
 
         return ch;

@@ -26,6 +26,8 @@
 #include "Core/Log.h"
 #include "Graphics/Graphics.h"
 #include "Input/Input.h"
+#include "IO/FileSystem.h"
+#include "Util/Functions.h"
 
 namespace Eris
 {
@@ -34,7 +36,8 @@ namespace Eris
         m_exitcode(EXIT_OK)
     {
         context->registerModule<Engine>(this);
-        context->registerModule<Log>(new Log(context)),
+        context->registerModule<FileSystem>(new FileSystem(context));
+        context->registerModule<Log>(new Log(context));
         context->registerModule<Clock>(new Clock(context));
         context->registerModule<Graphics>(new Graphics(context));
         context->registerModule<Input>(new Input(context));
@@ -47,7 +50,7 @@ namespace Eris
     void Engine::initialize()
     {
         Log* log = m_context->getModule<Log>();
-        log->open("eris.log");
+        log->open("sw.log");
 
         if (!glfwInit())
         {
@@ -83,10 +86,16 @@ namespace Eris
     void Engine::terminate()
     {
         Graphics* graphics = m_context->getModule<Graphics>();
+        Clock* clock = m_context->getModule<Clock>();
 
         graphics->terminate();
 
+        glm::f32 duration = clock->getElapsedTime() / 1000.f;
+        glm::u64 frames = clock->getFrameNumber();
+
         glfwTerminate();
+
+        Log::rawf("Shutting down, ran for %d frames | %.2f seconds", frames, duration);
     }
 
     void Engine::setExitCode(glm::i32 exitcode)

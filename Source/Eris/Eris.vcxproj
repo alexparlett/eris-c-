@@ -254,6 +254,7 @@
     <ClInclude Include="Graphics\GraphicsEvents.h" />
     <ClInclude Include="Input\Input.h" />
     <ClInclude Include="Input\InputEvents.h" />
+    <ClInclude Include="IO\FileSystem.h" />
     <ClInclude Include="Memory\Allocator.h" />
     <ClInclude Include="Application\Engine.h" />
     <ClInclude Include="Memory\Memory.h" />
@@ -283,6 +284,7 @@
     <ClCompile Include="Core\Clock.cpp" />
     <ClCompile Include="Core\Log.cpp" />
     <ClCompile Include="Input\Input.cpp" />
+    <ClCompile Include="IO\FileSystem.cpp" />
     <ClCompile Include="Memory\Memory.cpp" />
     <ClCompile Include="Memory\RefCounted.cpp" />
     <ClCompile Include="Collections\StringHash.cpp" />

@@ -99,7 +99,7 @@ namespace Eris
         if (err != GLEW_OK)
         {
             const GLubyte* msg = glewGetErrorString(err);
-            Log::fatal(std::string_format("GLEW error: %s", msg));
+            Log::errorf("GLEW error: %s", msg);
 
             glfwDestroyWindow(m_window);
             m_window = nullptr;
