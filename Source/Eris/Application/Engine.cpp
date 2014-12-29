@@ -49,8 +49,9 @@ namespace Eris
 
     void Engine::initialize()
     {
+        FileSystem* fs = m_context->getModule<FileSystem>();
         Log* log = m_context->getModule<Log>();
-        log->open("log.log");
+        log->open(fs->getApplicationPreferencesDir() /= "log.log");
 
         if (!glfwInit())
         {

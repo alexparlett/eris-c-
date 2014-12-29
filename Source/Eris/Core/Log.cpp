@@ -57,7 +57,7 @@ namespace Eris
             return;
         }
 
-        rawf("Starting, version %s", ERIS_VERSION);
+        rawf("Starting version %s", ERIS_VERSION);
     }
 
     void Log::close()

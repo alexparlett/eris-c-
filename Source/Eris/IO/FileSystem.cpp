@@ -193,14 +193,14 @@ namespace Eris
         return Path(path);
     }
 
-    Path FileSystem::getApplicationPreferencesDir(const std::string& org, const std::string& app) const
+    Path FileSystem::getApplicationPreferencesDir() const
     {
         char path[MAX_PATH];
         SHGetSpecialFolderPath(nullptr, path, CSIDL_APPDATA, FALSE);
 
         Path out(path);
-        out /= org;
-        out /= app;
+        out /= ORG;
+        out /= APP;
 
         return out;
     }

@@ -35,6 +35,9 @@
 #include "Util/Assert.h"
 #include "Util/Debug.h"
 
+#define ORG "Homonoia Studios"
+#define APP "Solarian Wars"
+
 namespace Eris
 {
     static const std::string StringEmpty = std::string();

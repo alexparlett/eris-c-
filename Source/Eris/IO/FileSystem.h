@@ -76,7 +76,7 @@ namespace Eris
         Path getCurrentDir() const;
         Path getProgramDir() const;
         Path getDocumentsDir() const;
-        Path getApplicationPreferencesDir(const std::string& org, const std::string& app) const;
+        Path getApplicationPreferencesDir() const;
 
     private:
         std::unordered_set<Path, std::hash<Path>, std::equal_to<Path>, ChainAllocator<Path>> m_allowed_paths;
