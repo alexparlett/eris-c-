@@ -27,7 +27,6 @@
 #include "Memory/Allocator.h"
 
 #include <unordered_set>
-#include <memory>
 
 namespace Eris
 {

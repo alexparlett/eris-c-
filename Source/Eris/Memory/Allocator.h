@@ -26,7 +26,7 @@
 #include "Memory.h"
 #include "Pointers.h"
 
-#include <functional>
+#include <utility>
 
 namespace Eris
 {
@@ -108,11 +108,6 @@ namespace Eris
             size_type size = n * sizeof(value_type);
             std::size_t alignment = hint ? *reinterpret_cast<const std::size_t*>(hint) : __alignof(value_type);
             void* out = m_pool->allocate(size, alignment);
-
-            if (!out)
-            {
-                //todo: LOG ERROR("Allocation failed. There is not enough room");
-            }
 
             return reinterpret_cast<pointer>(out);
         }

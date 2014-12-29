@@ -25,10 +25,11 @@
 #include "Context.h"
 #include "Object.h"
 
+#include "IO/FileSystem.h"
 #include "Thread/SpinLock.h"
 #include "Util/Functions.h"
 
-#include <functional>
+#include <utility>
 #include <fstream>
 
 namespace Eris
@@ -48,7 +49,7 @@ namespace Eris
         Log(Context* context);
         ~Log();
 
-        void open(const std::string& filename, Level level = Level::FATAL, bool timestamp = true);
+        void open(const Path& file, Level level = Level::FATAL, bool timestamp = true);
         void close();
 
         void setTimestamp(bool timestamp);

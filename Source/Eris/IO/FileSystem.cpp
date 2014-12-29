@@ -23,7 +23,6 @@
 #include "FileSystem.h"
 
 #include "Core/Log.h"
-#include "Util/Functions.h"
 
 #include <ShlObj.h>
 

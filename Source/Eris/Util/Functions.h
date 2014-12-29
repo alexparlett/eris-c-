@@ -22,9 +22,8 @@
 
 #pragma once
 
-#include <functional>
+#include <utility>
 #include <stdarg.h>
-#include <memory>
 #include <stdlib.h>
 
 namespace Eris
@@ -90,7 +89,7 @@ namespace Eris
 
 namespace std
 {
-    static string string_format(const string fmt_str, ...)
+    inline string string_format(const string fmt_str, ...)
     {
         int final_n, n = ((int) fmt_str.size()) * 2;
         string str;
@@ -111,7 +110,7 @@ namespace std
         return string(formatted.get());
     }
 
-    static string string_replace(string str, const string& from, const string& to)
+    inline string string_replace(string str, const string& from, const string& to)
     {
         size_t start_pos = 0;
         while ((start_pos = str.find(from, start_pos)) != string::npos)

@@ -25,9 +25,7 @@
 
 #include "Application/Engine.h"
 #include "Application/ApplicationEvents.h"
-#include "Core/Context.h"
 #include "Core/Log.h"
-#include "Util/Functions.h"
 
 namespace Eris
 {

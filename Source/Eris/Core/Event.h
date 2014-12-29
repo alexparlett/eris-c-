@@ -31,7 +31,7 @@ namespace Eris
     virtual const StringHash& getType() const { return getTypeStatic(); } \
     static const StringHash& getTypeStatic() { static const StringHash typeStatic(#typeName); return typeStatic; } \
 
-    struct Event : Aligned<4>
+    struct Event : Aligned<1>
     {
         virtual ~Event() { }
 

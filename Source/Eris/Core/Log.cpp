@@ -22,10 +22,7 @@
 
 #include "Log.h"
 
-#include "Core/Context.h"
 #include "Core/Clock.h"
-#include "IO/FileSystem.h"
-#include "Util/Functions.h"
 #include "Thread/Lock.h"
 
 #include "../gitversion.h"
@@ -49,12 +46,9 @@ namespace Eris
             m_handle.close();
     }
 
-    void Log::open(const std::string& filename, Level level /*= Level::FATAL*/, bool timestamp /*= true*/)
+    void Log::open(const Path& file, Level level /*= Level::FATAL*/, bool timestamp /*= true*/)
     {
-        Path path = m_context->getModule<FileSystem>()->getApplicationPreferencesDir();
-        path /= filename;
-
-        m_handle.open(path, std::ios::trunc | std::ios::out);
+        m_handle.open(file, std::ios::trunc | std::ios::out);
         ERIS_ASSERT(m_handle.good());
         if (!m_handle.good())
         {
@@ -63,7 +57,7 @@ namespace Eris
             return;
         }
 
-        rawf("Solarian Wars %s", ERIS_VERSION);
+        rawf("Starting, version %s", ERIS_VERSION);
     }
 
     void Log::close()
