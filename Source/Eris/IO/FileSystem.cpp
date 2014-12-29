@@ -160,11 +160,11 @@ namespace Eris
             if (!filter.empty())
                 filter_extension = filter.substr(filter.find_last_of('.'));
 
-            if (is_directory(entry_path) && (flags & SCAN_DIRS) != 0)
+            if (is_directory(iter->status()) && (flags & SCAN_DIRS) != 0)
             {
                 output.push_back(entry_path);
             }
-            else if (is_regular_file(entry_path) && (flags & SCAN_FILES) != 0)
+            else if (is_regular_file(iter->status()) && (flags & SCAN_FILES) != 0)
             {
                 if (filter.empty() || filter_extension == entry_path.extension())
                     output.push_back(entry_path);
