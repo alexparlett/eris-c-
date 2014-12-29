@@ -195,7 +195,7 @@ namespace Eris
 
     void Graphics::setGamma(glm::f32 gamma)
     {
-        m_gamma = gamma;
+        m_gamma = glm::max(gamma, 1.0f);
 
         if (!m_initialized || !m_window)
             return;

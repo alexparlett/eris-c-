@@ -35,9 +35,9 @@ namespace Eris
         Object(context),
         m_exitcode(EXIT_OK)
     {
+        context->registerModule<Log>(new Log(context));
         context->registerModule<Engine>(this);
         context->registerModule<FileSystem>(new FileSystem(context));
-        context->registerModule<Log>(new Log(context));
         context->registerModule<Clock>(new Clock(context));
         context->registerModule<Graphics>(new Graphics(context));
         context->registerModule<Input>(new Input(context));
@@ -50,7 +50,7 @@ namespace Eris
     void Engine::initialize()
     {
         Log* log = m_context->getModule<Log>();
-        log->open("sw.log");
+        log->open("log.log");
 
         if (!glfwInit())
         {
@@ -71,6 +71,7 @@ namespace Eris
     {
         Graphics* graphics = m_context->getModule<Graphics>();
         Clock* clock = m_context->getModule<Clock>();
+        FileSystem* fs = m_context->getModule<FileSystem>();
 
         while (!glfwWindowShouldClose(graphics->getWindow()))
         {

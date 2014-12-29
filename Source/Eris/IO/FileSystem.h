@@ -50,6 +50,10 @@ namespace Eris
 {
     using Path = std::tr2::sys::path;
 
+    static const glm::uint SCAN_FILES = 1;
+    static const glm::uint SCAN_DIRS = 2;
+    static const glm::uint SCAN_HIDDEN = 4;
+
     class FileSystem : public Object
     {
     public:
@@ -66,6 +70,8 @@ namespace Eris
         bool exists(const Path& path) const;
 
         bool hasRestrictedPaths() const;
+
+        void scanDir(std::vector<Path>& output, const Path& path, std::string filter = StringEmpty, glm::uint flags = SCAN_FILES, bool recusive = false);
 
         Path getCurrentDir() const;
         Path getProgramDir() const;

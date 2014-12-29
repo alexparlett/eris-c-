@@ -107,6 +107,8 @@ namespace Eris
                 return false;
         }
 
+
+
         return m_allowed_paths.find(path) != m_allowed_paths.end();
     }
 
@@ -124,6 +126,54 @@ namespace Eris
     bool FileSystem::hasRestrictedPaths() const
     {
         return m_allowed_paths.size() > 0;
+    }
+
+    void FileSystem::scanDir(std::vector<Path>& output, const Path& path, std::string filter, glm::uint flags, bool recusive)
+    {
+        if (!accessible(path))
+        {
+            Log::warnf("Unable to access path: %s", path.string());
+            return;
+        }
+
+        recursive_directory_iterator iter(path);
+
+        if (!recusive)
+            iter.no_push();
+
+        recursive_directory_iterator prev;
+        while (1)
+        {
+            Path entry_path = iter->path();
+
+            if (entry_path.stem() == ".." || (entry_path.stem()[0] == '.' && (flags & SCAN_HIDDEN) == 0))
+            { 
+                prev = iter;
+                iter++;
+                continue;
+            }
+
+            if (filter == "*")
+                filter.clear();
+
+            std::string filter_extension = StringEmpty;
+            if (!filter.empty())
+                filter_extension = filter.substr(filter.find_last_of('.'));
+
+            if (is_directory(entry_path) && (flags & SCAN_DIRS) != 0)
+            {
+                output.push_back(entry_path);
+            }
+            else if (is_regular_file(entry_path) && (flags & SCAN_FILES) != 0)
+            {
+                if (filter.empty() || filter_extension == entry_path.extension())
+                    output.push_back(entry_path);
+            }
+
+            prev = iter;
+            if (iter == prev)
+                break;
+        }
     }
 
     Path FileSystem::getCurrentDir() const
