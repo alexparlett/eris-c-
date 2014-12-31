@@ -22,27 +22,26 @@
 
 #pragma once
 
-#include <windows.h>
+#include <filesystem>
 
-#include <memory>
-#include <string>
-#include <unordered_set>
-#include <unordered_map>
+namespace std
+{
+    template<>
+    struct hash < tr2::sys::path >
+    {
+        typedef tr2::sys::path argument_type;
+        typedef std::size_t result_type;
 
-#include <glew/glew.h>
-#include <glm/glm.hpp>
-#include <glfw3/glfw3.h>
-#include <glfw3/glfw3native.h>
+        std::hash<std::string> hasher;
 
-#include "Util/Assert.h"
-#include "Util/Debug.h"
-
-#include "IO/Types.h"
-
-#define ORG "Homonoia Studios"
-#define APP "Solarian Wars"
+        result_type operator()(const argument_type& value) const
+        {
+            return hasher(value.string());
+        }
+    };
+}
 
 namespace Eris
 {
-    static const std::string StringEmpty = std::string();
+    using Path = std::tr2::sys::path;
 }

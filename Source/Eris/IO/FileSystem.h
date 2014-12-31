@@ -26,30 +26,8 @@
 #include "Core/Object.h"
 #include "Memory/Allocator.h"
 
-#include <unordered_set>
-#include <filesystem>
-
-namespace std
-{
-    template<>
-    struct hash < tr2::sys::path >
-    {
-        typedef tr2::sys::path argument_type;
-        typedef std::size_t result_type;
-
-        std::hash<std::string> hasher;
-
-        result_type operator()(const argument_type& value) const
-        {
-            return hasher(value.string());
-        }
-    };
-}
-
 namespace Eris
 {
-    using Path = std::tr2::sys::path;
-
     static const glm::uint SCAN_FILES = 1;
     static const glm::uint SCAN_DIRS = 2;
     static const glm::uint SCAN_HIDDEN = 4;

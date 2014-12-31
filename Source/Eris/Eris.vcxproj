@@ -260,7 +260,9 @@
     <ClInclude Include="Graphics\GraphicsEvents.h" />
     <ClInclude Include="Input\Input.h" />
     <ClInclude Include="Input\InputEvents.h" />
+    <ClInclude Include="IO\File.h" />
     <ClInclude Include="IO\FileSystem.h" />
+    <ClInclude Include="IO\Types.h" />
     <ClInclude Include="Math\Functions.h" />
     <ClInclude Include="Memory\Allocator.h" />
     <ClInclude Include="Application\Engine.h" />
@@ -291,6 +293,7 @@
     <ClCompile Include="Core\Clock.cpp" />
     <ClCompile Include="Core\Log.cpp" />
     <ClCompile Include="Input\Input.cpp" />
+    <ClCompile Include="IO\File.cpp" />
     <ClCompile Include="IO\FileSystem.cpp" />
     <ClCompile Include="Memory\Memory.cpp" />
     <ClCompile Include="Memory\RefCounted.cpp" />

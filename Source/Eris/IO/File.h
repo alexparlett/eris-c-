@@ -22,27 +22,47 @@
 
 #pragma once
 
-#include <windows.h>
+#include "Core/Context.h"
+#include "Core/Object.h"
 
-#include <memory>
-#include <string>
-#include <unordered_set>
-#include <unordered_map>
-
-#include <glew/glew.h>
-#include <glm/glm.hpp>
-#include <glfw3/glfw3.h>
-#include <glfw3/glfw3native.h>
-
-#include "Util/Assert.h"
-#include "Util/Debug.h"
-
-#include "IO/Types.h"
-
-#define ORG "Homonoia Studios"
-#define APP "Solarian Wars"
+#include <fstream>
 
 namespace Eris
 {
-    static const std::string StringEmpty = std::string();
+    enum class FileMode : glm::u8
+    {
+        READ,
+        WRITE
+    };
+
+    class File : public Object
+    {
+    public:
+        File(Context* context);
+        File(Context* context, const Path& path, FileMode mode = FileMode::READ);
+        virtual ~File();
+
+        void open(const Path& path, FileMode mode = FileMode::READ);
+        void flush();
+        void close();
+
+        virtual File& operator << (const void* data);
+        virtual File& operator >> (void* buffer);
+
+        virtual std::size_t read(void* buffer, std::size_t count);
+        virtual std::size_t seek(std::size_t position);
+        virtual std::size_t write(void* data, std::size_t count);
+
+        bool isOpen() const;
+        bool isEmpty() const;
+
+        std::size_t getSize() const;
+        FileMode getMode() const { return m_mode; }
+        Path getPath() const { return m_path; }
+
+    private:
+        Path m_path;
+        std::fstream m_stream;
+        FileMode m_mode;
+    };
 }

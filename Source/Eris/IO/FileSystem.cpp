@@ -34,7 +34,6 @@ namespace Eris
         Object(context),
         m_allowed_paths(ChainAllocator<Path>(0, sizeof(Path), 128 * sizeof(Path)))
     {
-
     }
 
     void FileSystem::addPath(const Path& path)
