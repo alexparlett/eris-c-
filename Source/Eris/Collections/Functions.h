@@ -22,77 +22,16 @@
 
 #pragma once
 
+#include <algorithm>
+#include <cstdarg>
+#include <cstdlib>
 #include <utility>
-#include <stdarg.h>
-#include <stdlib.h>
-
-namespace Eris
-{
-    template<class Int>
-    inline bool isPowerOfTwo(Int x)
-    {
-        while (((x % 2) == 0) && x > 1)
-        {
-            x /= 2;
-        }
-        return (x == 1);
-    }
-
-    template<class Type>
-    inline Type getAlignedRoundUp(std::size_t alignment, Type value)
-    {
-        ERIS_ASSERT(isPowerOfTwo(alignment));
-        std::size_t v = (std::size_t) value;
-        v = (v + alignment - 1) & ~(alignment - 1);
-        return (Type) v;
-    }
-
-    template<class Type>
-    inline void alignRoundUp(std::size_t alignment, Type& value)
-    {
-        value = getAlignedRoundUp(alignment, value);
-    }
-
-    template<class Type>
-    inline Type getAlignedRoundDown(std::size_t alignment, Type value)
-    {
-        ERIS_ASSERT(isPowerOfTwo(alignment));
-        std::size_t v = (std::size_t) value;
-        v &= ~(alignment - 1);
-        return (Type) v;
-    }
-
-    template<class Type>
-    inline void alignRoundDown(std::size_t alignment, Type& value)
-    {
-        value = getAlignedRoundDown(alignment, value);
-    }
-
-    template<class Type>
-    inline bool isAligned(std::size_t alignment, Type value)
-    {
-        return ((std::size_t) value % alignment) == 0;
-    }
-
-    template<class T, class... Args>
-    void construct(T* ptr, Args&&... args)
-    {
-        ::new (reinterpret_cast<void*>(ptr)) T(forward<Args>(args)...);
-    }
-
-    template<class T>
-    void destruct(T* ptr)
-    {
-        ptr->~T();
-    }
-}
 
 namespace std
 {
     inline string string_format(const string fmt_str, ...)
     {
         int final_n, n = ((int) fmt_str.size()) * 2;
-        string str;
         unique_ptr<char[]> formatted;
         va_list ap;
         while (1)
@@ -118,6 +57,18 @@ namespace std
             str.replace(start_pos, from.length(), to);
             start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
         }
+        return str;
+    }
+
+    inline string string_upper(string str)
+    {
+        transform(str.begin(), str.end(), str.begin(), ::toupper);
+        return str;
+    }
+
+    inline string string_lower(string str)
+    {
+        transform(str.begin(), str.end(), str.begin(), ::tolower);
         return str;
     }
 }

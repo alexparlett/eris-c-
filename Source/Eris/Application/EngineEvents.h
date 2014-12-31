@@ -22,48 +22,25 @@
 
 #pragma once
 
-#include "Core/Object.h"
-#include "Core/Context.h"
+#include "Core/Event.h"
 
 namespace Eris
 {
-    static const glm::i32 EXIT_OK = 0;
-    static const glm::i32 EXIT_INITIALIZATION_FAILURE = 1;
-    static const glm::i32 EXIT_GLFW_INIT_ERROR = 2;
-    static const glm::i32 EXIT_GLEW_INIT_ERROR = 3;
-    static const glm::i32 EXIT_WINDOW_CREATE_ERROR = 4;
-
-    class Engine : public Object
+    struct ExitRequestedEvent : public Event
     {
-    public:
-        Engine(Context* context);
-        virtual ~Engine();
-
-        void initialize();
-        void run();
-        void terminate();
-
-        const char* getVersion() const;
-
-        void setExitCode(glm::i32 exitcode);
-        glm::i32 getExitCode() const { return m_exitcode; }
-
-    private:
-        void HandleExitRequest(const StringHash& type, const Event* event);
-
-        bool m_exiting;
-        glm::i32 m_exitcode;
-        glm::f32 m_time_step;
+        EVENT(ExitRequestedEvent)
     };
 
-    template<> inline void Context::registerModule(Engine* engine)
+    struct UpdateEvent : public Event
     {
-        m_engine = SharedPtr<Engine>(engine);
-    }
+        EVENT(UpdateEvent)
 
-    template<> inline Engine* Context::getModule()
+    public:
+        glm::f32 time_step;
+    };
+
+    struct PostUpdateEvent : public Event
     {
-        ERIS_ASSERT(m_engine);
-        return m_engine.get();
-    }
+        EVENT(PostUpdateEvent)
+    };
 }

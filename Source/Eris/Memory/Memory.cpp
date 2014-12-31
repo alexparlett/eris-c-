@@ -20,11 +20,11 @@
 // THE SOFTWARE.
 //
 
+#include "Functions.h"
 #include "Memory.h"
 
 #include "Core/Log.h"
 #include "Thread/Lock.h"
-#include "Util/Functions.h"
 
 namespace Eris
 {

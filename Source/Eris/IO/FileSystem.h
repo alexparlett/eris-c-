@@ -62,6 +62,7 @@ namespace Eris
         void addPath(const Path& path);
         void removePath(const Path& path);
 
+        bool createDirectory(const Path& src);
         bool copy(const Path& src, const Path& dest);
         bool rename(const Path& src, const Path& new_name);
         bool remove(const Path& file);

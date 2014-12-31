@@ -120,6 +120,7 @@
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(Platform)\</AdditionalLibraryDirectories>
       <AdditionalDependencies>glfw3_d.lib;glew32sd.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <LargeAddressAware>true</LargeAddressAware>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
     <PreBuildEvent>
       <Command>cmd.exe /c "$(SolutionDir)gitversion.bat $(SolutionDir) $(ProjectDir)"</Command>
@@ -155,6 +156,7 @@
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(Platform)\</AdditionalLibraryDirectories>
       <AdditionalDependencies>glfw3_d.lib;glew32sd.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ProfileGuidedDatabase>$(IntDir)$(TargetName).pgd</ProfileGuidedDatabase>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
     <PreBuildEvent>
       <Command>cmd.exe /c "$(SolutionDir)gitversion.bat $(SolutionDir) $(ProjectDir)"</Command>
@@ -196,6 +198,7 @@
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(Platform)\</AdditionalLibraryDirectories>
       <AdditionalDependencies>glfw3.lib;glew32s.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <LargeAddressAware>true</LargeAddressAware>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
     <PreBuildEvent>
       <Command>cmd.exe /c "$(SolutionDir)gitversion.bat $(SolutionDir) $(ProjectDir)"</Command>
@@ -233,6 +236,7 @@
       <ProgramDatabaseFile>$(IntDir)$(TargetName).pdb</ProgramDatabaseFile>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(Platform)\</AdditionalLibraryDirectories>
       <AdditionalDependencies>glfw3.lib;glew32s.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
     <PreBuildEvent>
       <Command>cmd.exe /c "$(SolutionDir)gitversion.bat $(SolutionDir) $(ProjectDir)"</Command>
@@ -247,7 +251,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\gitversion.h" />
-    <ClInclude Include="Application\ApplicationEvents.h" />
+    <ClInclude Include="Application\EngineEvents.h" />
+    <ClInclude Include="Collections\Functions.h" />
     <ClInclude Include="Core\Clock.h" />
     <ClInclude Include="Core\Event.h" />
     <ClInclude Include="Core\CoreEvents.h" />
@@ -256,6 +261,7 @@
     <ClInclude Include="Input\Input.h" />
     <ClInclude Include="Input\InputEvents.h" />
     <ClInclude Include="IO\FileSystem.h" />
+    <ClInclude Include="Math\Functions.h" />
     <ClInclude Include="Memory\Allocator.h" />
     <ClInclude Include="Application\Engine.h" />
     <ClInclude Include="Memory\Memory.h" />
@@ -273,7 +279,7 @@
     <ClInclude Include="Eris.h" />
     <ClInclude Include="Graphics\Graphics.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="Util\Functions.h" />
+    <ClInclude Include="Memory\Functions.h" />
     <ClInclude Include="Util\NonCopyable.h" />
   </ItemGroup>
   <ItemGroup>

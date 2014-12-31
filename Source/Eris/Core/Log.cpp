@@ -25,8 +25,6 @@
 #include "Core/Clock.h"
 #include "Thread/Lock.h"
 
-#include "../gitversion.h"
-
 namespace Eris
 {
     static Log* log;
@@ -56,8 +54,6 @@ namespace Eris
                 m_handle.close();
             return;
         }
-
-        rawf("Starting version %s", ERIS_VERSION);
     }
 
     void Log::close()

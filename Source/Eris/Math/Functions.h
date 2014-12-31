@@ -22,12 +22,15 @@
 
 #pragma once
 
-#include "Core/Event.h"
-
 namespace Eris
 {
-    struct ExitRequestedEvent : public Event
+    template<class Int>
+    inline bool powerOfTwo(Int x)
     {
-        EVENT(ExitRequestedEvent)
-    };
+        while (((x % 2) == 0) && x > 1)
+        {
+            x /= 2;
+        }
+        return (x == 1);
+    }
 }

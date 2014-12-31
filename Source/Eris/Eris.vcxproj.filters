@@ -82,9 +82,6 @@
     <ClInclude Include="Memory\Memory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Util\Functions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Thread\Mutex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -106,9 +103,6 @@
     <ClInclude Include="Core\CoreEvents.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Application\ApplicationEvents.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Input\InputEvents.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -122,6 +116,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Collections\StringHash.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\Functions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Functions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Collections\Functions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\EngineEvents.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

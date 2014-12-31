@@ -27,7 +27,7 @@
 
 #include "IO/FileSystem.h"
 #include "Thread/SpinLock.h"
-#include "Util/Functions.h"
+#include "Collections/Functions.h"
 
 #include <utility>
 #include <fstream>

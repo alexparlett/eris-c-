@@ -21,26 +21,32 @@
 //
 
 #include "Engine.h"
+#include "EngineEvents.h"
 
 #include "Core/Clock.h"
 #include "Core/Log.h"
+#include "Collections/Functions.h"
 #include "Graphics/Graphics.h"
 #include "Input/Input.h"
 #include "IO/FileSystem.h"
-#include "Util/Functions.h"
+
+#include "../gitversion.h"
 
 namespace Eris
 {
     Engine::Engine(Context* context) :
         Object(context),
-        m_exitcode(EXIT_OK)
-    {
-        context->registerModule<Log>(new Log(context));
+        m_exitcode(EXIT_OK),
+        m_exiting(false)
+    {        
+        context->registerModule<Clock>(new Clock(context));
         context->registerModule<Engine>(this);
         context->registerModule<FileSystem>(new FileSystem(context));
-        context->registerModule<Clock>(new Clock(context));
         context->registerModule<Graphics>(new Graphics(context));
         context->registerModule<Input>(new Input(context));
+        context->registerModule<Log>(new Log(context));
+
+        subscribeToEvent(ExitRequestedEvent::getTypeStatic(), HANDLER(Engine, HandleExitRequest));
     }
 
     Engine::~Engine()
@@ -52,6 +58,12 @@ namespace Eris
         FileSystem* fs = m_context->getModule<FileSystem>();
         Log* log = m_context->getModule<Log>();
         log->open(fs->getApplicationPreferencesDir() /= "log.log");
+
+        Log::rawf("Initializing - Version %s.", std::string_upper(getVersion()).c_str());
+
+        fs->addPath(fs->getApplicationPreferencesDir());
+        fs->addPath(fs->getDocumentsDir());
+        fs->addPath(fs->getProgramDir());
 
         if (!glfwInit())
         {
@@ -72,11 +84,24 @@ namespace Eris
     {
         Graphics* graphics = m_context->getModule<Graphics>();
         Clock* clock = m_context->getModule<Clock>();
-        FileSystem* fs = m_context->getModule<FileSystem>();
+        Input* input = m_context->getModule<Input>();
 
-        while (!glfwWindowShouldClose(graphics->getWindow()))
+        glm::f32 current_time = clock->getElapsedTime();
+
+        while (!m_exiting)
         {
-            clock->beginFrame(0.f);
+            glm::f32 new_time = clock->getElapsedTime();
+            glm::f32 elapsed = new_time - current_time;
+            current_time = new_time;
+
+            clock->beginFrame(elapsed);
+            input->update();
+
+            UpdateEvent* event = m_context->getFrameAllocator().newInstance<UpdateEvent>();
+            event->time_step = elapsed;
+
+            sendEvent(UpdateEvent::getTypeStatic(), event);
+            sendEvent(PostUpdateEvent::getTypeStatic());
 
             glfwSwapBuffers(graphics->getWindow());
 
@@ -97,11 +122,22 @@ namespace Eris
 
         glfwTerminate();
 
-        Log::rawf("Shutting down, ran for %d frames | %.2f seconds", frames, duration);
+        Log::rawf("Terminating - ran for %d frames over %.2f seconds.", frames, duration);
+    }
+
+    const char* Engine::getVersion() const
+    {
+        return ERIS_VERSION;
     }
 
     void Engine::setExitCode(glm::i32 exitcode)
     {
         m_exitcode = exitcode;
     }
+
+    void Engine::HandleExitRequest(const StringHash& type, const Event* event)
+    {
+        m_exiting = true;
+    }
+
 }

@@ -24,7 +24,7 @@
 #include "GraphicsEvents.h"
 
 #include "Application/Engine.h"
-#include "Application/ApplicationEvents.h"
+#include "Application/EngineEvents.h"
 #include "Core/Log.h"
 
 namespace Eris
@@ -40,7 +40,7 @@ namespace Eris
         m_height(0),
         m_samples(4),
         m_gamma(1.0f),
-        m_title(APPLICATION),
+        m_title(APP),
         m_window(nullptr)
     {
     }

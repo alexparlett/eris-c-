@@ -23,7 +23,7 @@
 #include "Clock.h"
 #include "CoreEvents.h"
 
-#include "Util/Functions.h"
+#include "Collections/Functions.h"
 
 #include <ctime>
 

@@ -49,6 +49,17 @@ namespace Eris
             m_allowed_paths.erase(path);
     }
 
+    bool FileSystem::createDirectory(const Path& src)
+    {
+        if (!accessible(src))
+        {
+            Log::errorf("Unable to access directory: %s", src.string());
+            return false;
+        }
+
+        return create_directory(src);
+    }
+
     bool FileSystem::copy(const Path& src, const Path& dest)
     {
         if (!accessible(src))
@@ -190,7 +201,12 @@ namespace Eris
     {
         char path[MAX_PATH];
         SHGetSpecialFolderPath(nullptr, path, CSIDL_PERSONAL, FALSE);
-        return Path(path);
+
+        Path out(path);
+        out /= "Games";
+        out /= APP;
+
+        return out;
     }
 
     Path FileSystem::getApplicationPreferencesDir() const

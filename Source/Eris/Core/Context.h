@@ -34,12 +34,12 @@
 
 namespace Eris
 {
-    class Log;
     class Clock;
     class Engine;
+    class FileSystem;
     class Graphics;
     class Input;
-    class FileSystem;
+    class Log;
 
     class Context : public NonCopyable
     {
@@ -70,9 +70,9 @@ namespace Eris
 
         SharedPtr<Clock> m_clock;
         SharedPtr<Engine> m_engine;
+        SharedPtr<FileSystem> m_fs;
         SharedPtr<Graphics> m_graphics;
         SharedPtr<Input> m_input;
         SharedPtr<Log> m_log;
-        SharedPtr<FileSystem> m_fs;
     };
 }
