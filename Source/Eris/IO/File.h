@@ -62,7 +62,7 @@ namespace Eris
 
     private:
         Path m_path;
-        std::fstream m_stream;
+        std::fstream m_handle;
         FileMode m_mode;
     };
 }

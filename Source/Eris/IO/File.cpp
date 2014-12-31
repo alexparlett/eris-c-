@@ -58,11 +58,11 @@ namespace Eris
         }
 
         if (mode == FileMode::READ)
-            m_stream.open(path, std::ios::in);
+            m_handle.open(path, std::ios::in);
         else
-            m_stream.open(path, std::ios::out | std::ios::trunc);
+            m_handle.open(path, std::ios::out | std::ios::trunc);
 
-        if (m_stream.bad())
+        if (m_handle.bad() || m_handle.fail())
         {
             Log::errorf("Unable to open file: %s", path.string());
             return;
@@ -74,20 +74,20 @@ namespace Eris
 
     void File::flush()
     {
-        if (m_stream.is_open())
-            m_stream.flush();
+        if (m_handle.is_open())
+            m_handle.flush();
     }
 
     void File::close()
     {
-        if (m_stream.is_open())
-            m_stream.close();
+        if (m_handle.is_open())
+            m_handle.close();
     }
 
     File& File::operator<<(const void* data)
     {
-        if (m_stream.is_open())
-            m_stream << data;
+        if (m_handle.is_open())
+            m_handle << data;
 
         flush();
 
@@ -96,44 +96,44 @@ namespace Eris
 
     File& File::operator>>(void* buffer)
     {
-        if (m_stream.is_open())
-            m_stream >> buffer;
+        if (m_handle.is_open())
+            m_handle >> buffer;
 
         return *this;
     }
 
     std::size_t File::read(void* buffer, std::size_t count)
     {
-        std::size_t opos = m_stream.tellg();
-        m_stream.read((char*) buffer, count);
-        std::size_t npos = m_stream.tellg();
+        std::size_t opos = m_handle.tellg();
+        m_handle.read((char*) buffer, count);
+        std::size_t npos = m_handle.tellg();
 
         return npos - opos;
     }
 
     std::size_t File::seek(std::size_t position)
     {
-        m_stream.seekg(position);
-        m_stream.seekp(position);
+        m_handle.seekg(position);
+        m_handle.seekp(position);
 
-        std::size_t gpos = m_stream.tellg();
-        std::size_t ppos = m_stream.tellp();
+        std::size_t gpos = m_handle.tellg();
+        std::size_t ppos = m_handle.tellp();
 
         return glm::max(gpos, ppos);
     }
 
     std::size_t File::write(void* data, std::size_t count)
     {
-        std::size_t opos = m_stream.tellp();
-        m_stream.write((char*) data, count);
-        std::size_t npos = m_stream.tellp();
+        std::size_t opos = m_handle.tellp();
+        m_handle.write((char*) data, count);
+        std::size_t npos = m_handle.tellp();
 
         return npos - opos;
     }
 
     bool File::isOpen() const
     {
-        return m_stream.is_open();
+        return m_handle.is_open();
     }
 
     bool File::isEmpty() const
@@ -143,6 +143,9 @@ namespace Eris
 
     std::size_t File::getSize() const
     {
+        if (m_path.empty())
+            return 0;
+
         return file_size(m_path);
     }
 }

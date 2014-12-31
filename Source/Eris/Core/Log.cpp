@@ -25,6 +25,8 @@
 #include "Core/Clock.h"
 #include "Thread/Lock.h"
 
+#include <iostream>
+
 namespace Eris
 {
     static Log* log;
@@ -46,14 +48,22 @@ namespace Eris
 
     void Log::open(const Path& file, Level level /*= Level::FATAL*/, bool timestamp /*= true*/)
     {
+        if (m_handle.is_open())
+            m_handle.close();
+
         m_handle.open(file, std::ios::trunc | std::ios::out);
         ERIS_ASSERT(m_handle.good());
-        if (!m_handle.good())
+        if (!m_handle.is_open())
         {
             if (m_handle.is_open())
                 m_handle.close();
+
             return;
         }
+
+        std::cout.set_rdbuf(m_handle.rdbuf());
+        std::clog.set_rdbuf(m_handle.rdbuf());
+        std::cerr.set_rdbuf(m_handle.rdbuf());
     }
 
     void Log::close()
