@@ -136,11 +136,6 @@ namespace Eris
         return m_handle.is_open();
     }
 
-    bool File::isEmpty() const
-    {
-        return !isOpen() || getSize() <= 0;
-    }
-
     std::size_t File::getSize() const
     {
         if (m_path.empty())

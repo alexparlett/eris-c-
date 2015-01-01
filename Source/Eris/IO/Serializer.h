@@ -22,32 +22,17 @@
 
 #pragma once
 
-#include <windows.h>
-
-#include <algorithm>
-#include <memory>
-#include <string>
-#include <unordered_set>
-#include <unordered_map>
-#include <vector>
-#include <list>
-#include <utility>
-
-#include <glew/glew.h>
-#include <glm/glm.hpp>
-#include <glfw3/glfw3.h>
-#include <glfw3/glfw3native.h>
-#include <pugixml/pugixml.hpp>
-
-#include "Util/Assert.h"
-#include "Util/Debug.h"
-
-#include "IO/Types.h"
-
-#define ORG "Homonoia Studios"
-#define APP "Solarian Wars"
-
 namespace Eris
 {
-    static const std::string StringEmpty = std::string();
+    class Serializer
+    {
+    public:
+        virtual Serializer& operator << (const void* data) = 0;
+
+        virtual std::size_t write(void* data, std::size_t count) = 0;
+        virtual std::size_t seek(std::size_t position) = 0;
+
+        virtual std::size_t getSize() const = 0;
+        virtual Path getPath() const = 0;
+    };
 }

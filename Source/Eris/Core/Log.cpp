@@ -52,6 +52,7 @@ namespace Eris
             m_handle.close();
 
         m_handle.open(file, std::ios::trunc | std::ios::out);
+
         ERIS_ASSERT(m_handle.good());
         if (!m_handle.is_open())
         {

@@ -136,6 +136,12 @@
     <ClInclude Include="IO\Types.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="IO\Serializer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IO\Deserializer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Eris.rc">

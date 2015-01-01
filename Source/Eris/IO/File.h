@@ -22,6 +22,9 @@
 
 #pragma once
 
+#include "Deserializer.h"
+#include "Serializer.h"
+
 #include "Core/Context.h"
 #include "Core/Object.h"
 
@@ -35,7 +38,7 @@ namespace Eris
         WRITE
     };
 
-    class File : public Object
+    class File : public Object, public Deserializer, public Serializer
     {
     public:
         File(Context* context);
@@ -54,7 +57,6 @@ namespace Eris
         virtual std::size_t write(void* data, std::size_t count);
 
         bool isOpen() const;
-        bool isEmpty() const;
 
         std::size_t getSize() const;
         FileMode getMode() const { return m_mode; }
