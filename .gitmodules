@@ -1,0 +1,3 @@
+[submodule "Lib"]
+	path = Lib
+	url = https://aparlett@bitbucket.org/homonoia/eris-dependencies.git
