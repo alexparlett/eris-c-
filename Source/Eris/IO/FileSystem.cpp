@@ -117,9 +117,15 @@ namespace Eris
                 return false;
         }
 
+        auto p2 = path;
+        if (p2.has_filename())
+            p2.remove_filename();
 
+        for (auto i : m_allowed_paths)
+        {
+        }
 
-        return m_allowed_paths.find(path) != m_allowed_paths.end();
+        return false;
     }
 
     bool FileSystem::exists(const Path& path) const
