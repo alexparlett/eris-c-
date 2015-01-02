@@ -41,6 +41,7 @@ namespace Eris
     class Graphics;
     class Input;
     class Log;
+    class ResourceCache;
 
     class Context : public RefCounted, public NonCopyable
     {
@@ -75,5 +76,6 @@ namespace Eris
         SharedPtr<Graphics> m_graphics;
         SharedPtr<Input> m_input;
         SharedPtr<Log> m_log;
+        SharedPtr<ResourceCache> m_cache;
     };
 }
