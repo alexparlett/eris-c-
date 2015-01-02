@@ -103,14 +103,14 @@ namespace Eris
         SpinLock m_lock;
     };
 
-    template<> inline void Context::registerModule(Log* engine)
+    template<> inline void Context::registerModule(Log* module)
     {
-        m_log = SharedPtr<Log>(engine);
+        m_log = SharedPtr<Log>(module);
     }
 
     template<> inline Log* Context::getModule()
     {
-        ERIS_ASSERT(m_clock);
+        ERIS_ASSERT(m_log);
         return m_log.get();
     }
 }

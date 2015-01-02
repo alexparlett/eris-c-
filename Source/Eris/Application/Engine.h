@@ -53,7 +53,6 @@ namespace Eris
 
         bool m_exiting;
         glm::i32 m_exitcode;
-        glm::f32 m_time_step;
     };
 
     template<> inline void Context::registerModule(Engine* engine)

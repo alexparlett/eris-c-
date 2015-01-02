@@ -21,11 +21,11 @@
 //
 
 #include "Input.h"
-#include "InputEvents.h"
+#include "Events.h"
 
-#include "Core/CoreEvents.h"
+#include "Core/Events.h"
 #include "Graphics/Graphics.h"
-#include "Graphics/GraphicsEvents.h"
+#include "Graphics/Events.h"
 
 namespace Eris
 {

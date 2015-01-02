@@ -108,21 +108,29 @@ namespace Eris
 
     bool FileSystem::accessible(const Path& path) const
     {
+        if (path.empty())
+            return false;
+
         if (m_allowed_paths.empty())
             return true;
 
-        for (auto element : path)
-        {
-            if (element == "..")
-                return false;
-        }
-
-        auto p2 = path;
-        if (p2.has_filename())
-            p2.remove_filename();
-
         for (auto i : m_allowed_paths)
         {
+            if (i == path)
+                return true;
+            
+            bool allowed = true;
+            for (auto ie = i.begin(), pe = path.begin(); ie != i.end() && pe != path.end(); ie++, pe++)
+            {              
+                if (*pe != ".." && (*ie) == (*pe))
+                    continue;
+
+                allowed = false;
+                break;
+            }
+
+            if (allowed)
+                return true;
         }
 
         return false;

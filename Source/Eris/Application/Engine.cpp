@@ -21,7 +21,7 @@
 //
 
 #include "Engine.h"
-#include "EngineEvents.h"
+#include "Events.h"
 
 #include "Core/Clock.h"
 #include "Core/Log.h"
@@ -122,7 +122,7 @@ namespace Eris
 
         glfwTerminate();
 
-        Log::rawf("Terminating - ran for %d frames over %.2f seconds.", frames, duration);
+        Log::rawf("Terminating - Ran for %d frames over %.2f seconds.", frames, duration);
     }
 
     const char* Engine::getVersion() const

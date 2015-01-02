@@ -21,10 +21,10 @@
 //
 
 #include "Graphics.h"
-#include "GraphicsEvents.h"
+#include "Events.h"
 
 #include "Application/Engine.h"
-#include "Application/EngineEvents.h"
+#include "Application/Events.h"
 #include "Core/Log.h"
 
 namespace Eris

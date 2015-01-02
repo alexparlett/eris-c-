@@ -23,18 +23,12 @@
 #pragma once
 
 #ifdef _DEBUG
-#define _CRTDBG_MAP_ALLOC
+    #define _CRTDBG_MAP_ALLOC
 
-#ifdef _malloca
-#undef _malloca
-#endif
+    #ifdef _malloca
+    #undef _malloca
+    #endif
 
-#include <stdlib.h>
-#include <crtdbg.h>
-
-#ifdef ERIS_DEBUG
-#define ERIS_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
-#else
-#define ERIS_NEW new
-#endif
+    #include <cstdlib>
+    #include <crtdbg.h>
 #endif

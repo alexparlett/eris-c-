@@ -45,9 +45,9 @@ namespace Eris
         glm::f32 m_time_step;
     };
 
-    template<> inline void Context::registerModule(Clock* engine)
+    template<> inline void Context::registerModule(Clock* module)
     {
-        m_clock = SharedPtr<Clock>(engine);
+        m_clock = SharedPtr<Clock>(module);
     }
 
     template<> inline Clock* Context::getModule()

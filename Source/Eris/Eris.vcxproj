@@ -251,16 +251,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\gitversion.h" />
-    <ClInclude Include="Application\EngineEvents.h" />
+    <ClInclude Include="Application\Events.h" />
     <ClInclude Include="Collections\Functions.h" />
     <ClInclude Include="Collections\Types.h" />
     <ClInclude Include="Core\Clock.h" />
     <ClInclude Include="Core\Event.h" />
-    <ClInclude Include="Core\CoreEvents.h" />
+    <ClInclude Include="Core\Events.h" />
     <ClInclude Include="Core\Log.h" />
-    <ClInclude Include="Graphics\GraphicsEvents.h" />
+    <ClInclude Include="Graphics\Events.h" />
     <ClInclude Include="Input\Input.h" />
-    <ClInclude Include="Input\InputEvents.h" />
+    <ClInclude Include="Input\Events.h" />
     <ClInclude Include="IO\Deserializer.h" />
     <ClInclude Include="IO\File.h" />
     <ClInclude Include="IO\FileSystem.h" />

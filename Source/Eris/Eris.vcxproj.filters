@@ -91,15 +91,6 @@
     <ClInclude Include="Util\Aligned.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\GraphicsEvents.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\CoreEvents.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Input\InputEvents.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Input\Input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -121,9 +112,6 @@
     <ClInclude Include="Collections\Functions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Application\EngineEvents.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="IO\File.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -143,6 +131,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Memory\ArrayPointers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Events.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Events.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Events.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\Events.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
