@@ -82,13 +82,7 @@
     <ClInclude Include="Memory\Memory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Thread\Mutex.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Thread\SpinLock.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Thread\Lock.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Core\Clock.h">
@@ -142,6 +136,15 @@
     <ClInclude Include="IO\Deserializer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Thread\Types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Collections\Types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\ArrayPointers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Eris.rc">
@@ -168,9 +171,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Memory\Memory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Thread\Mutex.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Thread\SpinLock.cpp">

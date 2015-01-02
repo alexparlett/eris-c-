@@ -30,7 +30,7 @@
 
 namespace Eris
 {
-    template<class Type>
+    template<typename Type>
     inline Type getAlignedRoundUp(std::size_t alignment, Type value)
     {
         ERIS_ASSERT(powerOfTwo(alignment));
@@ -39,13 +39,13 @@ namespace Eris
         return (Type) v;
     }
 
-    template<class Type>
+    template<typename Type>
     inline void alignRoundUp(std::size_t alignment, Type& value)
     {
         value = getAlignedRoundUp(alignment, value);
     }
 
-    template<class Type>
+    template<typename Type>
     inline Type getAlignedRoundDown(std::size_t alignment, Type value)
     {
         ERIS_ASSERT(powerOfTwo(alignment));
@@ -54,25 +54,25 @@ namespace Eris
         return (Type) v;
     }
 
-    template<class Type>
+    template<typename Type>
     inline void alignRoundDown(std::size_t alignment, Type& value)
     {
         value = getAlignedRoundDown(alignment, value);
     }
 
-    template<class Type>
+    template<typename Type>
     inline bool isAligned(std::size_t alignment, Type value)
     {
         return ((std::size_t) value % alignment) == 0;
     }
 
-    template<class T, class... Args>
+    template<typename T, typename... Args>
     inline void construct(T* ptr, Args&&... args)
     {
         ::new (reinterpret_cast<void*>(ptr)) T(forward<Args>(args)...);
     }
 
-    template<class T>
+    template<typename T>
     inline void destruct(T* ptr)
     {
         ptr->~T();

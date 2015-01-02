@@ -24,7 +24,6 @@
 #include "Memory.h"
 
 #include "Core/Log.h"
-#include "Thread/Lock.h"
 
 namespace Eris
 {
@@ -270,7 +269,7 @@ namespace Eris
         Chunk* ch;
         void* out = nullptr;
 
-        LockGuard<SpinLock> lock(m_lock);
+        std::lock_guard<SpinLock> lock(m_lock);
 
         ch = m_tail_chunk;
 
@@ -299,7 +298,7 @@ namespace Eris
         if (!ptr)
             return;
 
-        LockGuard<SpinLock> lock(m_lock);
+        std::lock_guard<SpinLock> lock(m_lock);
 
         Chunk* current = m_head_chunk;
         Chunk* prev = nullptr;

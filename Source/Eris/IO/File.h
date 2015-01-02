@@ -28,8 +28,6 @@
 #include "Core/Context.h"
 #include "Core/Object.h"
 
-#include <fstream>
-
 namespace Eris
 {
     enum class FileMode : glm::u8
@@ -58,9 +56,9 @@ namespace Eris
 
         bool isOpen() const;
 
-        std::size_t getSize() const;
+        virtual std::size_t getSize() const;
         FileMode getMode() const { return m_mode; }
-        Path getPath() const { return m_path; }
+        virtual Path getPath() const { return m_path; }
 
     private:
         Path m_path;

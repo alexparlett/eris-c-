@@ -25,24 +25,19 @@
 #include <windows.h>
 
 #include <algorithm>
-#include <memory>
-#include <string>
-#include <unordered_set>
-#include <unordered_map>
-#include <vector>
-#include <list>
 #include <utility>
 
 #include <glew/glew.h>
 #include <glm/glm.hpp>
 #include <glfw3/glfw3.h>
 #include <glfw3/glfw3native.h>
-#include <pugixml/pugixml.hpp>
 
 #include "Util/Assert.h"
 #include "Util/Debug.h"
 
+#include "Collections/Types.h"
 #include "IO/Types.h"
+#include "Thread/Types.h"
 
 #define ORG "Homonoia Studios"
 #define APP "Solarian Wars"

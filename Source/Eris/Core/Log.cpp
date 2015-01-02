@@ -23,7 +23,6 @@
 #include "Log.h"
 
 #include "Core/Clock.h"
-#include "Thread/Lock.h"
 
 #include <iostream>
 
@@ -119,7 +118,7 @@ namespace Eris
     {
         if (level >= m_level)
         {
-            LockGuard<SpinLock> lock(m_lock);
+            std::lock_guard<SpinLock> lock(m_lock);
 
             if (m_timestamp)
                 m_handle << "[" << m_context->getModule<Clock>()->getTimestamp().c_str() << "] ";

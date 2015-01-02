@@ -27,148 +27,38 @@
 namespace Eris
 {
     template<typename T>
-    class SharedPtr
+    class SharedArrayPtr
     {
+        template<typename K>
+        friend class WeakArrayPtr;
+
     public:
-        SharedPtr() :
-            m_ptr(nullptr)
+        SharedArrayPtr() :
+            m_ptr(0),
+            m_ref_count(0)
         {
         }
 
-        SharedPtr(const SharedPtr<T>& rhs) :
-            m_ptr(rhs.m_ptr)
-        {
-            incrementRef();
-        }
-
-        explicit SharedPtr(T* ptr) :
-            m_ptr(ptr)
-        {
-            incrementRef();
-        }
-
-        ~SharedPtr()
-        {
-            releaseRef();
-        }
-
-        SharedPtr<T>& operator = (const SharedPtr<T>& rhs)
-        {
-            if (m_ptr == rhs.m_ptr)
-                return *this;
-
-            releaseRef();
-            m_ptr = rhs.m_ptr;
-            incrementRef();
-
-            return *this;
-        }
-
-        SharedPtr<T>& operator = (T* ptr)
-        {
-            if (m_ptr == ptr)
-                return *this;
-
-            releaseRef();
-            m_ptr = ptr;
-            incrementRef();
-
-            return *this;
-        }
-
-        T* operator -> () const { ERIS_ASSERT(m_ptr); return m_ptr; }
-        T& operator * () const { ERIS_ASSERT(m_ptr); return *m_ptr; }
-        T& operator [] (const glm::i32 index) { ERIS_ASSERT(m_ptr); return m_ptr[index]; }
-
-        operator T* () const { return m_ptr; }
-
-        std::size_t operator () () const { return (size_t) m_ptr / sizeof(T); }
-
-        bool operator == (const SharedPtr<T>& rhs) const { return m_ptr == rhs.m_ptr; }
-        bool operator != (const SharedPtr<T>& rhs) const { return m_ptr != rhs.m_ptr; }
-        bool operator < (const SharedPtr<T>& rhs) const { return m_ptr < rhs.m_ptr; }
-        bool operator > (const SharedPtr<T>& rhs) const { return m_ptr > rhs.m_ptr; }
-        bool operator >= (const SharedPtr<T>& rhs) const { return m_ptr >= rhs.m_ptr; }
-        bool operator <= (const SharedPtr<T>& rhs) const { return m_ptr <= rhs.m_ptr; }
-
-        void reset() { releaseRef(); }
-
-        bool null() const { return m_ptr == nullptr; }
-        T* get() const { return m_ptr; }
-        glm::i32 refs() const { return m_ptr ? m_ptr->refs() : 0; }
-        glm::i32 weakRefs() const { return m_ptr ? m_ptr->weakRefs() : 0; }
-
-    private:
-        template<typename U> SharedPtr<T> operator = (const SharedPtr<U>& rhs) = delete;
-
-        void incrementRef()
-        {
-            if (m_ptr)
-                m_ptr->increment();
-        }
-
-        void releaseRef()
-        {
-            if (m_ptr)
-            {
-                m_ptr->release();
-                m_ptr = nullptr;
-            }
-        }
-
-        T* m_ptr;
-    };
-
-    template<typename T>
-    class WeakPtr
-    {
-    public:
-        WeakPtr() :
-            m_ptr(nullptr),
-            m_ref_count(nullptr)
-        {
-        }
-
-        WeakPtr(const WeakPtr<T>& rhs) :
+        SharedArrayPtr(const SharedArrayPtr<T>& rhs) :
             m_ptr(rhs.m_ptr),
             m_ref_count(rhs.m_ref_count)
         {
             incrementRef();
         }
-        
-        WeakPtr(const SharedPtr<T>& rhs) :
-            m_ptr(rhs.get()),
-            m_ref_count(rhs.m_ptr->m_ref_count)
-        {
-            incrementRef();
-        }
 
-        explicit WeakPtr(T* ptr) :
+        explicit SharedArrayPtr(T* ptr) :
             m_ptr(ptr),
-            m_ref_count(ptr->m_ref_count)
+            m_ref_count(new RefCount())
         {
             incrementRef();
         }
 
-        ~WeakPtr()
+        ~SharedArrayPtr()
         {
             releaseRef();
         }
 
-        WeakPtr<T>& operator = (const SharedPtr<T>& rhs)
-        {
-            if (m_ptr == rhs.m_ptr)
-                return *this;
-
-            releaseRef();
-            m_ptr = rhs.get();
-            m_ref_count = m_ptr->m_ref_count;
-            incrementRef();
-
-            return *this;
-        }
-
-        WeakPtr<T>& operator = (const WeakPtr<T>& rhs)
+        SharedArrayPtr<T>& operator = (const SharedArrayPtr<T>& rhs)
         {
             if (m_ptr == rhs.m_ptr)
                 return *this;
@@ -181,76 +71,190 @@ namespace Eris
             return *this;
         }
 
-        WeakPtr<T>& operator = (const T* ptr)
+        SharedArrayPtr<T>& operator = (T* ptr)
         {
             if (m_ptr == ptr)
                 return *this;
 
             releaseRef();
-            m_ptr = ptr;
-            m_ref_count = ptr->m_ref_count;
+
+            if (ptr)
+            {
+                m_ptr = ptr;
+                m_ref_count = new RefCount();
+                incrementRef();
+            }
+
+            return *this;
+        }
+
+        T* operator -> () const { ERIS_ASSERT(m_ptr); return m_ptr; }
+        T& operator * () const { ERIS_ASSERT(m_ptr); return *m_ptr; }
+        T& operator[] (const int index) { ERIS_ASSERT(m_ptr); return m_ptr[index]; }
+        
+        operator T* () const { return m_ptr; }
+
+        std::size_t operator () () const { return (size_t) m_ptr / sizeof(T); }
+
+        bool operator == (const SharedPtr<T>& rhs) const { return m_ptr == rhs.m_ptr; }
+        bool operator != (const SharedPtr<T>& rhs) const { return m_ptr != rhs.m_ptr; }
+        bool operator < (const SharedPtr<T>& rhs) const { return m_ptr < rhs.m_ptr; }
+        bool operator >(const SharedPtr<T>& rhs) const { return m_ptr > rhs.m_ptr; }
+        bool operator >= (const SharedPtr<T>& rhs) const { return m_ptr >= rhs.m_ptr; }
+        bool operator <= (const SharedPtr<T>& rhs) const { return m_ptr <= rhs.m_ptr; }
+
+        T* get() const { return m_ptr; }
+        void reset() { releaseRef(); }
+        bool null() const { return m_ptr == nullptr; }
+
+        glm::i32 refs() const { return m_ref_count ? m_ref_count->m_refs : 0; }
+        glm::i32 weakRefs() const { return m_ref_count ? m_ref_count->m_weak_refs : 0; }
+
+    private:
+        template<typename K> SharedArrayPtr<T>& operator = (const SharedArrayPtr<K>& rhs) = delete;
+
+        void incrementRef()
+        {
+            if (m_ref_count)
+            {
+                ERIS_ASSERT(m_ref_count->m_refs >= 0);
+                m_ref_count->m_refs++;
+            }
+        }
+
+        void releaseRef()
+        {
+            if (m_ref_count)
+            {
+                ERIS_ASSERT(m_ref_count->m_refs > 0);
+                m_ref_count->m_refs--;
+                if (!m_ref_count->m_refs)
+                {
+                    m_ref_count->m_refs = -1;
+                    delete[] m_ptr;
+                }
+
+                if (m_ref_count->m_refs < 0 && !m_ref_count->m_weak_refs)
+                    delete m_ref_count;
+            }
+        }
+
+        T* m_ptr;
+        RefCount* m_ref_count;
+    };
+
+    template<typename T>
+    class WeakArrayPtr
+    {
+    public:
+        WeakArrayPtr() :
+            m_ptr(0),
+            m_ref_count(0)
+        {
+        }
+
+        WeakArrayPtr(const WeakArrayPtr<T>& rhs) :
+            m_ptr(rhs.m_ptr),
+            m_ref_count(rhs.m_ref_count)
+        {
+            incrementRef();
+        }
+
+        WeakArrayPtr(const SharedArrayPtr<T>& rhs) :
+            m_ptr(rhs.m_ptr),
+            m_ref_count(rhs.m_ref_count)
+        {
+            incrementRef();
+        }
+
+        ~WeakArrayPtr()
+        {
+            releaseRef();
+        }
+
+        WeakArrayPtr<T>& operator = (const WeakArrayPtr<T>& rhs)
+        {
+            if (m_ptr == rhs.get() && m_ref_count == rhs.m_ref_count)
+                return *this;
+
+            releaseRef();
+            m_ptr = rhs.m_ptr;
+            m_ref_count = rhs.m_ref_count;
             incrementRef();
 
             return *this;
         }
 
-        SharedPtr<T> lock() const
+        WeakArrayPtr<T>& operator = (const SharedArrayPtr<T>& rhs)
         {
-            if (expired())
-                return SharedPtr<T>();
-            else
-                return SharedPtr<T>(m_ptr);
+            if (m_ptr == rhs.get() && m_ref_count == rhs.m_ref_count)
+                return *this;
+
+            releaseRef();
+            m_ptr = rhs.m_ptr;
+            m_ref_count = rhs.m_ref_count;
+            incrementRef();
+
+            return *this;
         }
 
-        T* get() const
-        {
-            if (expired())
-                return nullptr;
-            else
-                return m_ptr;
-        }
-
-        T* operator -> () const
-        {
+        T* operator -> () const 
+        { 
             T* raw = get();
             ERIS_ASSERT(raw);
-            return raw;
+            return raw; 
         }
 
-        T& operator * () const
-        {
+        T& operator * () const 
+        { 
             T* raw = get();
             ERIS_ASSERT(raw);
-            return *raw;
+            return *raw; 
         }
 
-        T& operator [] (const glm::i32 index)
-        {
+        T& operator[] (const int index) 
+        { 
             T* raw = get();
             ERIS_ASSERT(raw);
             return raw[index];
         }
 
-        bool operator == (const WeakPtr<T>& rhs) const { return m_ptr == rhs.m_ptr && m_ref_count == rhs.m_ref_count; }
-        bool operator != (const WeakPtr<T>& rhs) const { return m_ptr != rhs.m_ptr && m_ref_count != rhs.m_ref_count; }
-        bool operator < (const WeakPtr<T>& rhs) const { return m_ptr < rhs.m_ptr; }
-        bool operator > (const WeakPtr<T>& rhs) const { return m_ptr > rhs.m_ptr; }
-        bool operator >= (const WeakPtr<T>& rhs) const { return m_ptr >= rhs.m_ptr; }
-        bool operator <= (const WeakPtr<T>& rhs) const { return m_ptr <= rhs.m_ptr; }
-
         operator T* () const { return get(); }
 
         std::size_t operator () () const { return (size_t) m_ptr / sizeof(T); }
 
-        void reset() { releaseRef(); }
+        bool operator == (const WeakArrayPtr<T>& rhs) const { return m_ptr == rhs.m_ptr; }
+        bool operator != (const WeakArrayPtr<T>& rhs) const { return m_ptr != rhs.m_ptr; }
+        bool operator < (const WeakArrayPtr<T>& rhs) const { return m_ptr < rhs.m_ptr; }
+        bool operator >(const WeakArrayPtr<T>& rhs) const { return m_ptr > rhs.m_ptr; }
+        bool operator >= (const WeakArrayPtr<T>& rhs) const { return m_ptr >= rhs.m_ptr; }
+        bool operator <= (const WeakArrayPtr<T>& rhs) const { return m_ptr <= rhs.m_ptr; }
 
+        T* get() const
+        {
+            if (expired())
+                return nullptr;
+
+            return m_ptr;
+        }
+
+        SharedArrayPtr<T> lock() const
+        {
+            if (expired())
+                return SharedArrayPtr<T>();
+
+            return SharedArrayPtr<T>(m_ptr, m_ref_count);
+        }
+
+        void reset() { releaseRef(); }
         bool null() const { return m_ref_count == nullptr; }
         bool expired() const { return m_ref_count ? m_ref_count->m_refs < 0 : true; }
+
         glm::i32 refs() const { return m_ref_count ? m_ref_count->m_refs : 0; }
         glm::i32 weakRefs() const { return m_ref_count ? m_ref_count->m_weak_refs : 0; }
 
     private:
-        template<typename U> WeakPtr<T> operator = (const WeakPtr<U>& rhs) = delete;
+        template<typename K> WeakArrayPtr<T>& operator = (const WeakArrayPtr<K>& rhs) = delete;
 
         void incrementRef()
         {
@@ -265,18 +269,17 @@ namespace Eris
         {
             if (m_ref_count)
             {
-                ERIS_ASSERT(m_ref_count);
-                m_ref_count->m_weak_refs--;
+                ERIS_ASSERT(m_ref_count->m_weak_refs >= 0);
+
+                if (m_ref_count->m_weak_refs > 0)
+                    m_ref_count->m_weak_refs--;
 
                 if (expired() && !m_ref_count->m_weak_refs)
                     delete m_ref_count;
             }
-
-            m_ptr = nullptr;
-            m_ref_count = nullptr;
         }
 
         T* m_ptr;
-        RefCounter* m_ref_count;
+        RefCount* m_ref_count;
     };
 }

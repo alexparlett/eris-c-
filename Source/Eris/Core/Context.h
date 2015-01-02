@@ -25,6 +25,7 @@
 #include "Event.h"
 
 #include "Collections/StringHash.h"
+#include "Memory/RefCounted.h"
 #include "Memory/Pointers.h"
 #include "Memory/Allocator.h"
 #include "Util/NonCopyable.h"
@@ -41,7 +42,7 @@ namespace Eris
     class Input;
     class Log;
 
-    class Context : public NonCopyable
+    class Context : public RefCounted, public NonCopyable
     {
         friend class Object;
 
@@ -49,8 +50,8 @@ namespace Eris
         Context();
         ~Context();
 
-        template<class T> void registerModule(T* module) {}
-        template<class T> T* getModule() { return nullptr; }
+        template<typename T> void registerModule(T* module) {}
+        template<typename T> T* getModule() { return nullptr; }
 
         void addEventReciever(Object* reciever, const StringHash& event_type, Object* sender);
         void removeEventSender(Object* sender);

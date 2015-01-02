@@ -20,29 +20,10 @@
 // THE SOFTWARE.
 //
 
-#include "Mutex.h"
+#pragma once
 
-#include <chrono>
-
-namespace Eris
-{ 
-    void Mutex::lock()
-    {
-        m_handle.lock();
-    }
-
-    void Mutex::unlock()
-    {
-        m_handle.unlock();
-    }
-
-    bool Mutex::tryLock()
-    {
-        return m_handle.try_lock();
-    }
-
-    bool Mutex::tryLockFor(glm::i32 duration)
-    {
-        return m_handle.try_lock_for(std::chrono::milliseconds(duration));
-    }
-}
+#include <atomic>
+#include <condition_variable>
+#include <future>
+#include <mutex>
+#include <thread>

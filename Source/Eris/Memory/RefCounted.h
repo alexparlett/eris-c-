@@ -48,7 +48,7 @@ namespace Eris
 
     class RefCounted : public Aligned<>
     {
-        template<class T> 
+        template<typename T> 
         friend class WeakPtr;
 
     public:

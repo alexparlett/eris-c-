@@ -21,9 +21,10 @@
 //
 
 #include "Core/Context.h"
+#include "Memory/Pointers.h"
 #include "Application/Engine.h"
 
-static std::unique_ptr<Eris::Context> context;
+static Eris::SharedPtr<Eris::Context> context;
 
 int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow)
 {
@@ -31,7 +32,7 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine, int nC
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
-    context = std::make_unique<Eris::Context>();
+    context = new Eris::Context();
 
     Eris::Engine* app = new Eris::Engine(context.get());
     app->initialize();

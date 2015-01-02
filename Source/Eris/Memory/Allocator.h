@@ -30,10 +30,10 @@
 
 namespace Eris
 {
-    template<class T, class TPool>
+    template<typename T, typename TPool>
     class GenericPoolAllocator
     {
-        template<class Y, class YPool>
+        template<typename Y, typename YPool>
         friend class GenericPoolAllocator;
 
     public:
@@ -47,7 +47,7 @@ namespace Eris
 
         using propagate_on_container_move_assignment = std::true_type;
 
-        template<class Y>
+        template<typename Y>
         struct rebind
         {
             using other = GenericPoolAllocator<Y, TPool> ;
@@ -61,13 +61,13 @@ namespace Eris
             copy(rhs);
         }
 
-        template<class Y>
+        template<typename Y>
         GenericPoolAllocator(const GenericPoolAllocator<Y, TPool>& rhs)
         {
             copy(rhs);
         }
 
-        template<class... TArgs>
+        template<typename... TArgs>
         explicit GenericPoolAllocator(std::size_t initial, TArgs&&... args) :
             m_pool(new TPool(std::forward<TArgs>(args)...))
         {
@@ -84,7 +84,7 @@ namespace Eris
             return *this;
         }
 
-        template<class Y>
+        template<typename Y>
         GenericPoolAllocator& operator = (const GenericPoolAllocator<Y, TPool>& rhs)
         {
             copy(rhs);
@@ -123,7 +123,7 @@ namespace Eris
             new (p) T(val);
         }
 
-        template<class K, class... Args>
+        template<typename K, typename... Args>
         void construct(K* p, Args&&... args)
         {
             ::new((void *) p) K(std::forward<Args>(args)...);
@@ -135,7 +135,7 @@ namespace Eris
             p->~T();
         }
 
-        template<class K>
+        template<typename K>
         void destroy(K* p)
         {
             ERIS_ASSERT(p);
@@ -159,7 +159,7 @@ namespace Eris
             return *m_pool;
         }
 
-        template<class K, class... Args>
+        template<typename K, typename... Args>
         K* newInstance(Args&&... args)
         {
             typename rebind<K>::other alloc(*this);
@@ -263,15 +263,15 @@ namespace Eris
         SharedPtr<TPool> m_pool;
     };
 
-    template<class T>
+    template<typename T>
     using GenericMemoryPoolAllocator = GenericPoolAllocator<T, BaseMemoryPool>;
 
-    template<class T>
+    template<typename T>
     using HeapAllocator = GenericPoolAllocator<T, HeapMemoryPool>;
 
-    template<class T>
+    template<typename T>
     using StackAllocator = GenericPoolAllocator<T, StackMemoryPool>;
 
-    template<class T>
+    template<typename T>
     using ChainAllocator = GenericPoolAllocator<T, ChainMemoryPool> ;
 }

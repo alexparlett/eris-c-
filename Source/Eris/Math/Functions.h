@@ -24,7 +24,7 @@
 
 namespace Eris
 {
-    template<class Int>
+    template<typename Int>
     inline bool powerOfTwo(Int x)
     {
         while (((x % 2) == 0) && x > 1)

@@ -22,21 +22,8 @@
 
 #pragma once
 
-#include "Util/NonCopyable.h"
-
-#include <mutex>
-
-namespace Eris
-{
-    class Mutex : public NonCopyable
-    {
-    public:
-        void lock();
-        void unlock();
-        bool tryLock();
-        bool tryLockFor(glm::i32 duration);
-
-    private:
-        std::timed_mutex m_handle;
-    };
-}
+#include <list>
+#include <unordered_set>
+#include <unordered_map>
+#include <string>
+#include <vector>

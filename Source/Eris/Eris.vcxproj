@@ -253,6 +253,7 @@
     <ClInclude Include="..\gitversion.h" />
     <ClInclude Include="Application\EngineEvents.h" />
     <ClInclude Include="Collections\Functions.h" />
+    <ClInclude Include="Collections\Types.h" />
     <ClInclude Include="Core\Clock.h" />
     <ClInclude Include="Core\Event.h" />
     <ClInclude Include="Core\CoreEvents.h" />
@@ -268,14 +269,14 @@
     <ClInclude Include="Math\Functions.h" />
     <ClInclude Include="Memory\Allocator.h" />
     <ClInclude Include="Application\Engine.h" />
+    <ClInclude Include="Memory\ArrayPointers.h" />
     <ClInclude Include="Memory\Memory.h" />
     <ClInclude Include="Memory\Pointers.h" />
     <ClInclude Include="Memory\RefCounted.h" />
     <ClInclude Include="Collections\StringHash.h" />
     <ClInclude Include="Core\Context.h" />
-    <ClInclude Include="Thread\Lock.h" />
-    <ClInclude Include="Thread\Mutex.h" />
     <ClInclude Include="Thread\SpinLock.h" />
+    <ClInclude Include="Thread\Types.h" />
     <ClInclude Include="Util\Aligned.h" />
     <ClInclude Include="Util\Assert.h" />
     <ClInclude Include="Util\Debug.h" />
@@ -303,7 +304,6 @@
     <ClCompile Include="Core\Context.cpp" />
     <ClCompile Include="Core\Object.cpp" />
     <ClCompile Include="Graphics\Graphics.cpp" />
-    <ClCompile Include="Thread\Mutex.cpp" />
     <ClCompile Include="Thread\SpinLock.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

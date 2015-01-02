@@ -23,6 +23,7 @@
 #pragma once
 
 #include <filesystem>
+#include <fstream>
 
 namespace std
 {

@@ -22,10 +22,8 @@
 
 #pragma once
 
-#include <algorithm>
 #include <cstdarg>
 #include <cstdlib>
-#include <utility>
 
 namespace std
 {
