@@ -30,6 +30,7 @@
 #include "Graphics/Graphics.h"
 #include "Input/Input.h"
 #include "IO/FileSystem.h"
+#include "Resource/ResourceCache.h"
 
 namespace Eris
 {
@@ -40,7 +41,8 @@ namespace Eris
         m_graphics(nullptr),
         m_input(nullptr),
         m_log(nullptr),
-        m_fs(nullptr)
+        m_fs(nullptr),
+        m_cache(nullptr)
     {
     }
 

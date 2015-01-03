@@ -56,14 +56,14 @@ namespace Eris
         virtual bool load(Deserializer& deserializer) = 0;
         virtual bool save(Serializer& serializer) = 0;
 
-        void setName(const std::string& name) { m_name = name; }
+        void setName(const Path& name) { m_name = name; }
         void setAsyncState(AsyncState state) { m_state = state; }
 
-        std::string getName() const { return m_name; }
+        Path getName() const { return m_name; }
         AsyncState getAsyncState() const { return m_state; }
 
     private:
-        std::string m_name;
-        AsyncState m_state;
+        Path m_name;
+        std::atomic<AsyncState> m_state;
     };
 }
