@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2014 the Eris project.
+// Copyright (c) 2013-2015 the Eris project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -27,6 +27,7 @@
 
 #include "Core/Context.h"
 #include "Core/Object.h"
+#include "Core/Log.h"
 #include "Collections/StringHash.h"
 #include "Memory/Pointers.h"
 #include "IO/File.h"

@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2014 the Eris project.
+// Copyright (c) 2013-2015 the Eris project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,7 @@
 #include "ResourceLoader.h"
 
 #include "IO/File.h"
+#include "Core/Log.h"
 
 namespace Eris
 {
@@ -32,6 +33,8 @@ namespace Eris
     {
         for (glm::uint i = 0; i < std::thread::hardware_concurrency(); i++)
             m_threads.push_back(std::thread(&ResourceLoader::run, this));
+
+        Log::infof("Create %d threads for Resource Loading.", m_threads.size());
     }
 
     ResourceLoader::~ResourceLoader()
@@ -106,13 +109,20 @@ namespace Eris
             if (file && file->isOpen())
             {
                 if (task->m_resource->load(*file))
+                {
                     task->m_resource->setAsyncState(AsyncState::SUCCESS);
+                    Log::infof("Successful loading resource %s", task->m_resource->getName());
+                }
                 else
+                {
                     task->m_resource->setAsyncState(AsyncState::FAILED);
+                    Log::errorf("Failed loading resource %s", task->m_resource->getName());
+                }
             }
             else
             {
                 task->m_resource->setAsyncState(AsyncState::FAILED);
+                Log::errorf("Failed loading resource %s", task->m_resource->getName());
             }
         }
         

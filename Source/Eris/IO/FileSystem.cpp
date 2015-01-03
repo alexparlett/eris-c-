@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2014 the Eris project.
+// Copyright (c) 2013-2015 the Eris project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -37,13 +37,19 @@ namespace Eris
     void FileSystem::addPath(const Path& path)
     {
         if (!path.empty())
+        {
             m_allowed_paths.insert(path);
+            Log::infof("Added allowed path %s", path);
+        }
     }
 
     void FileSystem::removePath(const Path& path)
     {
         if (!path.empty())
+        {
             m_allowed_paths.erase(path);
+            Log::infof("Removed allowed path %s", path);
+        }
     }
 
     bool FileSystem::createDirectory(const Path& src)

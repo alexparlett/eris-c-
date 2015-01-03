@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2014 the Eris project.
+// Copyright (c) 2013-2015 the Eris project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -56,6 +56,8 @@ namespace Eris
         else
             m_directories.push_back(path);
 
+        Log::infof("Added resource directory %s", path);
+
         return true;
     }
 
@@ -66,6 +68,7 @@ namespace Eris
             if (m_directories[i] == path)
             {
                 m_directories.erase(m_directories.begin() + i);
+                Log::infof("Removed resource directory %s", path);
                 return true;
             }
         }
@@ -164,13 +167,21 @@ namespace Eris
                 if (res->load(*file))
                 {
                     res->setAsyncState(AsyncState::SUCCESS);
+                    Log::infof("Successful loading resource %s", res->getName());
                     return true;
                 }
                 else
+                {
                     res->setAsyncState(AsyncState::FAILED);
+                    Log::errorf("Failed loading resource %s", res->getName());
+                }
+
             }
             else
+            {
                 res->setAsyncState(AsyncState::FAILED);
+                Log::errorf("Failed loading resource %s", res->getName());
+            }
         }
 
         return false;

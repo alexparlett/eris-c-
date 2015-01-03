@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2014 the Eris project.
+// Copyright (c) 2013-2015 the Eris project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -235,6 +235,8 @@ namespace Eris
 
     void Graphics::handleFramebufferCallback(GLFWwindow* window, glm::i32 width, glm::i32 height)
     {
+        Log::infof("Window resized width: %d height:%d", width, height);
+
         Context* context = static_cast<Context*>(glfwGetWindowUserPointer(window));
         Graphics* graphics = context->getModule<Graphics>();
         graphics->m_width = width;
