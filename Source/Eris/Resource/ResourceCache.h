@@ -122,6 +122,8 @@ namespace Eris
     template<typename T>
     inline void ResourceCache::loadResource(const Path& path, bool immediate /*= true*/, bool error_on_fail /*= true*/)
     {
+        //todo: Check background loader, if in queue remove it, if current wait.
+
         SharedPtr<T> resource = SharedPtr<T>(new T(m_context));
         resource->setName(path);
         

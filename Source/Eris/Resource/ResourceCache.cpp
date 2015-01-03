@@ -135,7 +135,10 @@ namespace Eris
         for (glm::i32 i = 0; i < m_directories.size(); i++)
         {
             if (m_directories[i] == path)
-                return m_directories.erase(m_directories.begin() + i) != m_directories.end();
+            {
+                m_directories.erase(m_directories.begin() + i);
+                return true;
+            }
         }
 
         return false;
