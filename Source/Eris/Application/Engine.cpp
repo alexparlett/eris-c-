@@ -40,12 +40,12 @@ namespace Eris
         m_exitcode(EXIT_OK),
         m_exiting(false)
     {        
+        context->registerModule<Log>(new Log(context));
         context->registerModule<Clock>(new Clock(context));
         context->registerModule<Engine>(this);
         context->registerModule<FileSystem>(new FileSystem(context));
         context->registerModule<Graphics>(new Graphics(context));
         context->registerModule<Input>(new Input(context));
-        context->registerModule<Log>(new Log(context));
         context->registerModule<ResourceCache>(new ResourceCache(context));
 
         subscribeToEvent(ExitRequestedEvent::getTypeStatic(), HANDLER(Engine, HandleExitRequest));
@@ -59,6 +59,10 @@ namespace Eris
     {
         FileSystem* fs = m_context->getModule<FileSystem>();
         Log* log = m_context->getModule<Log>();
+        ResourceCache* rc = m_context->getModule<ResourceCache>();
+        Graphics* graphics = m_context->getModule<Graphics>();
+        Input* input = m_context->getModule<Input>();
+
         log->open(fs->getApplicationPreferencesDir() /= "log.log");
 
         Log::rawf("Initializing - Version %s.", std::string_upper(getVersion()).c_str());
@@ -67,7 +71,7 @@ namespace Eris
         fs->addPath(fs->getDocumentsDir());
         fs->addPath(fs->getProgramDir());
 
-        ResourceCache* rc = m_context->getModule<ResourceCache>();
+        rc->initialize();
         rc->addDirectory(fs->getProgramDir() /= "Data");
 
         if (!glfwInit())
@@ -76,12 +80,10 @@ namespace Eris
             return;
         }
 
-        Graphics* graphics = m_context->getModule<Graphics>();
         graphics->setSize(800, 600);
         graphics->setFullscreen(false);
         graphics->initialize();
 
-        Input* input = m_context->getModule<Input>();
         input->initialize();
     }
 
@@ -117,9 +119,11 @@ namespace Eris
     void Engine::terminate()
     {
         Graphics* graphics = m_context->getModule<Graphics>();
+        ResourceCache* rc = m_context->getModule<ResourceCache>();
         Clock* clock = m_context->getModule<Clock>();
 
         graphics->terminate();
+        rc->terminate();
 
         glm::f32 duration = clock->getElapsedTime() / 1000.f;
         glm::u64 frames = clock->getFrameNumber();

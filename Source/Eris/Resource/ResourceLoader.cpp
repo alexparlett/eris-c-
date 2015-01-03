@@ -31,15 +31,16 @@ namespace Eris
         Object(context),
         m_thread_exit(false)
     {
-        for (glm::uint i = 0; i < std::thread::hardware_concurrency(); i++)
-            m_threads.push_back(std::thread(&ResourceLoader::run, this));
-
-        Log::infof("Create %d threads for Resource Loading.", m_threads.size());
     }
 
     ResourceLoader::~ResourceLoader()
     {
-        stop();
+    }
+
+    void ResourceLoader::start()
+    {
+        for (glm::uint i = 0; i < std::thread::hardware_concurrency(); i++)
+            m_threads.push_back(std::thread(&ResourceLoader::run, this));
     }
 
     void ResourceLoader::add(const Path& path, Resource* res)
@@ -58,14 +59,19 @@ namespace Eris
 
     void ResourceLoader::stop()
     {
-        m_thread_exit = false;
+        m_thread_exit = true;
         m_queue_conditional.notify_all();
-        for (glm::uint i = 0; i < m_threads.size(); i++)
-            m_threads[i].join();
+
+        for (glm::uint i = 0; i < std::thread::hardware_concurrency(); i++)
+        {
+            if (m_threads[i].joinable())
+                m_threads[i].join();
+        }
     }
 
     void ResourceLoader::run()
     {
+        Log::infof("Resource Thread started: %d", std::this_thread::get_id().hash());
         while (!m_thread_exit)
         {
             ResourceTask* task = poll();
@@ -77,6 +83,7 @@ namespace Eris
                 m_queue_conditional.wait(lock);
             }
         }
+        Log::infof("Resource Thread stopped: %d", std::this_thread::get_id().hash());
     }
 
     ResourceTask* ResourceLoader::poll()

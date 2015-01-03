@@ -29,7 +29,8 @@ namespace Eris
 {
     ResourceCache::ResourceCache(Context* context) :
         Object(context),
-        m_loader(new ResourceLoader(context))
+        m_loader(new ResourceLoader(context)),
+        m_initialized(false)
     {
     }
 
@@ -43,6 +44,20 @@ namespace Eris
         }
 
         releaseResources(true);
+    }
+
+    void ResourceCache::initialize()
+    {
+        if (!m_initialized)
+        {
+            m_loader->start();
+            m_initialized = true;
+        }
+    }
+
+    void ResourceCache::terminate()
+    {
+        m_loader->stop();
     }
 
     bool ResourceCache::addDirectory(const Path& path, glm::uint priority /*= PRIORITY_LAST*/)
@@ -84,7 +99,7 @@ namespace Eris
 
         std::lock_guard<std::mutex> lock(m_resource_mutex);
         if ((res->refs() == 1 && res->weakRefs() == 0) || force)
-            m_groups[type].erase(path);
+            m_groups[type].m_resources.erase(path);
     }
 
     void ResourceCache::releaseResources(std::type_index type, bool force /*= false*/)
@@ -93,12 +108,12 @@ namespace Eris
         auto group = m_groups.find(type);
         if (group != m_groups.end())
         {
-            for (auto res = group->second.begin(); res != group->second.end();)
+            for (auto res = group->second.m_resources.begin(); res != group->second.m_resources.end();)
             {
                 auto current = res++;
 
                 if ((current->second.refs() == 1 && current->second.weakRefs() == 0) || force)
-                    group->second.erase(current);
+                    group->second.m_resources.erase(current);
             }
         }
     }
@@ -108,12 +123,12 @@ namespace Eris
         std::lock_guard<std::mutex> lock(m_resource_mutex);
         for (auto group : m_groups)
         {
-            for (auto res = group.second.begin(); res != group.second.end();)
+            for (auto res = group.second.m_resources.begin(); res != group.second.m_resources.end();)
             {
                 auto current = res++;
 
                 if ((current->second.refs() == 1 && current->second.weakRefs() == 0) || force)
-                    group.second.erase(current);
+                    group.second.m_resources.erase(current);
             }
         }
     }
@@ -124,8 +139,8 @@ namespace Eris
         auto group = m_groups.find(type);
         if (group != m_groups.end())
         {
-            auto resource = group->second.find(path);
-            if (resource != group->second.end())
+            auto resource = group->second.m_resources.find(path);
+            if (resource != group->second.m_resources.end())
                 return resource->second.get();
         }
 

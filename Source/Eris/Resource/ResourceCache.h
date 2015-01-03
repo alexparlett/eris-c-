@@ -39,6 +39,11 @@ namespace Eris
 {
     static const glm::uint PRIORITY_LAST = std::numeric_limits<glm::uint>::max();
 
+    struct ResourceGroup
+    {
+        std::unordered_map<Path, SharedPtr<Resource>> m_resources;
+    };
+
     class ResourceCache : public Object
     {
         friend class BackgroundLoader;
@@ -46,6 +51,9 @@ namespace Eris
     public:
         ResourceCache(Context* context);
         virtual ~ResourceCache();
+
+        void initialize();
+        void terminate();
 
         bool addDirectory(const Path& path, glm::uint priority = PRIORITY_LAST);
         bool removeDirectory(const Path& path);
@@ -62,7 +70,8 @@ namespace Eris
         Path findFile(const Path& name);
         bool _loadResource(Resource* res, const Path& path, bool immediate = true);
 
-        std::unordered_map<std::type_index, std::unordered_map<Path, SharedPtr<Resource>>> m_groups;
+        bool m_initialized;
+        std::unordered_map<std::type_index, ResourceGroup> m_groups;
         std::vector<Path> m_directories;
         SharedPtr<ResourceLoader> m_loader;
         std::mutex m_resource_mutex;
