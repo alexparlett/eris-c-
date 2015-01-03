@@ -277,6 +277,7 @@
     <ClInclude Include="Core\Context.h" />
     <ClInclude Include="Resource\Resource.h" />
     <ClInclude Include="Resource\ResourceCache.h" />
+    <ClInclude Include="Resource\ResourceLoader.h" />
     <ClInclude Include="Thread\SpinLock.h" />
     <ClInclude Include="Thread\Types.h" />
     <ClInclude Include="Util\Aligned.h" />
@@ -307,6 +308,7 @@
     <ClCompile Include="Core\Object.cpp" />
     <ClCompile Include="Graphics\Graphics.cpp" />
     <ClCompile Include="Resource\ResourceCache.cpp" />
+    <ClCompile Include="Resource\ResourceLoader.cpp" />
     <ClCompile Include="Thread\SpinLock.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

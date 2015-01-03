@@ -23,11 +23,13 @@
 #pragma once
 
 #include "Resource.h"
+#include "ResourceLoader.h"
 
 #include "Core/Context.h"
 #include "Core/Object.h"
 #include "Collections/StringHash.h"
 #include "Memory/Pointers.h"
+#include "IO/File.h"
 
 #include <typeinfo>
 #include <typeindex>
@@ -35,38 +37,6 @@
 namespace Eris
 {
     static const glm::uint PRIORITY_LAST = 0xffffffff;
-
-    struct BackgroundTask
-    {
-        Path m_path;
-        SharedPtr<Resource> m_resource;
-    };
-
-    class BackgroundLoader : public Object
-    {
-    public:
-        BackgroundLoader(Context* context);
-
-        void add(const Path& path, Resource* res);
-        void run();
-        void stop();
-
-    private:
-        bool poll();
-        void load();
-
-        BackgroundTask m_current;
-        std::queue<BackgroundTask> m_waiting;
-        std::mutex m_mutex;
-        std::thread m_thread;
-        std::condition_variable m_conditional;
-        std::atomic<bool> m_control;
-    };
-
-    struct ResourceGroup
-    {
-        std::unordered_map<Path, SharedPtr<Resource>> m_resources;
-    };
 
     class ResourceCache : public Object
     {
@@ -82,18 +52,19 @@ namespace Eris
         template<typename T> T* getResource(const Path& path, bool error_on_fail = true);
         template<typename T> void loadResource(const Path& path, bool immediate = true, bool error_on_fail = true);
 
-        template<typename T> void releaseResource(const Path& path, bool force = false);
+        void releaseResource(std::type_index type, const Path& path, bool force = false);
         void releaseResources(std::type_index type, bool force = false);
         void releaseResources(bool force = false);
 
     private:
         Resource* findResource(std::type_index type, const Path& path);
         Path findFile(const Path& name);
+        bool _loadResource(Resource* res, const Path& path, bool immediate = true);
 
-        std::unordered_map<std::type_index, ResourceGroup> m_groups;
+        std::unordered_map<std::type_index, std::unordered_map<Path, SharedPtr<Resource>>> m_groups;
         std::vector<Path> m_directories;
-        SharedPtr<BackgroundLoader> m_loader;
-        std::mutex m_mutex;
+        SharedPtr<ResourceLoader> m_loader;
+        std::mutex m_resource_mutex;
     };
 
     template<typename T>
@@ -101,11 +72,17 @@ namespace Eris
     {
         std::type_index type(typeid(T));
 
-        T* resource = static_cast<T*>(findResource(type, path));
-        if (resource)
-            return resource;
+        Resource* resource = findResource(type, path);
+        if (resource && resource->getAsyncState() == AsyncState::SUCCESS)
+            return static_cast<T*>(resource);
+        else if (resource && resource->getAsyncState() == AsyncState::LOADING)
+        {
+            while (resource->getAsyncState() == AsyncState::LOADING);
+            if (resource->getAsyncState() == AsyncState::SUCCESS)
+                return static_cast<T*>(resource);
+        }
 
-        loadResource(path, true, error_on_fail);
+        loadResource<T>(path, true, false);
 
         resource = static_cast<T*>(findResource(type, path));
         if (resource)
@@ -122,63 +99,27 @@ namespace Eris
     template<typename T>
     inline void ResourceCache::loadResource(const Path& path, bool immediate /*= true*/, bool error_on_fail /*= true*/)
     {
-        //todo: Check background loader, if in queue remove it, if current wait.
-
-        SharedPtr<T> resource = SharedPtr<T>(new T(m_context));
-        resource->setName(path);
-        
         Path full_path = findFile(path);
         if (!path.empty())
         {
+            SharedPtr<T> resource = SharedPtr<T>(new T(m_context));
+            resource->setName(path);
+
             {
                 std::lock_guard<std::mutex> lock(m_mutex);
                 m_groups[std::type_index(typeid(T))].m_resources[path] = resource;
             }
 
-            if (!immediate)
-            {
-                resource->setAsyncState(AsyncState::QUEUED);
-                m_loader->add(full_path, resource);
+            if (_loadResource(resource, full_path, immediate))
                 return;
-            }
-            else
-            {
-                resource->setAsyncState(AsyncState::LOADING);
-
-                SharedPtr<File> file(new File(m_context, full_path));
-                if (file && file->isOpen())
-                {
-                    if (resource->load(*file))
-                    {
-                        resource->setAsyncState(AsyncState::SUCCESS);
-                        return;
-                    }
-                    else
-                        resource->setAsyncState(AsyncState::FAILED);
-                }
-                else
-                    resource->setAsyncState(AsyncState::FAILED);
-            }
         }
 
         if (error_on_fail)
         {
-            //todo: Error on load
+            //todo: Send Error Event
         }
     }
 
-    template<typename T>
-    inline void ResourceCache::releaseResource(const Path& path, bool force)
-    {
-        std::type_index type(typeid(T));
-        Resource* res = findResource(type, path);
-        if (!res)
-            return;
-
-        std::lock_guard<std::mutex> lock(m_mutex);
-        if ((res->refs() == 1 && res->weakRefs() == 0) || force)
-            m_groups[type].m_resources.erase(path);
-    }
 
     template<> inline void Context::registerModule(ResourceCache* module)
     {

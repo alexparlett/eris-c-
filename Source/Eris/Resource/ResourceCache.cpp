@@ -27,84 +27,9 @@
 
 namespace Eris
 {
-
-
-    BackgroundLoader::BackgroundLoader(Context* context) :
-        Object(context),
-        m_thread(&BackgroundLoader::run, this)
-    {
-    }
-
-    void BackgroundLoader::add(const Path& path, Resource* res)
-    {
-        std::lock_guard<std::mutex> lock(m_mutex);
-
-        BackgroundTask task;
-        task.m_path = path;
-        task.m_resource = res;
-        m_waiting.push(task);
-
-        m_conditional.notify_all();
-    }
-
-    void BackgroundLoader::run()
-    {
-        while (m_control)
-        {
-            if (poll())
-                load();
-            else
-            {
-                std::unique_lock<std::mutex> lock(m_mutex);
-                m_conditional.wait(lock);
-            }
-        }
-    }
-
-    void BackgroundLoader::stop()
-    {
-        m_control = false;
-        m_conditional.notify_all();
-        m_thread.join();
-    }
-
-    bool BackgroundLoader::poll()
-    {
-        std::lock_guard<std::mutex> lock(m_mutex);
-        if (m_waiting.size() > 0)
-        {
-            m_current = m_waiting.front();
-            m_waiting.pop();
-            return true;
-        }
-
-        return false;
-    }
-
-    void BackgroundLoader::load()
-    {
-        if (m_current.m_resource && !m_current.m_path.empty())
-        {
-            m_current.m_resource->setAsyncState(AsyncState::LOADING);
-
-            SharedPtr<File> file(new File(m_context, m_current.m_path));
-            if (file && file->isOpen())
-            {
-                if (m_current.m_resource->load(*file))
-                    m_current.m_resource->setAsyncState(AsyncState::SUCCESS);
-                else
-                    m_current.m_resource->setAsyncState(AsyncState::FAILED);
-            }
-            else
-            {
-                m_current.m_resource->setAsyncState(AsyncState::FAILED);
-            }
-        }
-    }
-
     ResourceCache::ResourceCache(Context* context) :
         Object(context),
-        m_loader(new BackgroundLoader(context))
+        m_loader(new ResourceLoader(context))
     {
 
     }
@@ -144,45 +69,56 @@ namespace Eris
         return false;
     }
 
+    void ResourceCache::releaseResource(std::type_index type, const Path& path, bool force)
+    {
+        Resource* res = findResource(type, path);
+        if (!res)
+            return;
+
+        std::lock_guard<std::mutex> lock(m_resource_mutex);
+        if ((res->refs() == 1 && res->weakRefs() == 0) || force)
+            m_groups[type].erase(path);
+    }
+
     void ResourceCache::releaseResources(std::type_index type, bool force /*= false*/)
     {
-        std::lock_guard<std::mutex> lock(m_mutex);
+        std::lock_guard<std::mutex> lock(m_resource_mutex);
         auto group = m_groups.find(type);
         if (group != m_groups.end())
         {
-            for (auto res = group->second.m_resources.begin(); res != group->second.m_resources.end();)
+            for (auto res = group->second.begin(); res != group->second.end();)
             {
                 auto current = res++;
 
                 if ((current->second.refs() == 1 && current->second.weakRefs() == 0) || force)
-                    group->second.m_resources.erase(current);
+                    group->second.erase(current);
             }
         }
     }
 
     void ResourceCache::releaseResources(bool force /*= false*/)
     {
-        std::lock_guard<std::mutex> lock(m_mutex);
+        std::lock_guard<std::mutex> lock(m_resource_mutex);
         for (auto group : m_groups)
         {
-            for (auto res = group.second.m_resources.begin(); res != group.second.m_resources.end();)
+            for (auto res = group.second.begin(); res != group.second.end();)
             {
                 auto current = res++;
 
                 if ((current->second.refs() == 1 && current->second.weakRefs() == 0) || force)
-                    group.second.m_resources.erase(current);
+                    group.second.erase(current);
             }
         }
     }
 
     Resource* ResourceCache::findResource(std::type_index type, const Path& path)
     {
-        std::lock_guard<std::mutex> lock(m_mutex);
+        std::lock_guard<std::mutex> lock(m_resource_mutex);
         auto group = m_groups.find(type);
         if (group != m_groups.end())
         {
-            auto resource = group->second.m_resources.find(path);
-            if (resource != group->second.m_resources.end() && resource->second->getAsyncState() == AsyncState::SUCCESS)
+            auto resource = group->second.find(path);
+            if (resource != group->second.end())
                 return resource->second.get();
         }
 
@@ -206,4 +142,35 @@ namespace Eris
 
         return Path();
     }
+
+    bool ResourceCache::_loadResource(Resource* res, const Path& path, bool immediate /*= true*/)
+    {
+        if (!immediate)
+        {
+            res->setAsyncState(AsyncState::QUEUED);
+            m_loader->add(path, res);
+            return true;
+        }
+        else
+        {
+            res->setAsyncState(AsyncState::LOADING);
+
+            SharedPtr<File> file(new File(m_context, path));
+            if (file && file->isOpen())
+            {
+                if (res->load(*file))
+                {
+                    res->setAsyncState(AsyncState::SUCCESS);
+                    return true;
+                }
+                else
+                    res->setAsyncState(AsyncState::FAILED);
+            }
+            else
+                res->setAsyncState(AsyncState::FAILED);
+        }
+
+        return false;
+    }
+
 }
