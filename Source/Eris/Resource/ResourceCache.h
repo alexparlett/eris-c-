@@ -36,7 +36,7 @@
 
 namespace Eris
 {
-    static const glm::uint PRIORITY_LAST = 0xffffffff;
+    static const glm::uint PRIORITY_LAST = std::numeric_limits<glm::uint>::max();
 
     class ResourceCache : public Object
     {
@@ -84,9 +84,9 @@ namespace Eris
 
         loadResource<T>(path, true, false);
 
-        resource = static_cast<T*>(findResource(type, path));
+        resource = findResource(type, path);
         if (resource)
-            return resource;
+            return static_cast<T*>(resource);
 
         if (error_on_fail)
         {
@@ -96,18 +96,18 @@ namespace Eris
         return nullptr;
     }
 
-    template<typename T>
-    inline void ResourceCache::loadResource(const Path& path, bool immediate /*= true*/, bool error_on_fail /*= true*/)
+    template<typename T> 
+    inline void ResourceCache::loadResource(const Path& path, bool immediate, bool error_on_fail)
     {
         Path full_path = findFile(path);
         if (!path.empty())
         {
-            SharedPtr<T> resource = SharedPtr<T>(new T(m_context));
+            T* resource = new T(m_context);
             resource->setName(path);
 
             {
-                std::lock_guard<std::mutex> lock(m_mutex);
-                m_groups[std::type_index(typeid(T))].m_resources[path] = resource;
+                std::lock_guard<std::mutex> lock(m_resource_mutex);
+                m_groups[std::type_index(typeid(T))][path] = SharedPtr<Resource>(resource);
             }
 
             if (_loadResource(resource, full_path, immediate))

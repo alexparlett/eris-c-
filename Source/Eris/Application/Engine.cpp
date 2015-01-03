@@ -29,6 +29,8 @@
 #include "Graphics/Graphics.h"
 #include "Input/Input.h"
 #include "IO/FileSystem.h"
+#include "Resource/ResourceCache.h"
+#include "Resource/INIFile.h"
 
 #include "../gitversion.h"
 
@@ -45,6 +47,7 @@ namespace Eris
         context->registerModule<Graphics>(new Graphics(context));
         context->registerModule<Input>(new Input(context));
         context->registerModule<Log>(new Log(context));
+        context->registerModule<ResourceCache>(new ResourceCache(context));
 
         subscribeToEvent(ExitRequestedEvent::getTypeStatic(), HANDLER(Engine, HandleExitRequest));
     }
@@ -64,6 +67,9 @@ namespace Eris
         fs->addPath(fs->getApplicationPreferencesDir());
         fs->addPath(fs->getDocumentsDir());
         fs->addPath(fs->getProgramDir());
+
+        ResourceCache* rc = m_context->getModule<ResourceCache>();
+        rc->addDirectory(fs->getProgramDir() /= "Data");
 
         if (!glfwInit())
         {

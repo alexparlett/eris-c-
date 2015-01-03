@@ -31,61 +31,37 @@
 
 namespace Eris
 {
-    class ResourceTask : public RefCounted, public NonCopyable
+    struct ResourceTask
     {
-        friend class ResourceThread;
-
-    public:
-        ResourceTask() = default;
-
         ResourceTask(const Path& path, Resource* res) :
             m_path(path),
             m_resource(res)
         {
         }
 
-    private:
         Path m_path;
         SharedPtr<Resource> m_resource;
     };
 
-    class ResourceThread : public RefCounted, public NonCopyable
-    {
-        friend class ResourceLoader;
-
-    public:
-        ResourceThread(ResourceLoader* loader) :
-            m_loader(loader),
-            m_thread(&ResourceThread::run, this)
-        {
-        }
-
-        void run();
-        bool poll();
-        void load();
-
-    private:
-        std::thread m_thread;
-        SharedPtr<ResourceTask> m_task;
-        WeakPtr<ResourceLoader> m_loader;
-    };
-
     class ResourceLoader : public Object
     {
-        friend class ResourceThread;
-
     public:
         ResourceLoader(Context* context);
         virtual ~ResourceLoader();
 
+        void start();
         void add(const Path& path, Resource* res);
         void stop();
 
     private:
-        std::queue<SharedPtr<ResourceTask>> m_waiting_tasks;
+        void run();
+        ResourceTask* poll();
+        void load(ResourceTask* task);
+
+        std::queue<ResourceTask*> m_waiting_tasks;
         std::mutex m_queue_mutex;
-        std::vector<SharedPtr<ResourceThread>> m_threads;
+        std::vector<std::thread> m_threads;
         std::condition_variable m_queue_conditional;
-        std::atomic<bool> m_thread_control;
+        std::atomic<bool> m_thread_exit;
     };
 }

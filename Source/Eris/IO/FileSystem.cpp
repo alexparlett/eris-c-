@@ -26,8 +26,6 @@
 
 #include <ShlObj.h>
 
-using namespace std::tr2::sys;
-
 namespace Eris
 {
     FileSystem::FileSystem(Context* context) : 
@@ -56,7 +54,7 @@ namespace Eris
             return false;
         }
 
-        return create_directory(src);
+        return std::tr2::sys::create_directory(src);
     }
 
     bool FileSystem::copy(const Path& src, const Path& dest)
@@ -75,10 +73,10 @@ namespace Eris
 
         try
         {
-            copy_file(src, dest);
+            std::tr2::sys::copy_file(src, dest);
             return true;
         }
-        catch (basic_filesystem_error<Path> e)
+        catch (std::tr2::sys::basic_filesystem_error<Path> e)
         {
             return false;
         }
@@ -92,7 +90,7 @@ namespace Eris
             return false;
         }
 
-        return rename(src, new_name);
+        return std::tr2::sys::rename(src, new_name);
     }
 
     bool FileSystem::remove(const Path& file)
@@ -103,7 +101,7 @@ namespace Eris
             return false;
         }
 
-        return remove_all(file) > 0;
+        return std::tr2::sys::remove_all(file) > 0;
     }
 
     bool FileSystem::accessible(const Path& path) const
@@ -144,7 +142,7 @@ namespace Eris
             return false;
         }
 
-        return exists(path);
+        return std::tr2::sys::exists(path);
     }
 
     bool FileSystem::hasRestrictedPaths() const
@@ -160,12 +158,12 @@ namespace Eris
             return;
         }
 
-        recursive_directory_iterator iter(path);
+        std::tr2::sys::recursive_directory_iterator iter(path);
 
         if (!recusive)
             iter.no_push();
 
-        recursive_directory_iterator prev;
+        std::tr2::sys::recursive_directory_iterator prev;
         while (1)
         {
             Path entry_path = iter->path();
@@ -202,12 +200,12 @@ namespace Eris
 
     Path FileSystem::getCurrentDir() const
     {
-        return current_path<Path>();
+        return std::tr2::sys::current_path<Path>();
     }
 
     Path FileSystem::getProgramDir() const
     {
-        return initial_path<Path>();
+        return std::tr2::sys::initial_path<Path>();
     }
 
     Path FileSystem::getDocumentsDir() const

@@ -31,7 +31,6 @@ namespace Eris
         Object(context),
         m_loader(new ResourceLoader(context))
     {
-
     }
 
     ResourceCache::~ResourceCache()
@@ -52,7 +51,12 @@ namespace Eris
         if (!fs->accessible(path))
             return false;
 
-        return m_directories.insert(m_directories.begin() + priority, path) != m_directories.end();
+        if (priority < m_directories.size())
+            m_directories.insert(m_directories.begin() + priority, path);
+        else
+            m_directories.push_back(path);
+
+        return true;
     }
 
     bool ResourceCache::removeDirectory(const Path& path)
@@ -136,7 +140,7 @@ namespace Eris
             auto path = dir;
             path /= name;
 
-            if (fs->accessible(dir) && fs->exists(path))
+            if (fs->exists(path))
                 return path;
         }
 
@@ -147,7 +151,6 @@ namespace Eris
     {
         if (!immediate)
         {
-            res->setAsyncState(AsyncState::QUEUED);
             m_loader->add(path, res);
             return true;
         }
