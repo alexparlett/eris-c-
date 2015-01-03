@@ -46,9 +46,17 @@ namespace Eris
             incrementRef();
         }
 
+        explicit SharedArrayPtr(std::size_t length) :
+            m_ptr(new T[length]),
+            m_ref_count(new RefCounter())
+        {
+            memset(m_ptr, 0, length);
+            incrementRef();
+        }
+
         explicit SharedArrayPtr(T* ptr) :
             m_ptr(ptr),
-            m_ref_count(new RefCount())
+            m_ref_count(new RefCounter())
         {
             incrementRef();
         }
@@ -140,7 +148,7 @@ namespace Eris
         }
 
         T* m_ptr;
-        RefCount* m_ref_count;
+        RefCounter* m_ref_count;
     };
 
     template<typename T>
@@ -280,6 +288,6 @@ namespace Eris
         }
 
         T* m_ptr;
-        RefCount* m_ref_count;
+        RefCounter* m_ref_count;
     };
 }

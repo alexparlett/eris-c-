@@ -126,7 +126,12 @@
       <Command>cmd.exe /c "$(SolutionDir)gitversion.bat $(SolutionDir) $(ProjectDir)"</Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>xcopy "$(TargetPath)" "$(SolutionDir)Game" /Y /D</Command>
+      <Command>xcopy "$(TargetPath)" "$(SolutionDir)Game" /Y /D
+
+xcopy "$(SolutionDir)Assets\Data" "$(SolutionDir)Game\Data" /Y /I /E /D
+
+xcopy "$(SolutionDir)Assets\icon.ico" "$(SolutionDir)Game" /Y /D
+xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
     </PostBuildEvent>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(Platform)</AdditionalLibraryDirectories>
@@ -165,7 +170,12 @@
       <OutputFile>$(IntDir)$(TargetName).bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Command>xcopy "$(TargetPath)" "$(SolutionDir)Game" /Y /D</Command>
+      <Command>xcopy "$(TargetPath)" "$(SolutionDir)Game" /Y /D
+
+xcopy "$(SolutionDir)Assets\Data" "$(SolutionDir)Game\Data" /Y /I /E /D
+
+xcopy "$(SolutionDir)Assets\icon.ico" "$(SolutionDir)Game" /Y /D
+xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
     </PostBuildEvent>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(Platform)</AdditionalLibraryDirectories>
@@ -204,7 +214,12 @@
       <Command>cmd.exe /c "$(SolutionDir)gitversion.bat $(SolutionDir) $(ProjectDir)"</Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>xcopy "$(TargetPath)" "$(SolutionDir)Game" /Y /D</Command>
+      <Command>xcopy "$(TargetPath)" "$(SolutionDir)Game" /Y /D
+
+xcopy "$(SolutionDir)Assets\Data" "$(SolutionDir)Game\Data" /Y /I /E /D
+
+xcopy "$(SolutionDir)Assets\icon.ico" "$(SolutionDir)Game" /Y /D
+xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
     </PostBuildEvent>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(Platform)</AdditionalLibraryDirectories>
@@ -242,7 +257,12 @@
       <Command>cmd.exe /c "$(SolutionDir)gitversion.bat $(SolutionDir) $(ProjectDir)"</Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>xcopy "$(TargetPath)" "$(SolutionDir)Game" /Y /D</Command>
+      <Command>xcopy "$(TargetPath)" "$(SolutionDir)Game" /Y /D
+
+xcopy "$(SolutionDir)Assets\Data" "$(SolutionDir)Game\Data" /Y /I /E /D
+
+xcopy "$(SolutionDir)Assets\icon.ico" "$(SolutionDir)Game" /Y /D
+xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
     </PostBuildEvent>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(Platform)</AdditionalLibraryDirectories>
@@ -275,6 +295,7 @@
     <ClInclude Include="Memory\RefCounted.h" />
     <ClInclude Include="Collections\StringHash.h" />
     <ClInclude Include="Core\Context.h" />
+    <ClInclude Include="Resource\INIFile.h" />
     <ClInclude Include="Resource\Resource.h" />
     <ClInclude Include="Resource\ResourceCache.h" />
     <ClInclude Include="Resource\ResourceLoader.h" />
@@ -307,6 +328,7 @@
     <ClCompile Include="Core\Context.cpp" />
     <ClCompile Include="Core\Object.cpp" />
     <ClCompile Include="Graphics\Graphics.cpp" />
+    <ClCompile Include="Resource\INIFile.cpp" />
     <ClCompile Include="Resource\ResourceCache.cpp" />
     <ClCompile Include="Resource\ResourceLoader.cpp" />
     <ClCompile Include="Thread\SpinLock.cpp" />

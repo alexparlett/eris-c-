@@ -39,7 +39,7 @@ namespace Eris
         if (!path.empty())
         {
             m_allowed_paths.insert(path);
-            Log::infof("Added allowed path %s", path);
+            Log::infof("Added allowed path %s", path.string().c_str());
         }
     }
 
@@ -48,7 +48,7 @@ namespace Eris
         if (!path.empty())
         {
             m_allowed_paths.erase(path);
-            Log::infof("Removed allowed path %s", path);
+            Log::infof("Removed allowed path %s", path.string().c_str());
         }
     }
 
@@ -56,7 +56,7 @@ namespace Eris
     {
         if (!accessible(src))
         {
-            Log::errorf("Unable to access directory: %s", src.string());
+            Log::errorf("Unable to access directory: %s", src.string().c_str());
             return false;
         }
 
@@ -67,13 +67,13 @@ namespace Eris
     {
         if (!accessible(src))
         {
-            Log::errorf("Unable to access file: %s", src.string());
+            Log::errorf("Unable to access file: %s", src.string().c_str());
             return false;
         }
 
         if (!accessible(dest))
         {
-            Log::errorf("Unable to access file: %s", dest.string());
+            Log::errorf("Unable to access file: %s", dest.string().c_str());
             return false;
         }
 
@@ -92,7 +92,7 @@ namespace Eris
     {
         if (!accessible(src))
         {
-            Log::errorf("Unable to access file: %s", src.string());
+            Log::errorf("Unable to access file: %s", src.string().c_str());
             return false;
         }
 
@@ -103,7 +103,7 @@ namespace Eris
     {
         if (!accessible(file))
         {
-            Log::errorf("Unable to access file: %s", file.string());
+            Log::errorf("Unable to access file: %s", file.string().c_str());
             return false;
         }
 
@@ -144,7 +144,7 @@ namespace Eris
     {
         if (!accessible(path))
         {
-            Log::warnf("Unable to access file: %s", path.string());
+            Log::warnf("Unable to access file: %s", path.string().c_str());
             return false;
         }
 
@@ -160,7 +160,7 @@ namespace Eris
     {
         if (!accessible(path))
         {
-            Log::warnf("Unable to access path: %s", path.string());
+            Log::warnf("Unable to access path: %s", path.string().c_str());
             return;
         }
 

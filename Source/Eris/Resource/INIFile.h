@@ -22,18 +22,25 @@
 
 #pragma once
 
+#include "Resource.h"
+
 namespace Eris
 {
-    class Deserializer
+    struct INISection
+    {
+        std::unordered_map<std::string, std::string> m_values;
+    };
+
+    class INIFile : public Resource
     {
     public:
-        virtual Deserializer& operator >> (void* buffer) = 0;
-        virtual Deserializer& operator >> (char* buffer) = 0;
+        INIFile(Context* context);
+        virtual ~INIFile();
 
-        virtual std::size_t read(void* buffer, std::size_t count) = 0;
-        virtual std::size_t seek(std::size_t position) = 0;
+        virtual bool load(Deserializer& deserializer);
+        virtual bool save(Serializer& serializer);
 
-        virtual std::size_t getSize() const = 0;
-        virtual Path getPath() const = 0;
+    private:
+        std::unordered_map<std::string, INISection> m_sections;
     };
 }

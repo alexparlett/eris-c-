@@ -28,7 +28,7 @@
 namespace Eris
 {
 
-    File::File(Context* context) : 
+    File::File(Context* context) :
         Object(context),
         m_mode(FileMode::READ)
     {
@@ -68,6 +68,10 @@ namespace Eris
             return;
         }
 
+        m_handle.seekg(0, m_handle.end);
+        m_size = m_handle.tellg();
+        m_handle.seekg(0, m_handle.beg);
+
         m_path = path;
         m_mode = mode;
     }
@@ -102,45 +106,52 @@ namespace Eris
         return *this;
     }
 
+    File& File::operator>>(char* buffer)
+    {
+        if (m_handle.is_open())
+            m_handle >> buffer;
+
+        return *this;
+    }
+
     std::size_t File::read(void* buffer, std::size_t count)
     {
-        std::size_t opos = m_handle.tellg();
-        m_handle.read((char*) buffer, count);
-        std::size_t npos = m_handle.tellg();
+        if (m_handle.is_open())
+        {
+            m_handle.read((char*) buffer, count);
+            return m_handle.gcount();
+        }
 
-        return npos - opos;
+        return 0;
     }
 
     std::size_t File::seek(std::size_t position)
     {
-        m_handle.seekg(position);
-        m_handle.seekp(position);
+        if (m_handle.is_open())
+        {
+            m_handle.seekg(position);
+            m_handle.seekp(position);
 
-        std::size_t gpos = m_handle.tellg();
-        std::size_t ppos = m_handle.tellp();
+            std::size_t gpos = m_handle.tellg();
+            std::size_t ppos = m_handle.tellp();
 
-        return glm::max(gpos, ppos);
+            return glm::max(gpos, ppos);
+        }
+
+        return 0;
     }
 
     std::size_t File::write(void* data, std::size_t count)
     {
-        std::size_t opos = m_handle.tellp();
-        m_handle.write((char*) data, count);
-        std::size_t npos = m_handle.tellp();
+        if (m_handle.is_open())
+        {
+            std::size_t opos = m_handle.tellp();
+            m_handle.write((char*) data, count);
+            std::size_t npos = m_handle.tellp();
 
-        return npos - opos;
-    }
+            return npos - opos;
+        }
 
-    bool File::isOpen() const
-    {
-        return m_handle.is_open();
-    }
-
-    std::size_t File::getSize() const
-    {
-        if (m_path.empty())
-            return 0;
-
-        return file_size(m_path);
+        return 0;
     }
 }

@@ -49,18 +49,20 @@ namespace Eris
 
         virtual File& operator << (const void* data);
         virtual File& operator >> (void* buffer);
+        virtual File& operator >> (char* buffer);
 
         virtual std::size_t read(void* buffer, std::size_t count);
         virtual std::size_t seek(std::size_t position);
         virtual std::size_t write(void* data, std::size_t count);
 
-        bool isOpen() const;
+        bool isOpen() const { return m_handle.is_open(); }
 
-        virtual std::size_t getSize() const;
+        virtual std::size_t getSize() const { return m_size; }
         FileMode getMode() const { return m_mode; }
         virtual Path getPath() const { return m_path; }
 
     private:
+        std::size_t m_size;
         Path m_path;
         std::fstream m_handle;
         FileMode m_mode;

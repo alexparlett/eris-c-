@@ -23,12 +23,11 @@
 #pragma once
 
 #include "Core/Object.h"
+#include "IO/Deserializer.h"
+#include "IO/Serializer.h"
 
 namespace Eris
 {
-    class Deserializer;
-    class Serializer;
-
     enum class AsyncState : glm::u8
     {
         DONE,
