@@ -42,22 +42,25 @@ namespace Eris
 
     bool INIFile::load(Deserializer& deserializer)
     {
-        std::size_t dsSize = deserializer.getSize();
+        std::size_t ds_size = deserializer.getSize();
 
-        SharedArrayPtr<char> buffer = SharedArrayPtr<char>(dsSize);
-        deserializer.read(buffer.get(), dsSize);
+        SharedArrayPtr<char> buffer = SharedArrayPtr<char>(ds_size + 1);
+        std::size_t in_size = deserializer.read(buffer.get(), ds_size);
+
+        if (in_size != ds_size)
+            return false;
         
         char* line = nullptr;
         char* next_line = nullptr;
         char* section = nullptr;
         char* next_section = nullptr;
             
-        line = strtok_s(buffer.get(), "\n\0", &next_line);
+        line = strtok_s(buffer.get(), "\r\n\0", &next_line);
         while (line)
         {
             if (line[0] == '[')
             {
-                section = strtok_s(&line[1], "[]\n\0", &next_section);
+                section = strtok_s(&line[1], "[]\r\n\0", &next_section);
                 addSection(section);
             }
             else
@@ -65,11 +68,11 @@ namespace Eris
                 char* key = nullptr;
                 char* value = nullptr;
 
-                key = strtok_s(line, "=\n\0", &value);
+                key = strtok_s(line, "=\r\n\0", &value);
                 setKeyValue(section, key, value);
             }
 
-            line = strtok_s(nullptr, "\n\0", &next_line);
+            line = strtok_s(nullptr, "\r\n\0", &next_line);
         }
 
         return true;

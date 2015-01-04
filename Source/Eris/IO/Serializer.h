@@ -34,7 +34,7 @@ namespace Eris
     class Serializer
     {
     public:
-        virtual Serializer& operator << (const void* data) = 0;
+        virtual Serializer& operator << (const char* data) = 0;
         virtual Serializer& operator << (const std::string& data) = 0;
         virtual Serializer& operator << (const SerializerTraits& data) = 0;
 

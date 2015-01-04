@@ -47,11 +47,10 @@ namespace Eris
         void flush();
         void close();
 
-        virtual File& operator << (const void* data);
+        virtual File& operator << (const char* data);
         virtual File& operator << (const std::string& data);
         virtual File& operator << (const SerializerTraits& data);
 
-        virtual File& operator >> (void* buffer);
         virtual File& operator >> (char* buffer);
 
         virtual std::size_t read(void* buffer, std::size_t count);

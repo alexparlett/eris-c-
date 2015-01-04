@@ -89,7 +89,7 @@ namespace Eris
             if (ptr)
             {
                 m_ptr = ptr;
-                m_ref_count = new RefCount();
+                m_ref_count = new RefCounter();
                 incrementRef();
             }
 

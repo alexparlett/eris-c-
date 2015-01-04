@@ -115,16 +115,22 @@ namespace Eris
         if (path.empty())
             return false;
 
+        Path full_path;
+        if (!path.is_complete())
+            full_path = getCurrentDir() /= path;
+        else
+            full_path = path;
+
         if (m_allowed_paths.empty())
             return true;
 
         for (auto i : m_allowed_paths)
         {
-            if (i == path)
+            if (i == full_path)
                 return true;
             
             bool allowed = true;
-            for (auto ie = i.begin(), pe = path.begin(); ie != i.end() && pe != path.end(); ie++, pe++)
+            for (auto ie = i.begin(), pe = full_path.begin(); ie != i.end() && pe != full_path.end(); ie++, pe++)
             {              
                 if (*pe != ".." && (*ie) == (*pe))
                     continue;

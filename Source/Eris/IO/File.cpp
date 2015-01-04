@@ -58,13 +58,13 @@ namespace Eris
         }
 
         if (mode == FileMode::READ)
-            m_handle.open(path, std::ios::in);
+            m_handle.open(path, std::ios::in | std::ios::binary);
         else
-            m_handle.open(path, std::ios::out | std::ios::trunc);
+            m_handle.open(path, std::ios::out | std::ios::trunc | std::ios::binary);
 
         if (m_handle.bad() || m_handle.fail())
         {
-            Log::errorf("Unable to open file: %s", path.string());
+            Log::errorf("Unable to open file: %s", path.string().c_str());
             return;
         }
 
@@ -88,7 +88,7 @@ namespace Eris
             m_handle.close();
     }
 
-    File& File::operator<<(const void* data)
+    File& File::operator<<(const char* data)
     {
         if (m_handle.is_open())
             m_handle << data;
@@ -125,14 +125,6 @@ namespace Eris
         return *this;
     }
 
-    File& File::operator>>(void* buffer)
-    {
-        if (m_handle.is_open())
-            m_handle >> buffer;
-
-        return *this;
-    }
-
     File& File::operator>>(char* buffer)
     {
         if (m_handle.is_open())
@@ -145,7 +137,7 @@ namespace Eris
     {
         if (m_handle.is_open())
         {
-            m_handle.read((char*) buffer, count);
+            m_handle.read((char *) buffer, count);
             return m_handle.gcount();
         }
 

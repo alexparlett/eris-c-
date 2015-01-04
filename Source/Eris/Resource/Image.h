@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2013-2015 the Eris project.
+// Copyright (c) 2008-2015 the Eris project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,17 +22,30 @@
 
 #pragma once
 
+#include "Resource.h"
+
+#include "Memory/ArrayPointers.h"
+
 namespace Eris
 {
-    class Deserializer
+    class Image : public Resource
     {
     public:
-        virtual Deserializer& operator >> (char* buffer) = 0;
+        Image(Context* context);
+        ~Image();
 
-        virtual std::size_t read(void* buffer, std::size_t count) = 0;
-        virtual std::size_t seek(std::size_t position) = 0;
+        virtual bool load(Deserializer& deserializer);
+        virtual bool save(Serializer& serializer);
 
-        virtual std::size_t getSize() const = 0;
-        virtual Path getPath() const = 0;
+        glm::int32 getWidth() const { return m_width; }
+        glm::int32 getHeight() const { return m_height; }
+        glm::int32 getChannels() const { return m_channels; }
+        const unsigned char* getData() const { return m_data; }
+
+    private:
+        glm::int32 m_width;
+        glm::int32 m_height;
+        glm::int32 m_channels;
+        SharedArrayPtr<unsigned char> m_data;
     };
 }

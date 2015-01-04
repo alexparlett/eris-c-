@@ -62,7 +62,7 @@ namespace Eris
         m_thread_exit = true;
         m_queue_conditional.notify_all();
 
-        for (glm::uint i = 0; i < std::thread::hardware_concurrency(); i++)
+        for (glm::uint i = 0; i < m_threads.size(); i++)
         {
             if (m_threads[i].joinable())
                 m_threads[i].join();
