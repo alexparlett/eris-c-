@@ -93,7 +93,34 @@ namespace Eris
         if (m_handle.is_open())
             m_handle << data;
 
-        flush();
+        return *this;
+    }
+
+    File& File::operator<<(const std::string& data)
+    {
+        if (m_handle.is_open())
+            m_handle << data;
+
+        return *this;
+    }
+
+    File& File::operator<<(const SerializerTraits& data)
+    {
+        if (m_handle.is_open())
+        {
+            switch (data)
+            {
+            case SerializerTraits::ENDS:
+                m_handle << std::ends;
+                break;
+            case SerializerTraits::ENDL:
+                m_handle << std::endl;
+                break;
+            case SerializerTraits::FLUSH:
+                m_handle << std::flush;
+                break;
+            }
+        }
 
         return *this;
     }

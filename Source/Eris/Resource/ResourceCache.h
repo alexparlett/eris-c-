@@ -117,7 +117,7 @@ namespace Eris
 
             {
                 std::lock_guard<std::mutex> lock(m_resource_mutex);
-                m_groups[std::type_index(typeid(T))][path] = SharedPtr<Resource>(resource);
+                m_groups[std::type_index(typeid(T))].m_resources[path] = SharedPtr<Resource>(resource);
             }
 
             if (_loadResource(resource, full_path, immediate))

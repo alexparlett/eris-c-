@@ -48,6 +48,9 @@ namespace Eris
         void close();
 
         virtual File& operator << (const void* data);
+        virtual File& operator << (const std::string& data);
+        virtual File& operator << (const SerializerTraits& data);
+
         virtual File& operator >> (void* buffer);
         virtual File& operator >> (char* buffer);
 
@@ -55,7 +58,7 @@ namespace Eris
         virtual std::size_t seek(std::size_t position);
         virtual std::size_t write(void* data, std::size_t count);
 
-        bool isOpen() const { return m_handle.is_open(); }
+        bool opened() const { return m_handle.is_open(); }
 
         virtual std::size_t getSize() const { return m_size; }
         FileMode getMode() const { return m_mode; }

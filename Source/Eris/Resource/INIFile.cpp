@@ -31,6 +31,58 @@
 
 namespace Eris
 {
+    void INISection::setKeyValue(const std::string& key, const std::string& value)
+    {
+        if (!key.empty() && !value.empty())
+        {
+            m_key_values[key] = value;
+        }
+    }
+
+    std::string INISection::getKeyValue(const std::string& key) const
+    {
+        auto find = m_key_values.find(key);
+        if (find != m_key_values.end())
+            return find->second;
+
+        return StringEmpty;
+    }
+
+    void INISection::removeKeyValue(const std::string& key)
+    {
+        m_key_values.erase(key);
+    }
+
+    INISection::iterator INISection::begin()
+    {
+        return m_key_values.begin();
+    }
+
+    INISection::iterator INISection::end()
+    {
+        return m_key_values.end();
+    }
+
+    INISection::const_iterator INISection::cbegin() const
+    {
+        return m_key_values.cbegin();
+    }
+
+    INISection::const_iterator INISection::cend() const
+    {
+        return m_key_values.cend();
+    }
+
+    bool INISection::empty() const
+    {
+        return m_key_values.empty();
+    }
+
+    bool INISection::exists(const std::string& key) const
+    {
+        return m_key_values.find(key) != m_key_values.end();
+    }
+
     INIFile::INIFile(Context* context) :
         Resource(context)
     {
@@ -38,6 +90,7 @@ namespace Eris
 
     INIFile::~INIFile()
     {
+        clear();
     }
 
     bool INIFile::load(Deserializer& deserializer)
@@ -49,25 +102,16 @@ namespace Eris
         
         char* line = nullptr;
         char* next_line = nullptr;
-        std::string current_section = StringEmpty;
+        char* section = nullptr;
+        char* next_section = nullptr;
             
         line = strtok_s(buffer.get(), "\n\0", &next_line);
         while (line)
         {
             if (line[0] == '[')
             {
-                std::stringstream section;
-
-                for (glm::uint i = 1; i < strlen(line); i++)
-                {
-                    if (line[i] == ']')
-                        break;
-
-                    section << line[i];
-                }
-
-                m_sections[section.str()] = INISection();
-                current_section = section.str();
+                section = strtok_s(&line[1], "[]\n\0", &next_section);
+                addSection(section);
             }
             else
             {
@@ -75,7 +119,7 @@ namespace Eris
                 char* value = nullptr;
 
                 key = strtok_s(line, "=\n\0", &value);
-                m_sections[current_section].m_values[key] = value;
+                setKeyValue(section, key, value);
             }
 
             line = strtok_s(nullptr, "\n\0", &next_line);
@@ -86,6 +130,94 @@ namespace Eris
 
     bool INIFile::save(Serializer& serializer)
     {
+        for (auto section : m_sections)
+        {
+            serializer << "[" << section.first << "]" << SerializerTraits::ENDL;
+            for (auto kv : *section.second)
+            {
+                serializer << kv.first << "=" << kv.second << SerializerTraits::ENDL;
+            }
+            serializer << SerializerTraits::ENDL;
+        }
+
         return true;
     }
+
+    void INIFile::addSection(const std::string& section)
+    {
+        auto find = m_sections.find(section);
+        if (find == m_sections.end())
+            m_sections[section] = new INISection();
+    }
+
+    INISection* INIFile::getSection(const std::string& section) const
+    {
+        auto find = m_sections.find(section);
+        if (find != m_sections.end())
+            return find->second;
+
+        return nullptr;
+    }
+
+    void INIFile::removeSection(const std::string& section)
+    {
+        m_sections.erase(section);
+    }
+
+    void INIFile::setKeyValue(const std::string& section, const std::string& key, const std::string& value)
+    {
+        m_sections[section]->setKeyValue(key, value);
+    }
+
+    std::string INIFile::getKeyValue(const std::string& section, const std::string& key) const
+    {
+        auto find = m_sections.find(section);
+        if (find != m_sections.end())
+            return find->second->getKeyValue(key);
+
+        return StringEmpty;
+    }
+
+    void INIFile::removeKeyValue(const std::string& section, const std::string& key)
+    {
+        auto find = m_sections.find(section);
+        if (find != m_sections.end())
+            find->second->removeKeyValue(key);
+    }
+
+    void INIFile::clear()
+    {
+        m_sections.clear();
+    }
+
+    bool INIFile::empty() const
+    {
+        return m_sections.empty();
+    }
+
+    bool INIFile::exists(const std::string& section) const
+    {
+        return m_sections.find(section) != m_sections.end();
+    }
+
+    INIFile::iterator INIFile::begin()
+    {
+        return m_sections.begin();
+    }
+
+    INIFile::iterator INIFile::end()
+    {
+        return m_sections.end();
+    }
+
+    INIFile::const_iterator INIFile::cbegin() const
+    {
+        return m_sections.cbegin();
+    }
+
+    INIFile::const_iterator INIFile::cend() const
+    {
+        return m_sections.cend();
+    }
+
 }

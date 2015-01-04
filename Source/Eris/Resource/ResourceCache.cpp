@@ -177,7 +177,7 @@ namespace Eris
             res->setAsyncState(AsyncState::LOADING);
 
             SharedPtr<File> file(new File(m_context, path));
-            if (file && file->isOpen())
+            if (file && file->opened())
             {
                 if (res->load(*file))
                 {

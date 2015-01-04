@@ -43,10 +43,10 @@ namespace Eris
         void run();
         void terminate();
 
-        const char* getVersion() const;
-
         void setExitCode(glm::i32 exitcode);
+
         glm::i32 getExitCode() const { return m_exitcode; }
+        const char* getVersion() const;
 
     private:
         void HandleExitRequest(const StringHash& type, const Event* event);

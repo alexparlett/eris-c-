@@ -62,8 +62,8 @@ namespace Eris
         bool mouseButtonPressed(glm::int32 button);
         glm::int32 modifiersDown();
 
-        bool isFocused() const { return m_focused; }
-        bool isMinimized() const { return m_minimized; }
+        bool focused() const { return m_focused; }
+        bool minimized() const { return m_minimized; }
 
     private:
         void handleBeginFrame(const StringHash& event_type, const Event* event_data);

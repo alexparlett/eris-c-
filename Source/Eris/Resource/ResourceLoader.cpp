@@ -113,7 +113,7 @@ namespace Eris
             task->m_resource->setAsyncState(AsyncState::LOADING);
 
             SharedPtr<File> file(new File(m_context, task->m_path));
-            if (file && file->isOpen())
+            if (file && file->opened())
             {
                 if (task->m_resource->load(*file))
                 {

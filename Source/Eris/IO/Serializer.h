@@ -24,10 +24,19 @@
 
 namespace Eris
 {
+    enum class SerializerTraits : glm::uint
+    {
+        ENDL,
+        FLUSH,
+        ENDS
+    };
+
     class Serializer
     {
     public:
         virtual Serializer& operator << (const void* data) = 0;
+        virtual Serializer& operator << (const std::string& data) = 0;
+        virtual Serializer& operator << (const SerializerTraits& data) = 0;
 
         virtual std::size_t write(void* data, std::size_t count) = 0;
         virtual std::size_t seek(std::size_t position) = 0;

@@ -86,31 +86,31 @@ namespace Eris
 
     void Log::raw(const std::string& msg)
     {
-        if (log && log->isOpen())
+        if (log && log->opened())
             log->write(msg, Level::NONE);
     }
 
     void Log::debug(const std::string& msg)
     {
-        if (log && log->isOpen())
+        if (log && log->opened())
             log->write(msg, Level::DEBUG);
     }
 
     void Log::info(const std::string& msg)
     {
-        if (log && log->isOpen())
+        if (log && log->opened())
             log->write(msg, Level::INFO);
     }
 
     void Log::warn(const std::string& msg)
     {
-        if (log && log->isOpen())
+        if (log && log->opened())
             log->write(msg, Level::WARN);
     }
 
     void Log::error(const std::string& msg)
     {
-        if (log && log->isOpen())
+        if (log && log->opened())
             log->write(msg, Level::FATAL);
     }
 

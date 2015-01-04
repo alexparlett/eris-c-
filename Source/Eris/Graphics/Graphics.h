@@ -92,7 +92,7 @@ namespace Eris
         GLFWwindow* getWindow() const { return m_window; }
 
         /// Get initialized.
-        bool isInitialize() const { return m_initialized; }
+        bool initialized() const { return m_initialized; }
 
     private:
         static void handleFramebufferCallback(GLFWwindow* window, glm::i32 width, glm::i32 height);

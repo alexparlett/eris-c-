@@ -55,7 +55,7 @@ namespace Eris
         void setTimestamp(bool timestamp);
         void setLevel(Level level);
         
-        bool isOpen() const { return m_handle.is_open(); }
+        bool opened() const { return m_handle.is_open(); }
 
         static void raw(const std::string& msg);
         static void debug(const std::string& msg);

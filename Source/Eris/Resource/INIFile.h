@@ -24,23 +24,63 @@
 
 #include "Resource.h"
 
+#include "Memory/RefCounted.h"
+
 namespace Eris
 {
-    struct INISection
+    class INISection : public RefCounted
     {
-        std::unordered_map<std::string, std::string> m_values;
+    public:
+        using iterator = std::unordered_map<std::string, std::string>::iterator;
+        using const_iterator = std::unordered_map<std::string, std::string>::const_iterator;
+
+        void setKeyValue(const std::string& key, const std::string& value);
+        std::string getKeyValue(const std::string& key) const;
+        void removeKeyValue(const std::string& key);
+
+        iterator begin();
+        iterator end();
+        const_iterator cbegin() const;
+        const_iterator cend() const;
+
+        bool empty() const;
+        bool exists(const std::string& key) const;
+
+    private:
+        std::unordered_map<std::string, std::string> m_key_values;
     };
 
     class INIFile : public Resource
     {
     public:
+        using iterator = std::unordered_map<std::string, SharedPtr<INISection>>::iterator;
+        using const_iterator = std::unordered_map<std::string, SharedPtr<INISection>>::const_iterator;
+
         INIFile(Context* context);
         virtual ~INIFile();
 
         virtual bool load(Deserializer& deserializer);
         virtual bool save(Serializer& serializer);
 
+        void addSection(const std::string& section);
+        INISection* getSection(const std::string& section) const;
+        void removeSection(const std::string& section);
+
+        void setKeyValue(const std::string& section, const std::string& key, const std::string& value);
+        std::string getKeyValue(const std::string& section, const std::string& key) const;
+        void removeKeyValue(const std::string& section, const std::string& key);
+
+        void clear();
+
+        bool empty() const;
+        bool exists(const std::string& section) const;
+
+        iterator begin();
+        iterator end();
+        const_iterator cbegin() const;
+        const_iterator cend() const;
+
     private:
-        std::unordered_map<std::string, INISection> m_sections;
+        std::unordered_map<std::string, SharedPtr<INISection>> m_sections;
     };
 }
