@@ -39,8 +39,8 @@
 #include "IO/Types.h"
 #include "Thread/Types.h"
 
-#define ORG "Homonoia Studios"
-#define APP "Solarian Wars"
+#define ERIS_ORG "Homonoia Studios"
+#define ERIS_APP "Solarian Wars"
 
 namespace Eris
 {

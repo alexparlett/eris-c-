@@ -24,13 +24,9 @@
 
 namespace Eris
 {
-    template<typename Int>
-    inline bool powerOfTwo(Int x)
+    template<typename Number = glm::i32>
+    inline bool powerOfTwo(Number x)
     {
-        while (((x % 2) == 0) && x > 1)
-        {
-            x /= 2;
-        }
-        return (x == 1);
+        return (x != 0) && ((x & (x - 1)) == 0);
     }
 }

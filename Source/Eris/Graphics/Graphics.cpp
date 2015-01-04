@@ -40,7 +40,7 @@ namespace Eris
         m_height(0),
         m_samples(4),
         m_gamma(1.0f),
-        m_title(APP),
+        m_title(ERIS_APP),
         m_window(nullptr)
     {
     }

@@ -227,7 +227,7 @@ namespace Eris
 
         Path out(path);
         out /= "Games";
-        out /= APP;
+        out /= ERIS_APP;
 
         return out;
     }
@@ -238,8 +238,8 @@ namespace Eris
         SHGetSpecialFolderPath(nullptr, path, CSIDL_APPDATA, FALSE);
 
         Path out(path);
-        out /= ORG;
-        out /= APP;
+        out /= ERIS_ORG;
+        out /= ERIS_APP;
 
         return out;
     }
