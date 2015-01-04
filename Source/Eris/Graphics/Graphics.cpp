@@ -57,7 +57,6 @@ namespace Eris
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        glfwWindowHint(GLFW_SRGB_CAPABLE, GL_TRUE);
 
         glfwWindowHint(GLFW_DECORATED, !m_borderless);
         glfwWindowHint(GLFW_RESIZABLE, m_resizable);
@@ -231,6 +230,30 @@ namespace Eris
     void Graphics::setVSync(bool vsync)
     {
         m_vsync = vsync;
+    }
+
+    std::vector<glm::ivec2> Graphics::getResolutions() const
+    {
+        glm::i32 count;
+        const GLFWvidmode* modes = glfwGetVideoModes(glfwGetPrimaryMonitor(), &count);
+
+        if (count > 0 && modes)
+        {
+            std::vector<glm::ivec2> out;
+            for (glm::i32 i = 0; i < count; i++)
+                out.push_back(glm::ivec2(modes[i].width, modes[i].height));
+            return out;
+        }
+
+        return std::vector<glm::ivec2>();
+    }
+
+    glm::ivec2 Graphics::getResolution() const
+    {
+        const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        if (mode)
+            return glm::ivec2(mode->width, mode->height);
+        return glm::ivec2();
     }
 
     void Graphics::handleFramebufferCallback(GLFWwindow* window, glm::i32 width, glm::i32 height)

@@ -22,6 +22,8 @@
 
 #include "Image.h"
 
+#include "Core/Log.h"
+
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_RESIZE_IMPLEMENTATION
 #define STB_IMAGE_WRITE_IMPLEMENTATION
@@ -74,6 +76,53 @@ namespace Eris
         serializer.write(buffer, out_size);
 
         return true;
+    }
+
+    bool Image::resize(glm::i32 width, glm::i32 height)   
+    {
+        if (m_width == width && m_height == height)
+            return false;
+
+        if (width == 0 || height == 0)
+            return false;
+
+        SharedArrayPtr<unsigned char> new_buffer(width * height * m_channels);
+        glm::i32 new_width = 0, new_height = 0;
+        if (stbir_resize_uint8(m_data.get(), m_width, m_height, 0, new_buffer.get(), new_width, new_height, 0, m_channels) == 0)
+        {
+            Log::errorf("Failed to resize image: %d to width: %d height: %d", getName().string().c_str(), width, height);
+            return false;
+        }
+
+        m_width = new_width;
+        m_height = new_height;
+        m_data = new_buffer;
+
+        return true;
+    }
+
+    void Image::setWidth(glm::i32 width)
+    {
+        if (width > 0)
+            m_width = width;
+    }
+
+    void Image::setHeight(glm::i32 height)
+    {
+        if (height > 0)
+            m_height = height;
+    }
+
+    void Image::setChannels(glm::i32 channels)
+    {
+        if (channels > 0)
+            m_channels = channels;
+    }
+
+    void Image::setData(unsigned char* data)
+    {
+        if (data)
+            m_data = data;
     }
 
 }

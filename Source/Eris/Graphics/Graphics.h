@@ -90,6 +90,10 @@ namespace Eris
         const std::string& getTitle() const { return m_title; }
         /// Get window ptr.
         GLFWwindow* getWindow() const { return m_window; }
+        /// Get available resolutions.
+        std::vector<glm::ivec2> getResolutions() const;
+        /// Get current resolution.
+        glm::ivec2 getResolution() const;
 
         /// Get initialized.
         bool initialized() const { return m_initialized; }
