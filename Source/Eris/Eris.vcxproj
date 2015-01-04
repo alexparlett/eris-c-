@@ -296,6 +296,7 @@ xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
     <ClInclude Include="Collections\StringHash.h" />
     <ClInclude Include="Core\Context.h" />
     <ClInclude Include="Resource\INIFile.h" />
+    <ClInclude Include="Resource\INISection.h" />
     <ClInclude Include="Resource\Resource.h" />
     <ClInclude Include="Resource\ResourceCache.h" />
     <ClInclude Include="Resource\ResourceLoader.h" />
@@ -329,6 +330,7 @@ xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
     <ClCompile Include="Core\Object.cpp" />
     <ClCompile Include="Graphics\Graphics.cpp" />
     <ClCompile Include="Resource\INIFile.cpp" />
+    <ClCompile Include="Resource\INISection.cpp" />
     <ClCompile Include="Resource\ResourceCache.cpp" />
     <ClCompile Include="Resource\ResourceLoader.cpp" />
     <ClCompile Include="Thread\SpinLock.cpp" />

@@ -157,6 +157,9 @@
     <ClInclude Include="Resource\INIFile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Resource\INISection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Eris.rc">
@@ -213,6 +216,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Resource\INIFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\INISection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

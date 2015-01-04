@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2013-2015 the Eris project.
+// Copyright (c) 2008-2014 the Eris project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,42 +22,29 @@
 
 #pragma once
 
-#include "Resource.h"
-#include "INISection.h"
+#include "Memory/RefCounted.h"
 
 namespace Eris
 {
-    class INIFile : public Resource
+    class INISection : public RefCounted
     {
     public:
-        using iterator = std::unordered_map<std::string, SharedPtr<INISection>>::iterator;
-        using const_iterator = std::unordered_map<std::string, SharedPtr<INISection>>::const_iterator;
+        using iterator = std::unordered_map<std::string, std::string>::iterator;
+        using const_iterator = std::unordered_map<std::string, std::string>::const_iterator;
 
-        INIFile(Context* context);
-        virtual ~INIFile();
-
-        virtual bool load(Deserializer& deserializer);
-        virtual bool save(Serializer& serializer);
-
-        void addSection(const std::string& section);
-        INISection* getSection(const std::string& section) const;
-        void removeSection(const std::string& section);
-
-        void setKeyValue(const std::string& section, const std::string& key, const std::string& value);
-        std::string getKeyValue(const std::string& section, const std::string& key) const;
-        void removeKeyValue(const std::string& section, const std::string& key);
-
-        void clear();
-
-        bool empty() const;
-        bool exists(const std::string& section) const;
+        void setKeyValue(const std::string& key, const std::string& value);
+        std::string getKeyValue(const std::string& key) const;
+        void removeKeyValue(const std::string& key);
 
         iterator begin();
         iterator end();
         const_iterator cbegin() const;
         const_iterator cend() const;
 
+        bool empty() const;
+        bool exists(const std::string& key) const;
+
     private:
-        std::unordered_map<std::string, SharedPtr<INISection>> m_sections;
+        std::unordered_map<std::string, std::string> m_key_values;
     };
 }

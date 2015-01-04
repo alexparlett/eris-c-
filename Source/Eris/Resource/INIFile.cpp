@@ -23,7 +23,6 @@
 #include "INIFile.h"
 
 #include "Core/Log.h"
-#include "IO/File.h"
 #include "Memory/ArrayPointers.h"
 
 #include <cstring>
@@ -31,58 +30,6 @@
 
 namespace Eris
 {
-    void INISection::setKeyValue(const std::string& key, const std::string& value)
-    {
-        if (!key.empty() && !value.empty())
-        {
-            m_key_values[key] = value;
-        }
-    }
-
-    std::string INISection::getKeyValue(const std::string& key) const
-    {
-        auto find = m_key_values.find(key);
-        if (find != m_key_values.end())
-            return find->second;
-
-        return StringEmpty;
-    }
-
-    void INISection::removeKeyValue(const std::string& key)
-    {
-        m_key_values.erase(key);
-    }
-
-    INISection::iterator INISection::begin()
-    {
-        return m_key_values.begin();
-    }
-
-    INISection::iterator INISection::end()
-    {
-        return m_key_values.end();
-    }
-
-    INISection::const_iterator INISection::cbegin() const
-    {
-        return m_key_values.cbegin();
-    }
-
-    INISection::const_iterator INISection::cend() const
-    {
-        return m_key_values.cend();
-    }
-
-    bool INISection::empty() const
-    {
-        return m_key_values.empty();
-    }
-
-    bool INISection::exists(const std::string& key) const
-    {
-        return m_key_values.find(key) != m_key_values.end();
-    }
-
     INIFile::INIFile(Context* context) :
         Resource(context)
     {
