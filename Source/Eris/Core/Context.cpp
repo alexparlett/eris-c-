@@ -27,6 +27,7 @@
 #include "Clock.h"
 #include "Log.h"
 #include "Application/Engine.h"
+#include "Application/Locale.h"
 #include "Application/Settings.h"
 #include "Graphics/Graphics.h"
 #include "Input/Input.h"
@@ -41,6 +42,7 @@ namespace Eris
         m_engine(nullptr),
         m_graphics(nullptr),
         m_input(nullptr),
+        m_locale(nullptr),
         m_log(nullptr),
         m_fs(nullptr),
         m_cache(nullptr),

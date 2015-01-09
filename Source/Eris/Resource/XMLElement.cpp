@@ -109,22 +109,24 @@ namespace Eris
 
     XMLElement::iterator XMLElement::begin()
     {
-        return m_node.begin();
+        auto iter = m_node.begin();
+        return XMLElementIterator(m_file, XMLElement(m_file, *iter), iter);
     }
 
     XMLElement::iterator XMLElement::end()
     {
-        return m_node.end();
+        return XMLElementIterator(m_file, XMLElement(), m_node.end());
     }
 
-    XMLElement::iterator XMLElement::cbegin() const
+    XMLElement::const_iterator XMLElement::begin() const
     {
-        return m_node.begin();
+        auto iter = m_node.begin();
+        return XMLElementIterator(m_file, XMLElement(m_file, *iter), iter);
     }
 
-    XMLElement::iterator XMLElement::cend() const
+    XMLElement::const_iterator XMLElement::end() const
     {
-        return m_node.end();
+        return XMLElementIterator(m_file, XMLElement(), m_node.end());
     }
 
     bool XMLElement::empty() const
@@ -283,5 +285,47 @@ namespace Eris
             return attr.set_value(value.c_str());
         else
             return m_node.append_attribute(name.c_str()).set_value(value.c_str());
+    }
+
+    XMLElementIterator::XMLElementIterator(XMLFile* file, XMLElement elemenet, pugi::xml_node_iterator iter) :
+        m_file(file),
+        m_iter(iter),
+        m_element(elemenet)
+    {
+    }
+
+    XMLElementIterator XMLElementIterator::operator++ ()
+    {
+        XMLElementIterator i = *this;
+        m_iter++;
+        return i;
+    }
+
+    XMLElementIterator XMLElementIterator::operator++ (glm::i32 junk)
+    {
+        m_iter++;
+        return *this;
+    }
+
+    XMLElement& XMLElementIterator::operator* () 
+    { 
+        ERIS_ASSERT(m_element); 
+        return m_element; 
+    }
+
+    XMLElement* XMLElementIterator::operator-> () 
+    { 
+        ERIS_ASSERT(m_element); 
+        return &m_element; 
+    }
+
+    bool XMLElementIterator::operator == (const XMLElementIterator& rhs) 
+    { 
+        return m_iter == rhs.m_iter; 
+    }
+
+    bool XMLElementIterator::operator != (const XMLElementIterator& rhs) 
+    { 
+        return m_iter != rhs.m_iter; 
     }
 }

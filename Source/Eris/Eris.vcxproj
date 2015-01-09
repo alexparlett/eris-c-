@@ -272,6 +272,7 @@ xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
   <ItemGroup>
     <ClInclude Include="..\gitversion.h" />
     <ClInclude Include="Application\Events.h" />
+    <ClInclude Include="Application\Locale.h" />
     <ClInclude Include="Application\Settings.h" />
     <ClInclude Include="Collections\Functions.h" />
     <ClInclude Include="Collections\Types.h" />
@@ -322,6 +323,7 @@ xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
   <ItemGroup>
     <ClCompile Include="Application\Engine.cpp" />
     <ClCompile Include="Application\Eris.cpp" />
+    <ClCompile Include="Application\Locale.cpp" />
     <ClCompile Include="Application\Settings.cpp" />
     <ClCompile Include="Core\Clock.cpp" />
     <ClCompile Include="Core\Log.cpp" />

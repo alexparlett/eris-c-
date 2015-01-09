@@ -40,6 +40,7 @@ namespace Eris
     class FileSystem;
     class Graphics;
     class Input;
+    class Locale;
     class Log;
     class ResourceCache;
     class Settings;
@@ -75,6 +76,7 @@ namespace Eris
         SharedPtr<FileSystem> m_fs;
         SharedPtr<Graphics> m_graphics;
         SharedPtr<Input> m_input;
+        SharedPtr<Locale> m_locale;
         SharedPtr<Log> m_log;
         SharedPtr<ResourceCache> m_cache;
         SharedPtr<Settings> m_settings;

@@ -29,11 +29,13 @@
 namespace Eris
 {
     class XMLFile;
+    class XMLElementIterator;
 
     class XMLElement
     {
     public:
-        using iterator = pugi::xml_node_iterator;
+        using iterator = XMLElementIterator;
+        using const_iterator = const XMLElementIterator;
 
         XMLElement();
         XMLElement(XMLFile* file, pugi::xml_node node);
@@ -52,8 +54,8 @@ namespace Eris
 
         iterator begin();
         iterator end();
-        iterator cbegin() const;
-        iterator cend() const;
+        const_iterator begin() const;
+        const_iterator end() const;
 
         bool empty() const;
         bool hasChild(const std::string& name) const;
@@ -86,5 +88,24 @@ namespace Eris
     private:
         WeakPtr<XMLFile> m_file;
         pugi::xml_node m_node;
+    };
+
+    class XMLElementIterator
+    {
+    public:
+        XMLElementIterator(XMLFile* file, XMLElement element, pugi::xml_node_iterator iter);
+
+        XMLElementIterator operator++ ();
+        XMLElementIterator operator++ (glm::i32 junk);
+
+        XMLElement& operator* ();
+        XMLElement* operator-> ();
+
+        bool operator == (const XMLElementIterator& rhs);
+        bool operator != (const XMLElementIterator& rhs);
+    private:
+        XMLElement m_element;
+        WeakPtr<XMLFile> m_file;
+        pugi::xml_node_iterator m_iter;
     };
 }

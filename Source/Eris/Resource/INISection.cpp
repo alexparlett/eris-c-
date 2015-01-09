@@ -132,12 +132,12 @@ namespace Eris
         return m_key_values.end();
     }
 
-    INISection::const_iterator INISection::cbegin() const
+    INISection::const_iterator INISection::begin() const
     {
         return m_key_values.cbegin();
     }
 
-    INISection::const_iterator INISection::cend() const
+    INISection::const_iterator INISection::end() const
     {
         return m_key_values.cend();
     }

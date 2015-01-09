@@ -47,8 +47,8 @@ namespace Eris
 
         iterator begin();
         iterator end();
-        const_iterator cbegin() const;
-        const_iterator cend() const;
+        const_iterator begin() const;
+        const_iterator end() const;
 
         bool empty() const;
         bool exists(const std::string& key) const;

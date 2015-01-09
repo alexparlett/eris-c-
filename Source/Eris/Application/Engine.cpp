@@ -22,6 +22,7 @@
 
 #include "Engine.h"
 #include "Events.h"
+#include "Locale.h"
 #include "Settings.h"
 
 #include "Core/Clock.h"
@@ -47,6 +48,7 @@ namespace Eris
         context->registerModule(new FileSystem(context));
         context->registerModule(new Graphics(context));
         context->registerModule(new Input(context));
+        context->registerModule(new Locale(context));
         context->registerModule(new ResourceCache(context));
         context->registerModule(new Settings(context));
 
@@ -61,6 +63,7 @@ namespace Eris
         Graphics* graphics = m_context->getModule<Graphics>();
         Input* input = m_context->getModule<Input>();
         Settings* settings = m_context->getModule<Settings>();
+        Locale* locale = m_context->getModule<Locale>();
 
         log->open(fs->getApplicationPreferencesDir() /= "log.log");
 
@@ -76,6 +79,7 @@ namespace Eris
         rc->addDirectory(fs->getProgramDir() /= "Data");
 
         settings->load();
+        locale->load(settings->getString("General/Language", "enGB"));
 
         if (!glfwInit())
         {
