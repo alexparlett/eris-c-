@@ -70,13 +70,14 @@ namespace Eris
         std::size_t ds_size = deserializer.getSize();
         void* buffer = pugi::allocation_function(ds_size);
         pugi::xml_parse_result result = m_doc->load_buffer_inplace_own(buffer, ds_size);
-        if (result)
+        if (!result)
         {
+            Log::errorf("Failed parsing XMLFile %s due to %s", deserializer.getPath().string().c_str(), result.description());
             m_doc->reset();
-            return true;
+            return false;
         }
 
-        return false;
+        return true;
     }
 
     bool XMLFile::save(Serializer& serializer)
