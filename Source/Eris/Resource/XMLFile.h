@@ -22,31 +22,38 @@
 
 #pragma once
 
-#include "Memory/RefCounted.h"
+#include "Resource.h"
+#include "XMLElement.h"
 
 namespace Eris
 {
-    class INISection : public RefCounted
+    class XMLFile : public Resource
     {
     public:
-        using iterator = std::unordered_map<std::string, std::string>::iterator;
-        using const_iterator = std::unordered_map<std::string, std::string>::const_iterator;
+        XMLFile(Context* context);
+        virtual ~XMLFile();
 
-        void setKeyValue(const std::string& key, const std::string& value);
-        std::string getKeyValue(const std::string& key) const;
-        void removeKeyValue(const std::string& key);
+        virtual bool load(Deserializer& deserializer);
+        virtual bool save(Serializer& serializer);
 
-        iterator begin();
-        iterator end();
-        const_iterator cbegin() const;
-        const_iterator cend() const;
+        XMLElement createRoot(const std::string& name);
 
-        bool empty() const;
-        bool exists(const std::string& key) const;
+        void patch(const XMLElement& element);
+        void clear() { m_doc->reset(); }
 
-        static const INISection EMPTY;
+        bool empty() { return m_doc->empty(); }
+
+        XMLElement getRoot(const std::string& name = StringEmpty);
+        pugi::xml_document* getDocument() const { return m_doc; }
 
     private:
-        std::unordered_map<std::string, std::string> m_key_values;
+        void patchAdd(const pugi::xml_node& add, const pugi::xpath_node& original);
+        void patchReplace(const pugi::xml_node& replace, const pugi::xpath_node& original);
+        void patchRemove(const pugi::xpath_node& original);
+        void patchAddNode(const pugi::xml_node& node, pugi::xpath_node original);
+        void patchAddAttribute(const pugi::xml_node& attribute, pugi::xpath_node original);
+        bool patchCombineText(const pugi::xml_node& node, pugi::xml_node original, bool prepend);
+
+        pugi::xml_document* m_doc;
     };
 }

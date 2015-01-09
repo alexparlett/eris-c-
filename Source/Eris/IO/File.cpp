@@ -160,7 +160,7 @@ namespace Eris
         return 0;
     }
 
-    std::size_t File::write(void* data, std::size_t count)
+    std::size_t File::write(const void* data, std::size_t count)
     {
         if (m_handle.is_open())
         {

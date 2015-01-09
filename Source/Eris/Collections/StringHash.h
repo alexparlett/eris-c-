@@ -45,6 +45,8 @@ namespace Eris
 
         std::size_t operator()() const;
 
+        static const StringHash ZERO;
+
     private:
         std::size_t m_value;
     };

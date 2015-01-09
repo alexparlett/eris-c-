@@ -69,7 +69,7 @@ namespace Eris
                 char* value = nullptr;
 
                 key = strtok_s(line, "=\r\n\0", &value);
-                setKeyValue(section, key, value);
+                getSection(section)->setKeyValue(key, value);
             }
 
             line = strtok_s(nullptr, "\r\n\0", &next_line);
@@ -112,27 +112,6 @@ namespace Eris
     void INIFile::removeSection(const std::string& section)
     {
         m_sections.erase(section);
-    }
-
-    void INIFile::setKeyValue(const std::string& section, const std::string& key, const std::string& value)
-    {
-        m_sections[section]->setKeyValue(key, value);
-    }
-
-    std::string INIFile::getKeyValue(const std::string& section, const std::string& key) const
-    {
-        auto find = m_sections.find(section);
-        if (find != m_sections.end())
-            return find->second->getKeyValue(key);
-
-        return StringEmpty;
-    }
-
-    void INIFile::removeKeyValue(const std::string& section, const std::string& key)
-    {
-        auto find = m_sections.find(section);
-        if (find != m_sections.end())
-            find->second->removeKeyValue(key);
     }
 
     void INIFile::clear()

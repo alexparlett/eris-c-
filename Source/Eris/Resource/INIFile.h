@@ -43,10 +43,6 @@ namespace Eris
         INISection* getSection(const std::string& section) const;
         void removeSection(const std::string& section);
 
-        void setKeyValue(const std::string& section, const std::string& key, const std::string& value);
-        std::string getKeyValue(const std::string& section, const std::string& key) const;
-        void removeKeyValue(const std::string& section, const std::string& key);
-
         void clear();
 
         bool empty() const;

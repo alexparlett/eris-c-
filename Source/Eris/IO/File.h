@@ -55,7 +55,7 @@ namespace Eris
 
         virtual std::size_t read(void* buffer, std::size_t count);
         virtual std::size_t seek(std::size_t position);
-        virtual std::size_t write(void* data, std::size_t count);
+        virtual std::size_t write(const void* data, std::size_t count);
 
         bool opened() const { return m_handle.is_open(); }
 

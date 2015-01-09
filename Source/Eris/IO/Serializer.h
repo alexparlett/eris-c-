@@ -38,7 +38,7 @@ namespace Eris
         virtual Serializer& operator << (const std::string& data) = 0;
         virtual Serializer& operator << (const SerializerTraits& data) = 0;
 
-        virtual std::size_t write(void* data, std::size_t count) = 0;
+        virtual std::size_t write(const void* data, std::size_t count) = 0;
         virtual std::size_t seek(std::size_t position) = 0;
 
         virtual std::size_t getSize() const = 0;

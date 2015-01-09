@@ -24,6 +24,8 @@
 
 namespace Eris
 {
+    const INISection INISection::EMPTY;
+
     void INISection::setKeyValue(const std::string& key, const std::string& value)
     {
         if (!key.empty() && !value.empty())

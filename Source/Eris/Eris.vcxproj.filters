@@ -163,6 +163,12 @@
     <ClInclude Include="Resource\Image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Resource\XMLFile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\XMLElement.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Eris.rc">
@@ -225,6 +231,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Resource\Image.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\XMLFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\XMLElement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

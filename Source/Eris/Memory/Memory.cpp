@@ -100,7 +100,7 @@ namespace Eris
         void* out = _aligned_malloc(size, alignment_bits);
         if (out)
         {
-            ERIS_ASSERT(isAligned(alignment_bits, out));
+            ERIS_ASSERT(aligned(alignment_bits, out));
             m_allocations++;
         }
         else
@@ -161,7 +161,7 @@ namespace Eris
 
             out += m_header_size;
             
-            ERIS_ASSERT(isAligned(m_alignment_bits, out));
+            ERIS_ASSERT(aligned(m_alignment_bits, out));
 
             m_allocations++;
         }
@@ -177,7 +177,7 @@ namespace Eris
 
     void StackMemoryPool::free(void* ptr)
     {
-        ERIS_ASSERT(ptr && isAligned(m_alignment_bits, ptr));
+        ERIS_ASSERT(ptr && aligned(m_alignment_bits, ptr));
         ERIS_ASSERT(m_memory);
 
         glm::u8* real_ptr = reinterpret_cast<glm::u8*>(ptr) - m_header_size;

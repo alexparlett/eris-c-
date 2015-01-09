@@ -32,7 +32,7 @@ namespace Eris
     {
     public:
         Image(Context* context);
-        ~Image();
+        virtual ~Image();
 
         virtual bool load(Deserializer& deserializer);
         virtual bool save(Serializer& serializer);

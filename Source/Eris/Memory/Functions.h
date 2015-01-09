@@ -61,7 +61,7 @@ namespace Eris
     }
 
     template<typename Type>
-    inline bool isAligned(std::size_t alignment, Type value)
+    inline bool aligned(std::size_t alignment, Type value)
     {
         return ((std::size_t) value % alignment) == 0;
     }
