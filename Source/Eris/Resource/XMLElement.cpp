@@ -28,7 +28,7 @@ namespace Eris
     const XMLElement XMLElement::EMPTY;
 
     XMLElement::XMLElement() :
-        m_file(nullptr),
+        m_file(WeakPtr<XMLFile>()),
         m_node(nullptr)
     {
     }

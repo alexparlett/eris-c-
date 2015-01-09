@@ -72,6 +72,7 @@ namespace Eris
         fs->addPath(fs->getProgramDir());
 
         rc->initialize();
+        rc->addDirectory(fs->getProgramDir());
         rc->addDirectory(fs->getProgramDir() /= "Data");
 
         if (!glfwInit())

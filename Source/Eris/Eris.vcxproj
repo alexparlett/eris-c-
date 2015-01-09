@@ -118,7 +118,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(IntDir)$(TargetName).pdb</ProgramDatabaseFile>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(Platform)\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3_d.lib;glew32sd.lib;opengl32.lib;pugixmlsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3_d.lib;glew32sd.lib;opengl32.lib;pugixmld.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <LargeAddressAware>true</LargeAddressAware>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
@@ -131,7 +131,8 @@
 xcopy "$(SolutionDir)Assets\Data" "$(SolutionDir)Game\Data" /Y /I /E /D
 
 xcopy "$(SolutionDir)Assets\icon.ico" "$(SolutionDir)Game" /Y /D
-xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
+xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D
+xcopy "$(SolutionDir)Assets\bindings.ini" "$(SolutionDir)Game" /Y /D</Command>
     </PostBuildEvent>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(Platform)</AdditionalLibraryDirectories>
@@ -159,7 +160,7 @@ xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(IntDir)$(TargetName).pdb</ProgramDatabaseFile>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(Platform)\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3_d.lib;glew32sd.lib;opengl32.lib;pugixmlsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3_d.lib;glew32sd.lib;opengl32.lib;pugixmld.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ProfileGuidedDatabase>$(IntDir)$(TargetName).pgd</ProfileGuidedDatabase>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
@@ -175,7 +176,8 @@ xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
 xcopy "$(SolutionDir)Assets\Data" "$(SolutionDir)Game\Data" /Y /I /E /D
 
 xcopy "$(SolutionDir)Assets\icon.ico" "$(SolutionDir)Game" /Y /D
-xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
+xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D
+xcopy "$(SolutionDir)Assets\bindings.ini" "$(SolutionDir)Game" /Y /D</Command>
     </PostBuildEvent>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(Platform)</AdditionalLibraryDirectories>
@@ -206,7 +208,7 @@ xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
       <OptimizeReferences>true</OptimizeReferences>
       <ProgramDatabaseFile>$(IntDir)$(TargetName).pdb</ProgramDatabaseFile>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(Platform)\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;glew32s.lib;opengl32.lib;pugixmls.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;glew32s.lib;opengl32.lib;pugixml.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <LargeAddressAware>true</LargeAddressAware>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
@@ -219,7 +221,8 @@ xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
 xcopy "$(SolutionDir)Assets\Data" "$(SolutionDir)Game\Data" /Y /I /E /D
 
 xcopy "$(SolutionDir)Assets\icon.ico" "$(SolutionDir)Game" /Y /D
-xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
+xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D
+xcopy "$(SolutionDir)Assets\bindings.ini" "$(SolutionDir)Game" /Y /D</Command>
     </PostBuildEvent>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(Platform)</AdditionalLibraryDirectories>
@@ -250,7 +253,7 @@ xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
       <OptimizeReferences>true</OptimizeReferences>
       <ProgramDatabaseFile>$(IntDir)$(TargetName).pdb</ProgramDatabaseFile>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(Platform)\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;glew32s.lib;opengl32.lib;pugixmls.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;glew32s.lib;opengl32.lib;pugixml.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
     <PreBuildEvent>
@@ -262,7 +265,8 @@ xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
 xcopy "$(SolutionDir)Assets\Data" "$(SolutionDir)Game\Data" /Y /I /E /D
 
 xcopy "$(SolutionDir)Assets\icon.ico" "$(SolutionDir)Game" /Y /D
-xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
+xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D
+xcopy "$(SolutionDir)Assets\bindings.ini" "$(SolutionDir)Game" /Y /D</Command>
     </PostBuildEvent>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(Platform)</AdditionalLibraryDirectories>

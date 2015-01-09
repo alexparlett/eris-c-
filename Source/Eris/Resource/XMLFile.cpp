@@ -68,7 +68,15 @@ namespace Eris
     bool XMLFile::load(Deserializer& deserializer)
     {
         std::size_t ds_size = deserializer.getSize();
-        void* buffer = pugi::allocation_function(ds_size);
+        pugi::allocation_function alloc = pugi::get_memory_allocation_function();
+
+        void* buffer = alloc(ds_size);
+        std::size_t read = deserializer.read(buffer, ds_size);
+        if (read != ds_size)
+        {
+            return false;
+        }
+
         pugi::xml_parse_result result = m_doc->load_buffer_inplace_own(buffer, ds_size);
         if (!result)
         {
