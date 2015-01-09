@@ -30,8 +30,8 @@ namespace Eris
     class INIFile : public Resource
     {
     public:
-        using iterator = std::unordered_map<std::string, SharedPtr<INISection>>::iterator;
-        using const_iterator = std::unordered_map<std::string, SharedPtr<INISection>>::const_iterator;
+        using iterator = std::map<std::string, SharedPtr<INISection>>::iterator;
+        using const_iterator = std::map<std::string, SharedPtr<INISection>>::const_iterator;
 
         INIFile(Context* context);
 
@@ -53,6 +53,6 @@ namespace Eris
         const_iterator cend() const;
 
     private:
-        std::unordered_map<std::string, SharedPtr<INISection>> m_sections;
+        std::map<std::string, SharedPtr<INISection>> m_sections;
     };
 }

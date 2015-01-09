@@ -75,14 +75,20 @@ namespace Eris
         rc->addDirectory(fs->getProgramDir());
         rc->addDirectory(fs->getProgramDir() /= "Data");
 
+        settings->load();
+
         if (!glfwInit())
         {
             setExitCode(EXIT_GLFW_INIT_ERROR);
             return;
         }
 
-        graphics->setSize(800, 600);
-        graphics->setFullscreen(false);
+        graphics->setSize(settings->getI32("Graphics/Width", 0), settings->getI32("Graphics/Height", 0));
+        graphics->setFullscreen(settings->getBool("Graphics/Fullscreen", true));
+        graphics->setBorderless(settings->getBool("Graphics/Borderless", false));
+        graphics->setResizable(settings->getBool("Graphics/Resizable", false));
+        graphics->setVSync(settings->getBool("Graphics/VSync", false));
+        graphics->setSamples(settings->getI32("Graphics/Multisamples", 4));
         graphics->initialize();
 
         input->initialize();
@@ -122,6 +128,7 @@ namespace Eris
         Graphics* graphics = m_context->getModule<Graphics>();
         ResourceCache* rc = m_context->getModule<ResourceCache>();
         Clock* clock = m_context->getModule<Clock>();
+        Settings* settings = m_context->getModule<Settings>();
 
         graphics->terminate();
         rc->terminate();
@@ -130,6 +137,8 @@ namespace Eris
         glm::u64 frames = clock->getFrameNumber();
 
         glfwTerminate();
+
+        settings->save();
 
         Log::rawf("Terminating - Ran for %d frames over %.2f seconds.", frames, duration);
     }

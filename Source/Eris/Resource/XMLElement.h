@@ -33,6 +33,8 @@ namespace Eris
     class XMLElement
     {
     public:
+        using iterator = pugi::xml_node_iterator;
+
         XMLElement();
         XMLElement(XMLFile* file, pugi::xml_node node);
         XMLElement(const XMLElement& rhs);
@@ -47,6 +49,11 @@ namespace Eris
         bool removeAttributes();
 
         operator bool () const;
+
+        iterator begin();
+        iterator end();
+        iterator cbegin() const;
+        iterator cend() const;
 
         bool empty() const;
         bool hasChild(const std::string& name) const;

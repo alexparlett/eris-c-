@@ -107,6 +107,26 @@ namespace Eris
         return m_node && !m_node.empty();
     }
 
+    XMLElement::iterator XMLElement::begin()
+    {
+        return m_node.begin();
+    }
+
+    XMLElement::iterator XMLElement::end()
+    {
+        return m_node.end();
+    }
+
+    XMLElement::iterator XMLElement::cbegin() const
+    {
+        return m_node.begin();
+    }
+
+    XMLElement::iterator XMLElement::cend() const
+    {
+        return m_node.end();
+    }
+
     bool XMLElement::empty() const
     {
         if (!m_file || !m_node)

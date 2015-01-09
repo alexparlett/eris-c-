@@ -29,8 +29,8 @@ namespace Eris
     class INISection : public RefCounted
     {
     public:
-        using iterator = std::unordered_map<std::string, std::string>::iterator;
-        using const_iterator = std::unordered_map<std::string, std::string>::const_iterator;
+        using iterator = std::map<std::string, std::string>::iterator;
+        using const_iterator = std::map<std::string, std::string>::const_iterator;
 
         void setValue(const std::string& key, const std::string& value);
         void removeValue(const std::string& key);
@@ -56,6 +56,6 @@ namespace Eris
         static const INISection EMPTY;
 
     private:
-        std::unordered_map<std::string, std::string> m_key_values;
+        std::map<std::string, std::string> m_key_values;
     };
 }

@@ -53,7 +53,7 @@ namespace Eris
         FileSystem* fs = m_context->getModule<FileSystem>();
         if (!fs->accessible(path))
         {
-            Log::errorf("Access denied: %s", path.string());
+            Log::errorf("Access denied: %s", path.string().c_str());
             return;
         }
 

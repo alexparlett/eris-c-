@@ -22,8 +22,8 @@
 
 #pragma once
 
-#include "Core/Context.h"
 #include "Core/Object.h"
+#include "Core/Context.h"
 #include "Resource/INIFile.h"
 
 namespace Eris
@@ -33,7 +33,26 @@ namespace Eris
     public:
         Settings(Context* context);
 
+        void load();
+        void save();
+
+        bool getBool(const std::string& path, bool default);
+        glm::i32 getI32(const std::string& path, glm::i32 default);
+        glm::i64 getI64(const std::string& path, glm::i64 default);
+        glm::f32 getF32(const std::string& path, glm::f32 default);
+        glm::f64 getF64(const std::string& path, glm::f64 default);
+        std::string getString(const std::string& path, std::string default);
+
+        void setBool(const std::string& path, bool value);
+        void setI32(const std::string& path, glm::i32 value);
+        void setI64(const std::string& path, glm::i64 value);
+        void setF32(const std::string& path, glm::f32 value);
+        void setF64(const std::string& path, glm::f64 value);
+        void setString(const std::string& path, std::string value);
+
     private:
+        std::pair<std::string, std::string> getSectionKey(const std::string& path);
+
         SharedPtr<INIFile> m_ini;
     };
 
