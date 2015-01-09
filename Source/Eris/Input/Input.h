@@ -43,7 +43,6 @@ namespace Eris
     {
     public:
         Input(Context* context);
-        virtual ~Input();
 
         void initialize();
         void update();

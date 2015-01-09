@@ -32,8 +32,6 @@ namespace Eris
     public:
         /// Ctor.
         Graphics(Context* context);
-        /// Detor.
-        virtual ~Graphics();
 
         /// Initialize graphics module. Creates window and initializes glew.
         void initialize();

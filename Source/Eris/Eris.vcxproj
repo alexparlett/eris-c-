@@ -131,8 +131,7 @@
 xcopy "$(SolutionDir)Assets\Data" "$(SolutionDir)Game\Data" /Y /I /E /D
 
 xcopy "$(SolutionDir)Assets\icon.ico" "$(SolutionDir)Game" /Y /D
-xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D
-xcopy "$(SolutionDir)Assets\bindings.ini" "$(SolutionDir)Game" /Y /D</Command>
+xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
     </PostBuildEvent>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(Platform)</AdditionalLibraryDirectories>
@@ -176,8 +175,7 @@ xcopy "$(SolutionDir)Assets\bindings.ini" "$(SolutionDir)Game" /Y /D</Command>
 xcopy "$(SolutionDir)Assets\Data" "$(SolutionDir)Game\Data" /Y /I /E /D
 
 xcopy "$(SolutionDir)Assets\icon.ico" "$(SolutionDir)Game" /Y /D
-xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D
-xcopy "$(SolutionDir)Assets\bindings.ini" "$(SolutionDir)Game" /Y /D</Command>
+xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
     </PostBuildEvent>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(Platform)</AdditionalLibraryDirectories>
@@ -221,8 +219,7 @@ xcopy "$(SolutionDir)Assets\bindings.ini" "$(SolutionDir)Game" /Y /D</Command>
 xcopy "$(SolutionDir)Assets\Data" "$(SolutionDir)Game\Data" /Y /I /E /D
 
 xcopy "$(SolutionDir)Assets\icon.ico" "$(SolutionDir)Game" /Y /D
-xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D
-xcopy "$(SolutionDir)Assets\bindings.ini" "$(SolutionDir)Game" /Y /D</Command>
+xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
     </PostBuildEvent>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(Platform)</AdditionalLibraryDirectories>
@@ -265,8 +262,7 @@ xcopy "$(SolutionDir)Assets\bindings.ini" "$(SolutionDir)Game" /Y /D</Command>
 xcopy "$(SolutionDir)Assets\Data" "$(SolutionDir)Game\Data" /Y /I /E /D
 
 xcopy "$(SolutionDir)Assets\icon.ico" "$(SolutionDir)Game" /Y /D
-xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D
-xcopy "$(SolutionDir)Assets\bindings.ini" "$(SolutionDir)Game" /Y /D</Command>
+xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
     </PostBuildEvent>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(Platform)</AdditionalLibraryDirectories>
@@ -276,6 +272,7 @@ xcopy "$(SolutionDir)Assets\bindings.ini" "$(SolutionDir)Game" /Y /D</Command>
   <ItemGroup>
     <ClInclude Include="..\gitversion.h" />
     <ClInclude Include="Application\Events.h" />
+    <ClInclude Include="Application\Settings.h" />
     <ClInclude Include="Collections\Functions.h" />
     <ClInclude Include="Collections\Types.h" />
     <ClInclude Include="Core\Clock.h" />
@@ -325,6 +322,7 @@ xcopy "$(SolutionDir)Assets\bindings.ini" "$(SolutionDir)Game" /Y /D</Command>
   <ItemGroup>
     <ClCompile Include="Application\Engine.cpp" />
     <ClCompile Include="Application\Eris.cpp" />
+    <ClCompile Include="Application\Settings.cpp" />
     <ClCompile Include="Core\Clock.cpp" />
     <ClCompile Include="Core\Log.cpp" />
     <ClCompile Include="Input\Input.cpp" />

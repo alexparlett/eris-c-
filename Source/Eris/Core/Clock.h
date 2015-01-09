@@ -32,17 +32,17 @@ namespace Eris
     public:
         Clock(Context* context);
 
-        void beginFrame(glm::f32 time_step);
+        void beginFrame(glm::f64 time_step);
         void endFrame();
 
-        glm::f32 getElapsedTime() const;
-        glm::f32 getTimeStep() const;
+        glm::f64 getElapsedTime() const;
+        glm::f64 getTimeStep() const;
         glm::u64 getFrameNumber() const;
         std::string getTimestamp() const;
 
     private:
         glm::u64 m_frame_number;
-        glm::f32 m_time_step;
+        glm::f64 m_time_step;
     };
 
     template<> inline void Context::registerModule(Clock* module)

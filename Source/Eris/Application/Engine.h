@@ -37,7 +37,6 @@ namespace Eris
     {
     public:
         Engine(Context* context);
-        virtual ~Engine();
 
         void initialize();
         void run();
@@ -55,9 +54,9 @@ namespace Eris
         glm::i32 m_exitcode;
     };
 
-    template<> inline void Context::registerModule(Engine* engine)
+    template<> inline void Context::registerModule(Engine* module)
     {
-        m_engine = SharedPtr<Engine>(engine);
+        m_engine = SharedPtr<Engine>(module);
     }
 
     template<> inline Engine* Context::getModule()

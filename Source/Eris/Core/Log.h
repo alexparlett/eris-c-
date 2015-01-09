@@ -47,7 +47,7 @@ namespace Eris
         };
 
         Log(Context* context);
-        ~Log();
+        virtual ~Log();
 
         void open(const Path& file, Level level = Level::FATAL, bool timestamp = true);
         void close();

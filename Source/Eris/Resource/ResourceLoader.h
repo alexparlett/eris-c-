@@ -47,7 +47,6 @@ namespace Eris
     {
     public:
         ResourceLoader(Context* context);
-        virtual ~ResourceLoader();
 
         void start();
         void add(const Path& path, Resource* res);

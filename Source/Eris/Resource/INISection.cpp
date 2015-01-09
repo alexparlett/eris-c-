@@ -22,11 +22,13 @@
 
 #include "INISection.h"
 
+#include "Collections/Functions.h"
+
 namespace Eris
 {
     const INISection INISection::EMPTY;
 
-    void INISection::setKeyValue(const std::string& key, const std::string& value)
+    void INISection::setValue(const std::string& key, const std::string& value)
     {
         if (!key.empty() && !value.empty())
         {
@@ -34,7 +36,7 @@ namespace Eris
         }
     }
 
-    std::string INISection::getKeyValue(const std::string& key) const
+    std::string INISection::getValue(const std::string& key) const
     {
         auto find = m_key_values.find(key);
         if (find != m_key_values.end())
@@ -43,7 +45,79 @@ namespace Eris
         return StringEmpty;
     }
 
-    void INISection::removeKeyValue(const std::string& key)
+    bool INISection::getBool(const std::string& key, bool default) const
+    {
+        std::string value = getValue(key);
+        if (value == StringEmpty)
+            return default;
+
+        return std::string_lower(value) == "true";
+    }
+
+    glm::i32 INISection::getI32(const std::string& key, glm::i32 default) const
+    {
+        std::string value = getValue(key);
+        if (value == StringEmpty)
+            return default;
+
+        return std::stoi(value);
+    }
+
+    glm::u32 INISection::getU32(const std::string& key, glm::u32 default) const
+    {
+        std::string value = getValue(key);
+        if (value == StringEmpty)
+            return default;
+
+        return std::stoul(value);
+    }
+
+    glm::f32 INISection::getF32(const std::string& key, glm::f32 default) const
+    {
+        std::string value = getValue(key);
+        if (value == StringEmpty)
+            return default;
+
+        return std::stof(value);
+    }
+
+    glm::i64 INISection::getI64(const std::string& key, glm::i64 default) const
+    {
+        std::string value = getValue(key);
+        if (value == StringEmpty)
+            return default;
+
+        return std::stoll(value);
+    }
+
+    glm::u64 INISection::getU64(const std::string& key, glm::u64 default) const
+    {
+        std::string value = getValue(key);
+        if (value == StringEmpty)
+            return default;
+
+        return std::stoull(value);
+    }
+
+    glm::f64 INISection::getF64(const std::string& key, glm::f64 default) const
+    {
+        std::string value = getValue(key);
+        if (value == StringEmpty)
+            return default;
+
+        return std::stod(value);
+    }
+
+    std::string INISection::getString(const std::string& key, std::string default) const
+    {
+        std::string value = getValue(key);
+        if (value == StringEmpty)
+            return default;
+
+        return value;
+    }
+
+    void INISection::removeValue(const std::string& key)
     {
         m_key_values.erase(key);
     }

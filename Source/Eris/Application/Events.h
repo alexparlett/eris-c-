@@ -36,7 +36,7 @@ namespace Eris
         EVENT(UpdateEvent)
 
     public:
-        glm::f32 time_step;
+        glm::f64 time_step;
     };
 
     struct PostUpdateEvent : public Event

@@ -34,7 +34,6 @@ namespace Eris
         using const_iterator = std::unordered_map<std::string, SharedPtr<INISection>>::const_iterator;
 
         INIFile(Context* context);
-        virtual ~INIFile();
 
         virtual bool load(Deserializer& deserializer);
         virtual bool save(Serializer& serializer);

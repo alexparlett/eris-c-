@@ -42,7 +42,7 @@ namespace Eris
         };
 
         BaseMemoryPool(Type type);
-        virtual ~BaseMemoryPool();
+        virtual ~BaseMemoryPool() {}
 
         void* allocate(std::size_t size, std::size_t alignment_bits);
         void free(void* ptr);

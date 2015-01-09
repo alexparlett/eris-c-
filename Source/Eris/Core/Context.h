@@ -42,6 +42,7 @@ namespace Eris
     class Input;
     class Log;
     class ResourceCache;
+    class Settings;
 
     class Context : public RefCounted, public NonCopyable
     {
@@ -49,7 +50,6 @@ namespace Eris
 
     public:
         Context();
-        ~Context();
 
         template<typename T> void registerModule(T* module) {}
         template<typename T> T* getModule() { return nullptr; }
@@ -77,5 +77,6 @@ namespace Eris
         SharedPtr<Input> m_input;
         SharedPtr<Log> m_log;
         SharedPtr<ResourceCache> m_cache;
+        SharedPtr<Settings> m_settings;
     };
 }

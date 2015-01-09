@@ -23,6 +23,8 @@
 #include "XMLElement.h"
 #include "XMLFile.h"
 
+#include "Collections/Functions.h"
+
 namespace Eris
 {
     const XMLElement XMLElement::EMPTY;
@@ -42,10 +44,6 @@ namespace Eris
     XMLElement::XMLElement(const XMLElement& rhs)
     {
         *this = rhs;
-    }
-
-    XMLElement::~XMLElement()
-    {
     }
 
     XMLElement& XMLElement::operator=(const XMLElement& rhs)
@@ -122,7 +120,7 @@ namespace Eris
         if (!m_file || !m_node)
             return false;
 
-        return m_node.child(name.c_str());
+        return !m_node.child(name.c_str()).empty();
     }
 
     bool XMLElement::hasAttribute(const std::string& name) const
@@ -130,7 +128,7 @@ namespace Eris
         if (!m_file || !m_node)
             return false;
 
-        return m_node.attribute(name.c_str());
+        return !m_node.attribute(name.c_str()).empty();
     }
 
     bool XMLElement::hasChildren() const
@@ -138,7 +136,7 @@ namespace Eris
         if (!m_file || !m_node)
             return false;
 
-        return m_node.first_child();
+        return !m_node.first_child().empty();
     }
 
     std::string XMLElement::getName() const
@@ -147,14 +145,6 @@ namespace Eris
             return StringEmpty;
 
         return m_node.name();
-    }
-
-    std::string XMLElement::getValue() const
-    {
-        if (!m_file || !m_node)
-            return StringEmpty;
-
-        return m_node.text().get();
     }
 
     std::string XMLElement::getAttribute(const std::string& name /*= StringEmpty*/) const
@@ -171,6 +161,88 @@ namespace Eris
             return EMPTY;
 
         return XMLElement(m_file, m_node.child(name.c_str()));
+    }
+
+
+    std::string XMLElement::getValue() const
+    {
+        if (!m_file || !m_node)
+            return StringEmpty;
+
+        return m_node.text().get();
+    }
+
+    bool XMLElement::getBool(bool default) const
+    {
+        std::string value = getValue();
+        if (value == StringEmpty)
+            return default;
+
+        return std::string_lower(value) == "true";
+    }
+
+    glm::i32 XMLElement::getI32(glm::i32 default) const
+    {
+        std::string value = getValue();
+        if (value == StringEmpty)
+            return default;
+
+        return std::stoi(value);
+    }
+
+    glm::u32 XMLElement::getU32(glm::u32 default) const
+    {
+        std::string value = getValue();
+        if (value == StringEmpty)
+            return default;
+
+        return std::stoul(value);
+    }
+
+    glm::f32 XMLElement::getF32(glm::f32 default) const
+    {
+        std::string value = getValue();
+        if (value == StringEmpty)
+            return default;
+
+        return std::stof(value);
+    }
+
+    glm::i64 XMLElement::getI64(glm::i64 default) const
+    {
+        std::string value = getValue();
+        if (value == StringEmpty)
+            return default;
+
+        return std::stoll(value);
+    }
+
+    glm::u64 XMLElement::getU64(glm::u64 default) const
+    {
+        std::string value = getValue();
+        if (value == StringEmpty)
+            return default;
+
+        return std::stoull(value);
+    }
+
+    glm::f64 XMLElement::getF64(glm::f64 default) const
+    {
+        std::string value = getValue();
+        if (value == StringEmpty)
+            return default;
+
+        return std::stod(value);
+    }
+
+
+    std::string XMLElement::getString(std::string default) const
+    {
+        std::string value = getValue();
+        if (value == StringEmpty)
+            return default;
+
+        return value;
     }
 
     bool XMLElement::setValue(const std::string& value)

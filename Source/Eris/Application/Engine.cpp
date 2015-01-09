@@ -22,6 +22,7 @@
 
 #include "Engine.h"
 #include "Events.h"
+#include "Settings.h"
 
 #include "Core/Clock.h"
 #include "Core/Log.h"
@@ -40,19 +41,16 @@ namespace Eris
         m_exitcode(EXIT_OK),
         m_exiting(false)
     {        
-        context->registerModule<Log>(new Log(context));
-        context->registerModule<Clock>(new Clock(context));
-        context->registerModule<Engine>(this);
-        context->registerModule<FileSystem>(new FileSystem(context));
-        context->registerModule<Graphics>(new Graphics(context));
-        context->registerModule<Input>(new Input(context));
-        context->registerModule<ResourceCache>(new ResourceCache(context));
+        context->registerModule(new Log(context));
+        context->registerModule(new Clock(context));
+        context->registerModule(this);
+        context->registerModule(new FileSystem(context));
+        context->registerModule(new Graphics(context));
+        context->registerModule(new Input(context));
+        context->registerModule(new ResourceCache(context));
+        context->registerModule(new Settings(context));
 
         subscribeToEvent(ExitRequestedEvent::getTypeStatic(), HANDLER(Engine, HandleExitRequest));
-    }
-
-    Engine::~Engine()
-    {
     }
 
     void Engine::initialize()
@@ -62,6 +60,7 @@ namespace Eris
         ResourceCache* rc = m_context->getModule<ResourceCache>();
         Graphics* graphics = m_context->getModule<Graphics>();
         Input* input = m_context->getModule<Input>();
+        Settings* settings = m_context->getModule<Settings>();
 
         log->open(fs->getApplicationPreferencesDir() /= "log.log");
 
@@ -72,6 +71,7 @@ namespace Eris
         fs->addPath(fs->getProgramDir());
 
         rc->initialize();
+        rc->addDirectory(fs->getApplicationPreferencesDir());
         rc->addDirectory(fs->getProgramDir());
         rc->addDirectory(fs->getProgramDir() /= "Data");
 
@@ -94,12 +94,12 @@ namespace Eris
         Clock* clock = m_context->getModule<Clock>();
         Input* input = m_context->getModule<Input>();
 
-        glm::f32 current_time = clock->getElapsedTime();
+        glm::f64 current_time = clock->getElapsedTime();
 
         while (!m_exiting)
         {
-            glm::f32 new_time = clock->getElapsedTime();
-            glm::f32 elapsed = new_time - current_time;
+            glm::f64 new_time = clock->getElapsedTime();
+            glm::f64 elapsed = new_time - current_time;
             current_time = new_time;
 
             clock->beginFrame(elapsed);
@@ -126,7 +126,7 @@ namespace Eris
         graphics->terminate();
         rc->terminate();
 
-        glm::f32 duration = clock->getElapsedTime() / 1000.f;
+        glm::f64 duration = clock->getElapsedTime() / 1000.0;
         glm::u64 frames = clock->getFrameNumber();
 
         glfwTerminate();

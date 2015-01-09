@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2013-2015 the Eris project.
+// Copyright (c) 2008-2015 the Eris project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,44 +22,29 @@
 
 #pragma once
 
+#include "Core/Context.h"
 #include "Core/Object.h"
-#include "IO/Deserializer.h"
-#include "IO/Serializer.h"
+#include "Resource/INIFile.h"
 
 namespace Eris
 {
-    enum class AsyncState : glm::u8
-    {
-        DONE,
-        QUEUED,
-        LOADING,
-        SUCCESS,
-        FAILED
-    };
-
-    class Resource : public Object
+    class Settings : public Object
     {
     public:
-        Resource(Context* context) :
-            Object(context),
-            m_state(AsyncState::DONE),
-            m_name(StringEmpty)
-        {
-        }
-
-        virtual ~Resource() {}
-
-        virtual bool load(Deserializer& deserializer) = 0;
-        virtual bool save(Serializer& serializer) = 0;
-
-        void setName(const Path& name) { m_name = name; }
-        void setAsyncState(AsyncState state) { m_state = state; }
-
-        Path getName() const { return m_name; }
-        AsyncState getAsyncState() const { return m_state; }
+        Settings(Context* context);
 
     private:
-        Path m_name;
-        std::atomic<AsyncState> m_state;
+        SharedPtr<INIFile> m_ini;
     };
+
+    template<> inline void Context::registerModule(Settings* module)
+    {
+        m_settings = SharedPtr<Settings>(module);
+    }
+
+    template<> inline Settings* Context::getModule()
+    {
+        ERIS_ASSERT(m_settings);
+        return m_settings.get();
+    }
 }

@@ -27,6 +27,7 @@
 #include "Clock.h"
 #include "Log.h"
 #include "Application/Engine.h"
+#include "Application/Settings.h"
 #include "Graphics/Graphics.h"
 #include "Input/Input.h"
 #include "IO/FileSystem.h"
@@ -42,11 +43,8 @@ namespace Eris
         m_input(nullptr),
         m_log(nullptr),
         m_fs(nullptr),
-        m_cache(nullptr)
-    {
-    }
-
-    Context::~Context()
+        m_cache(nullptr),
+        m_settings(nullptr)
     {
     }
 

@@ -45,10 +45,6 @@ namespace Eris
     {
     }
 
-    Graphics::~Graphics()
-    {
-    }
-
     void Graphics::initialize()
     {
         if (m_initialized)

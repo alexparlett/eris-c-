@@ -35,11 +35,6 @@ namespace Eris
     {
     }
 
-    INIFile::~INIFile()
-    {
-        clear();
-    }
-
     bool INIFile::load(Deserializer& deserializer)
     {
         std::size_t ds_size = deserializer.getSize();
@@ -69,7 +64,7 @@ namespace Eris
                 char* value = nullptr;
 
                 key = strtok_s(line, "=\r\n\0", &value);
-                getSection(section)->setKeyValue(key, value);
+                getSection(section)->setValue(key, value);
             }
 
             line = strtok_s(nullptr, "\r\n\0", &next_line);

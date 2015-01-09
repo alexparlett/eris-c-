@@ -32,7 +32,7 @@ namespace Eris
         
     public:
         glm::u64 frame_number;
-        glm::f32 time_step;
+        glm::f64 time_step;
     };
 
     struct EndFrameEvent : public Event

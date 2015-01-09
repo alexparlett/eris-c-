@@ -36,11 +36,6 @@ namespace Eris
     {
     }
 
-    BaseMemoryPool::~BaseMemoryPool()
-    {
-
-    }
-
     void* BaseMemoryPool::allocate(std::size_t size, std::size_t alignment_bits)
     {
         void* out = nullptr;

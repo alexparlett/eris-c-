@@ -32,9 +32,18 @@ namespace Eris
         using iterator = std::unordered_map<std::string, std::string>::iterator;
         using const_iterator = std::unordered_map<std::string, std::string>::const_iterator;
 
-        void setKeyValue(const std::string& key, const std::string& value);
-        std::string getKeyValue(const std::string& key) const;
-        void removeKeyValue(const std::string& key);
+        void setValue(const std::string& key, const std::string& value);
+        void removeValue(const std::string& key);
+        std::string getValue(const std::string& key) const;
+
+        bool getBool(const std::string& key, bool default) const;
+        glm::i32 getI32(const std::string& key, glm::i32 default) const;
+        glm::u32 getU32(const std::string& key, glm::u32 default) const;
+        glm::f32 getF32(const std::string& key, glm::f32 default) const;
+        glm::i64 getI64(const std::string& key, glm::i64 default) const;
+        glm::u64 getU64(const std::string& key, glm::u64 default) const;
+        glm::f64 getF64(const std::string& key, glm::f64 default) const;
+        std::string getString(const std::string& key, std::string default) const;
 
         iterator begin();
         iterator end();

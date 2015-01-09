@@ -39,7 +39,7 @@ namespace Eris
 
     }
 
-    void Clock::beginFrame(glm::f32 time_step)
+    void Clock::beginFrame(glm::f64 time_step)
     {
         m_frame_number++;
         m_time_step = time_step;
@@ -56,12 +56,12 @@ namespace Eris
         sendEvent(EndFrameEvent::getTypeStatic());
     }
 
-    glm::f32 Clock::getElapsedTime() const
+    glm::f64 Clock::getElapsedTime() const
     {
-        return glfwGetTime() * 1000.f;
+        return glfwGetTime() * 1000.0;
     }
 
-    glm::f32 Clock::getTimeStep() const
+    glm::f64 Clock::getTimeStep() const
     {
         return m_time_step;
     }

@@ -43,10 +43,6 @@ namespace Eris
     {
     }
 
-    Image::~Image()
-    {
-    }
-
     bool Image::load(Deserializer& deserializer)
     {
         std::size_t ds_size = deserializer.getSize();

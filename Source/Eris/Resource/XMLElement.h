@@ -36,7 +36,6 @@ namespace Eris
         XMLElement();
         XMLElement(XMLFile* file, pugi::xml_node node);
         XMLElement(const XMLElement& rhs);
-        virtual ~XMLElement();
 
         XMLElement& operator = (const XMLElement& rhs);
 
@@ -56,9 +55,18 @@ namespace Eris
         bool hasAttributes() const;
 
         std::string getName() const;
-        std::string getValue() const;
         std::string getAttribute(const std::string& name = StringEmpty) const;
         XMLElement getChild(const std::string& name = StringEmpty) const;
+        std::string getValue() const;
+
+        bool getBool(bool default) const;
+        glm::i32 getI32(glm::i32 default) const;
+        glm::u32 getU32(glm::u32 default) const;
+        glm::f32 getF32(glm::f32 default) const;
+        glm::i64 getI64(glm::i64 default) const;
+        glm::u64 getU64(glm::u64 default) const;
+        glm::f64 getF64(glm::f64 default) const;
+        std::string getString(std::string default) const;
 
         bool setValue(const std::string& value);
         bool setAttribute(const std::string& name, const std::string& value);

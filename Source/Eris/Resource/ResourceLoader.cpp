@@ -33,10 +33,6 @@ namespace Eris
     {
     }
 
-    ResourceLoader::~ResourceLoader()
-    {
-    }
-
     void ResourceLoader::start()
     {
         for (glm::uint i = 0; i < std::thread::hardware_concurrency(); i++)

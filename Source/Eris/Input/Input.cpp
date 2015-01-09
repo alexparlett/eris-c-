@@ -46,11 +46,6 @@ namespace Eris
     {
     }
 
-    Input::~Input()
-    {
-
-    }
-
     void Input::update()
     {
         ERIS_ASSERT(m_initialised);
