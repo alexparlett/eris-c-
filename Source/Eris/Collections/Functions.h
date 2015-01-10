@@ -24,10 +24,18 @@
 
 #include <cstdarg>
 #include <cstdlib>
+#include <cctype>
+#include <locale>
 
 namespace std
 {
-    inline string string_format(const string fmt_str, ...)
+    inline string& string_ltrim(string &s)
+    {
+        s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
+        return s;
+    }
+
+    inline string string_format(const string& fmt_str, ...)
     {
         int final_n, n = ((int) fmt_str.size()) * 2;
         unique_ptr<char[]> formatted;
@@ -47,7 +55,7 @@ namespace std
         return string(formatted.get());
     }
 
-    inline string string_replace(string str, const string& from, const string& to)
+    inline string& string_replace(string& str, const string& from, const string& to)
     {
         size_t start_pos = 0;
         while ((start_pos = str.find(from, start_pos)) != string::npos)
@@ -58,13 +66,13 @@ namespace std
         return str;
     }
 
-    inline string string_upper(string str)
+    inline string& string_upper(string& str)
     {
         transform(str.begin(), str.end(), str.begin(), ::toupper);
         return str;
     }
 
-    inline string string_lower(string str)
+    inline string& string_lower(string& str)
     {
         transform(str.begin(), str.end(), str.begin(), ::tolower);
         return str;

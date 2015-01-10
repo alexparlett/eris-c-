@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include "Events.h"
 #include "Resource.h"
 #include "ResourceLoader.h"
 
@@ -100,7 +101,10 @@ namespace Eris
 
         if (error_on_fail)
         {
-            //todo: Send Error Event
+            ResourceLoadingFailed* event = m_context->getFrameAllocator().newInstance<ResourceLoadingFailed>();
+            event->resource = path;
+            event->type = typeid(T).name();
+            sendEvent(ResourceLoadingFailed::getTypeStatic(), event);
         }
 
         return nullptr;
@@ -126,7 +130,10 @@ namespace Eris
 
         if (error_on_fail)
         {
-            //todo: Send Error Event
+            ResourceLoadingFailed* event = m_context->getFrameAllocator().newInstance<ResourceLoadingFailed>();
+            event->resource = path;
+            event->type = typeid(T).name();
+            sendEvent(ResourceLoadingFailed::getTypeStatic(), event);
         }
     }
 

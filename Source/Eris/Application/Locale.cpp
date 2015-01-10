@@ -30,7 +30,6 @@ namespace Eris
     Page::Page() :
         RefCounted()
     {
-
     }
 
     Page::Page(const XMLElement& element) :

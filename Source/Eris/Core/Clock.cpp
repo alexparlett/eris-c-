@@ -79,7 +79,7 @@ namespace Eris
 
         ctime_s(dateTime, 32, &sysTime);
 
-        return std::string_replace(dateTime, "\n", "");
+        return std::string_replace(std::string(dateTime), "\n", "");
     }
 
 }

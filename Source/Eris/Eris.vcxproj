@@ -297,6 +297,7 @@ xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
     <ClInclude Include="Memory\RefCounted.h" />
     <ClInclude Include="Collections\StringHash.h" />
     <ClInclude Include="Core\Context.h" />
+    <ClInclude Include="Resource\Events.h" />
     <ClInclude Include="Resource\Image.h" />
     <ClInclude Include="Resource\INIFile.h" />
     <ClInclude Include="Resource\INISection.h" />

@@ -35,6 +35,8 @@
 
 #include "../gitversion.h"
 
+#include <VersionHelpers.h>
+
 namespace Eris
 {
     Engine::Engine(Context* context) :
@@ -52,7 +54,7 @@ namespace Eris
         context->registerModule(new ResourceCache(context));
         context->registerModule(new Settings(context));
 
-        subscribeToEvent(ExitRequestedEvent::getTypeStatic(), HANDLER(Engine, HandleExitRequest));
+        subscribeToEvent(ExitRequestedEvent::getTypeStatic(), HANDLER(Engine, handleExitRequest));
     }
 
     void Engine::initialize()
@@ -67,7 +69,7 @@ namespace Eris
 
         log->open(fs->getApplicationPreferencesDir() /= "log.log");
 
-        Log::rawf("Initializing - Version %s.", std::string_upper(getVersion()).c_str());
+        logSystemInfo();
 
         fs->addPath(fs->getApplicationPreferencesDir());
         fs->addPath(fs->getDocumentsDir());
@@ -91,7 +93,7 @@ namespace Eris
         graphics->setFullscreen(settings->getBool("Graphics/Fullscreen", true));
         graphics->setBorderless(settings->getBool("Graphics/Borderless", false));
         graphics->setResizable(settings->getBool("Graphics/Resizable", false));
-        graphics->setVSync(settings->getBool("Graphics/VSync", false));
+        graphics->setVSync(settings->getBool("Graphics/VSync", true));
         graphics->setSamples(settings->getI32("Graphics/Multisamples", 4));
         graphics->initialize();
 
@@ -157,9 +159,78 @@ namespace Eris
         m_exitcode = exitcode;
     }
 
-    void Engine::HandleExitRequest(const StringHash& type, const Event* event)
+    void Engine::handleExitRequest(const StringHash& type, const Event* event)
     {
         m_exiting = true;
+    }
+
+    void Engine::logSystemInfo()
+    {
+        Log::raw("Initializing...");
+        Log::rawf("\tVersion: %s", std::string_upper(std::string(getVersion())).c_str());
+
+        SYSTEM_INFO sys_info;
+        BOOL is_64 = FALSE;
+
+#ifdef _WIN64
+        is_64 = TRUE;
+        GetSystemInfo(&sys_info);
+#else
+        if (IsWow64Process(GetCurrentProcess(), &is_64))
+            GetNativeSystemInfo(&sys_info);
+        else
+            GetSystemInfo(&sys_info);
+#endif
+
+        if (is_64)
+            Log::raw("\tPlatform: x64");
+        else
+            Log::raw("\tPlatform: Win32");
+
+        if (IsWindows8Point1OrGreater())
+            Log::raw("\tOS: Windows 8.1");
+        else if (IsWindows8OrGreater())
+            Log::raw("\tOS: Windows 8");
+        else if (IsWindows7OrGreater())
+            Log::raw("\tOS: Windows 7");
+        else if (IsWindowsVistaOrGreater())
+            Log::raw("\tOS: Windows Vista");
+        else if (IsWindowsXPOrGreater())
+            Log::raw("\tOS: Windows XP");
+        else
+            Log::raw("\tOS: Unsupported");
+
+        glm::i32 cpu_info[4] = { -1 };
+        glm::i32 n_ex_ids, i = 0;
+        char cpu_brand_string[0x40];
+        // Get the information associated with each extended ID.
+        __cpuid(cpu_info, 0x80000000);
+        n_ex_ids = cpu_info[0];
+        for (i = 0x80000000; i <= n_ex_ids; ++i)
+        {
+            __cpuid(cpu_info, i);
+            // Interpret CPU brand string
+            if (i == 0x80000002)
+                memcpy(cpu_brand_string, cpu_info, sizeof(cpu_info));
+            else if (i == 0x80000003)
+                memcpy(cpu_brand_string + 16, cpu_info, sizeof(cpu_info));
+            else if (i == 0x80000004)
+                memcpy(cpu_brand_string + 32, cpu_info, sizeof(cpu_info));
+        }
+        //string includes manufacturer, model and clockspeed
+        Log::rawf("\tCPU: %s", std::string_ltrim(std::string(cpu_brand_string)).c_str());
+
+        Log::rawf("\t\tCores: %d", sys_info.dwNumberOfProcessors);
+
+        if (sys_info.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64 || sys_info.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_IA64)
+            Log::raw("\t\tArchitecture: x64");
+        else
+            Log::raw("\t\tArchitecture: x86");
+
+        MEMORYSTATUSEX state_ex;
+        state_ex.dwLength = sizeof(state_ex);
+        GlobalMemoryStatusEx(&state_ex);
+        Log::rawf("\tMemory: %d%s", (state_ex.ullTotalPhys / 1024) / 1024, "MB");
     }
 
 }
