@@ -42,9 +42,12 @@ namespace Eris
     private:
         bool initializeOpenGL(GLFWwindow* window, glm::i32 width, glm::i32 height);
 
+        void handleScreenMode(const StringHash& type, const Event* event);
+
         bool m_initialized;
         std::thread m_thread;
         std::atomic<bool> m_thread_exit;
+        std::atomic<bool> m_viewport_dirty;
     };
 
     template<> inline void Context::registerModule(Renderer* module)

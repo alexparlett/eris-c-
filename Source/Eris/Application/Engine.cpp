@@ -78,7 +78,6 @@ namespace Eris
         fs->addPath(fs->getDocumentsDir());
         fs->addPath(fs->getProgramDir());
 
-        rc->initialize();
         rc->addDirectory(fs->getApplicationPreferencesDir());
         rc->addDirectory(fs->getProgramDir());
         rc->addDirectory(fs->getProgramDir() /= "Data");
@@ -100,8 +99,9 @@ namespace Eris
         graphics->setSamples(settings->getI32("Graphics/Multisamples", 4));
 
         graphics->initialize();
-        input->initialize();
         renderer->initialize();
+        rc->initialize();
+        input->initialize();
     }
 
     void Engine::run()
@@ -138,9 +138,9 @@ namespace Eris
         Settings* settings = m_context->getModule<Settings>();
         Renderer* renderer = m_context->getModule<Renderer>();
 
+        rc->terminate();
         renderer->terminate();
         graphics->terminate();
-        rc->terminate();
 
         glm::f64 duration = clock->getElapsedTime();
         glm::u64 frames = clock->getFrameNumber();
@@ -149,7 +149,9 @@ namespace Eris
 
         settings->save();
 
-        Log::rawf("Terminating - Ran for %d frames over %.2f seconds.", frames, duration);
+        Log::raw("Terminating...");
+        Log::rawf("\tFrames: %d", frames);
+        Log::rawf("\tSeconds: %.2f", duration);
     }
 
     const char* Engine::getVersion() const

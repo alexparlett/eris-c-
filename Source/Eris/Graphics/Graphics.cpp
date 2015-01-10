@@ -41,7 +41,8 @@ namespace Eris
         m_samples(4),
         m_gamma(1.0f),
         m_title(ERIS_APP),
-        m_window(nullptr)
+        m_main_window(nullptr),
+        m_resource_window(nullptr)
     {
     }
 
@@ -50,63 +51,8 @@ namespace Eris
         if (m_initialized)
             return;
 
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-        glfwWindowHint(GLFW_DECORATED, !m_borderless);
-        glfwWindowHint(GLFW_RESIZABLE, m_resizable);
-        glfwWindowHint(GLFW_SAMPLES, m_samples);
-
-        if (m_width <= 0 || m_height <= 0)
-        {
-            const GLFWvidmode* desktop = glfwGetVideoMode(glfwGetPrimaryMonitor());
-            m_width = desktop->width;
-            m_height = desktop->height;
-        }
-
-        if (m_fullscreen)
-            m_window = glfwCreateWindow(m_width, m_height, m_title.c_str(), glfwGetPrimaryMonitor(), nullptr);
-        else
-            m_window = glfwCreateWindow(m_width, m_height, m_title.c_str(), nullptr, nullptr);
-
-        if (!m_window)
-        {
-            m_context->getModule<Engine>()->setExitCode(EXIT_WINDOW_CREATE_ERROR);
+        if (!initializeMainWindow() || !initializeResourceWindow())
             return;
-        }
-        
-        glfwMakeContextCurrent(m_window);
-        glfwSetWindowUserPointer(m_window, m_context);
-
-        glm::i32 width, height;
-        glfwGetFramebufferSize(m_window, &width, &height);
-        m_width = width;
-        m_height = height;
-
-        if (m_vsync)
-            glfwSwapInterval(1);
-
-        glewExperimental = GL_TRUE;
-        GLenum err = glewInit();
-        if (err != GLEW_OK)
-        {
-            const GLubyte* msg = glewGetErrorString(err);
-            Log::errorf("GLEW error: %s", msg);
-
-            glfwDestroyWindow(m_window);
-            m_window = nullptr;
-
-            m_context->getModule<Engine>()->setExitCode(EXIT_GLEW_INIT_ERROR);
-            return;
-        }
-
-        glfwSetFramebufferSizeCallback(m_window, &Graphics::handleFramebufferCallback);
-        glfwSetWindowCloseCallback(m_window, &Graphics::handleCloseCallback);
-
-        Log::rawf("Open GL: %s", glGetString(GL_VERSION));
-        Log::rawf("\tGLSL: %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
-        Log::rawf("\tGLEW: %s", glewGetString(GLEW_VERSION));
 
         m_initialized = true;
     }
@@ -115,65 +61,71 @@ namespace Eris
     {
         m_initialized = false;
 
-        if (m_window)
+        if (m_main_window)
         {
-            glfwDestroyWindow(m_window);
-            m_window = nullptr;
+            glfwDestroyWindow(m_main_window);
+            m_main_window = nullptr;
+        }
+
+        if (m_resource_window)
+        {
+            glfwDestroyWindow(m_resource_window);
+            m_resource_window = nullptr;
         }
     }
 
     void Graphics::maximize()
     {
-        if (!m_initialized || !m_window)
+        if (!m_initialized || !m_main_window)
             return;
 
         if (!m_fullscreen)
         {
             const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-            glfwSetWindowSize(m_window, mode->width, mode->height);
+            glfwSetWindowSize(m_main_window, mode->width, mode->height);
         }
 
-        glfwRestoreWindow(m_window);
+        glfwRestoreWindow(m_main_window);
     }
 
     void Graphics::minimize()
     {
-        if (!m_initialized || !m_window)
+        if (!m_initialized || !m_main_window)
             return;
 
-        glfwIconifyWindow(m_window);
+        glfwIconifyWindow(m_main_window);
     }
 
     void Graphics::restore()
     {
-        if (!m_initialized || !m_window)
+        if (!m_initialized || !m_main_window)
             return;
 
-        glfwRestoreWindow(m_window);
+        glfwRestoreWindow(m_main_window);
     }
 
     void Graphics::hide()
     {
-        if (!m_initialized || !m_window)
+        if (!m_initialized || !m_main_window)
             return;
 
-        glfwHideWindow(m_window);
+        glfwHideWindow(m_main_window);
     }
 
     void Graphics::show()
     {
-        if (!m_initialized || !m_window)
+        if (!m_initialized || !m_main_window)
             return;
 
-        glfwShowWindow(m_window);
+        glfwShowWindow(m_main_window);
     }
 
     void Graphics::close()
     {
-        if (!m_initialized || !m_window)
+        if (!m_initialized || !m_main_window)
             return;
 
-        glfwSetWindowShouldClose(m_window, GL_TRUE);
+        glfwSetWindowShouldClose(m_main_window, GL_TRUE);
     }
 
     void Graphics::setSize(glm::i32 width, glm::i32 height)
@@ -181,10 +133,10 @@ namespace Eris
         m_width = width;
         m_height = height;
 
-        if (!m_initialized || !m_window)
+        if (!m_initialized || !m_main_window)
             return;
 
-        glfwSetWindowSize(m_window, m_width, m_height);
+        glfwSetWindowSize(m_main_window, m_width, m_height);
     }
 
     void Graphics::setSamples(glm::i32 samples)
@@ -196,20 +148,20 @@ namespace Eris
     {
         m_gamma = glm::max(gamma, 1.0f);
 
-        if (!m_initialized || !m_window)
+        if (!m_initialized || !m_main_window)
             return;
 
-        glfwSetGamma(glfwGetWindowMonitor(m_window), m_gamma);
+        glfwSetGamma(glfwGetWindowMonitor(m_main_window), m_gamma);
     }
 
     void Graphics::setTitle(const std::string& title)
     {
         m_title = title;
 
-        if (!m_initialized || !m_window)
+        if (!m_initialized || !m_main_window)
             return;
 
-        glfwSetWindowTitle(m_window, m_title.c_str());
+        glfwSetWindowTitle(m_main_window, m_title.c_str());
     }
 
     void Graphics::setFullscreen(bool fullscreen)
@@ -278,4 +230,111 @@ namespace Eris
 
         graphics->sendEvent(ExitRequestedEvent::getTypeStatic());
     }
+
+    bool Graphics::initializeMainWindow()
+    {
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+        glfwWindowHint(GLFW_DECORATED, !m_borderless);
+        glfwWindowHint(GLFW_RESIZABLE, m_resizable);
+        glfwWindowHint(GLFW_SAMPLES, m_samples);
+
+        if (m_width <= 0 || m_height <= 0)
+        {
+            const GLFWvidmode* desktop = glfwGetVideoMode(glfwGetPrimaryMonitor());
+            m_width = desktop->width;
+            m_height = desktop->height;
+        }
+
+        if (m_fullscreen)
+            m_main_window = glfwCreateWindow(m_width, m_height, m_title.c_str(), glfwGetPrimaryMonitor(), nullptr);
+        else
+            m_main_window = glfwCreateWindow(m_width, m_height, m_title.c_str(), nullptr, nullptr);
+
+        if (!m_main_window)
+        {
+            m_context->getModule<Engine>()->setExitCode(EXIT_WINDOW_CREATE_ERROR);
+            return false;
+        }
+
+        glfwMakeContextCurrent(m_main_window);
+        glfwSetWindowUserPointer(m_main_window, m_context);
+
+        glm::i32 width, height;
+        glfwGetFramebufferSize(m_main_window, &width, &height);
+        m_width = width;
+        m_height = height;
+
+        if (m_vsync)
+            glfwSwapInterval(1);
+
+        glewExperimental = GL_TRUE;
+        GLenum err = glewInit();
+        if (err != GLEW_OK)
+        {
+            const GLubyte* msg = glewGetErrorString(err);
+            Log::errorf("GLEW error: %s", msg);
+
+            glfwDestroyWindow(m_main_window);
+            m_main_window = nullptr;
+
+            m_context->getModule<Engine>()->setExitCode(EXIT_GLEW_INIT_ERROR);
+            return false;
+        }
+
+        glfwSetFramebufferSizeCallback(m_main_window, &Graphics::handleFramebufferCallback);
+        glfwSetWindowCloseCallback(m_main_window, &Graphics::handleCloseCallback);
+
+        Log::rawf("Open GL: %s", glGetString(GL_VERSION));
+        Log::rawf("\tGLSL: %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
+        Log::rawf("\tGLEW: %s", glewGetString(GLEW_VERSION));
+
+        glfwMakeContextCurrent(nullptr);
+
+        return true;
+    }
+
+    bool Graphics::initializeResourceWindow()
+    {
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
+
+        m_resource_window = glfwCreateWindow(1, 1, m_title.c_str(), nullptr, m_main_window);
+
+        if (!m_resource_window)
+        {
+            m_context->getModule<Engine>()->setExitCode(EXIT_WINDOW_CREATE_ERROR);
+            return false;
+        }
+
+        glfwMakeContextCurrent(m_resource_window);
+        glfwSetWindowUserPointer(m_resource_window, m_context);
+
+        if (m_vsync)
+            glfwSwapInterval(1);
+
+        glewExperimental = GL_TRUE;
+        GLenum err = glewInit();
+        if (err != GLEW_OK)
+        {
+            const GLubyte* msg = glewGetErrorString(err);
+            Log::errorf("GLEW error: %s", msg);
+
+            glfwDestroyWindow(m_resource_window);
+            m_resource_window = nullptr;
+
+            m_context->getModule<Engine>()->setExitCode(EXIT_GLEW_INIT_ERROR);
+            return false;
+        }
+
+        glfwSetWindowCloseCallback(m_resource_window, &Graphics::handleCloseCallback);
+        glfwMakeContextCurrent(nullptr);
+
+        return true;
+    }
+
 }

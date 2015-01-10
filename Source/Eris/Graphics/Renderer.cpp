@@ -20,6 +20,7 @@
 // THE SOFTWARE.
 //
 
+#include "Events.h"
 #include "Graphics.h"
 #include "Renderer.h"
 
@@ -33,6 +34,7 @@ namespace Eris
         m_thread_exit(false),
         m_initialized(false)
     {
+        subscribeToEvent(ScreenModeEvent::getTypeStatic(), HANDLER(Renderer, handleScreenMode));
     }
 
     Renderer::~Renderer()
@@ -48,9 +50,6 @@ namespace Eris
     {
         if (m_initialized)
             return;
-
-        Graphics* graphics = m_context->getModule<Graphics>();
-        glfwMakeContextCurrent(nullptr);
 
         m_thread = std::thread(&Renderer::run, this);
     }
@@ -76,7 +75,15 @@ namespace Eris
             glClearColor(0.f, 0.f, 0.f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+            //TODO rendering
+
             glfwSwapBuffers(window);
+
+            if (m_viewport_dirty)
+            {
+                glViewport(0, 0, graphics->getWidth(), graphics->getHeight());
+                glfwSwapBuffers(window);
+            }
         }
 
         glfwMakeContextCurrent(nullptr);
@@ -88,11 +95,6 @@ namespace Eris
     void Renderer::terminate()
     {
         m_initialized = false;
-
-        Graphics* graphics = m_context->getModule<Graphics>();
-        GLFWwindow* window = graphics->getWindow();
-        if (window)
-            glfwMakeContextCurrent(window);
 
         m_thread_exit = true;
         if (m_thread.joinable())
@@ -114,9 +116,15 @@ namespace Eris
         glEnable(GL_MULTISAMPLE);
 
         // Set Viewport
+        //TODO remove this to camera class
         glViewport(0, 0, width, height);
 
         return true;
+    }
+
+    void Renderer::handleScreenMode(const StringHash& type, const Event* event)
+    {
+        m_viewport_dirty = true;
     }
 
 }

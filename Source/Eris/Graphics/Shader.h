@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2013-2015 the Eris project.
+// Copyright (c) 2008-2014 the Eris project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,37 +22,31 @@
 
 #pragma once
 
-#include "Resource.h"
-#include "INISection.h"
+#include "Core/Context.h"
+#include "Resource/Resource.h"
+#include "Memory/ArrayPointers.h"
 
 namespace Eris
 {
-    class INIFile : public Resource
+    enum class ShaderType : glm::u8
+    {
+        VERT,
+        FRAG
+    };
+
+    class Shader : public Resource
     {
     public:
-        using iterator = std::map<std::string, SharedPtr<INISection>>::iterator;
-        using const_iterator = std::map<std::string, SharedPtr<INISection>>::const_iterator;
-
-        INIFile(Context* context);
+        Shader(Context* context);
 
         virtual bool load(Deserializer& deserializer) override;
         virtual bool save(Serializer& serializer) override;
 
-        void addSection(const std::string& section);
-        INISection* getSection(const std::string& section) const;
-        void removeSection(const std::string& section);
-
-        void clear();
-
-        bool empty() const;
-        bool exists(const std::string& section) const;
-
-        iterator begin();
-        iterator end();
-        const_iterator cbegin() const;
-        const_iterator cend() const;
+        GLuint handle() const { return m_handle; }
+        ShaderType type() const { return m_type; }
 
     private:
-        std::map<std::string, SharedPtr<INISection>> m_sections;
+        GLuint m_handle;
+        ShaderType m_type;
     };
 }

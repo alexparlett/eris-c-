@@ -87,7 +87,9 @@ namespace Eris
         /// Get title.
         const std::string& getTitle() const { return m_title; }
         /// Get window ptr.
-        GLFWwindow* getWindow() const { return m_window; }
+        GLFWwindow* getWindow() const { return m_main_window; }
+        /// Get window ptr.
+        GLFWwindow* getResourceWindow() const { return m_resource_window; }
         /// Get available resolutions.
         std::vector<glm::ivec2> getResolutions() const;
         /// Get current resolution.
@@ -97,6 +99,9 @@ namespace Eris
         bool initialized() const { return m_initialized; }
 
     private:
+        bool initializeMainWindow();
+        bool initializeResourceWindow();
+
         static void handleFramebufferCallback(GLFWwindow* window, glm::i32 width, glm::i32 height);
         static void handleCloseCallback(GLFWwindow* window);
 
@@ -105,12 +110,13 @@ namespace Eris
         bool m_resizable;
         bool m_borderless;
         bool m_vsync;
-        glm::i32 m_width;
-        glm::i32 m_height;
+        std::atomic<glm::i32> m_width;
+        std::atomic<glm::i32> m_height;
         glm::i32 m_samples;
         glm::f32 m_gamma;
         std::string m_title;
-        GLFWwindow* m_window;
+        GLFWwindow* m_main_window;
+        GLFWwindow* m_resource_window;
     };
 
     template<> inline void Context::registerModule(Graphics* graphics)

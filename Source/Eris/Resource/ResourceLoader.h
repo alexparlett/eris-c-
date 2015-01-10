@@ -59,7 +59,7 @@ namespace Eris
 
         std::queue<ResourceTask*> m_waiting_tasks;
         std::mutex m_queue_mutex;
-        std::vector<std::thread> m_threads;
+        std::thread m_thread;
         std::condition_variable m_queue_conditional;
         std::atomic<bool> m_thread_exit;
     };

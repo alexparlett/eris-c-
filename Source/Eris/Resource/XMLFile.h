@@ -33,8 +33,8 @@ namespace Eris
         XMLFile(Context* context);
         virtual ~XMLFile();
 
-        virtual bool load(Deserializer& deserializer);
-        virtual bool save(Serializer& serializer);
+        virtual bool load(Deserializer& deserializer) override;
+        virtual bool save(Serializer& serializer) override;
 
         XMLElement createRoot(const std::string& name);
 
