@@ -111,13 +111,13 @@ namespace Eris
         while (!m_exiting)
         {
             glm::f64 new_time = clock->getElapsedTime();
-            glm::f64 elapsed = new_time - current_time;
+            glm::f64 delta_time = new_time - current_time;
             current_time = new_time;
 
-            clock->beginFrame(elapsed);
+            clock->beginFrame(delta_time);
 
             UpdateEvent* event = m_context->getFrameAllocator().newInstance<UpdateEvent>();
-            event->time_step = elapsed;
+            event->time_step = delta_time;
 
             sendEvent(UpdateEvent::getTypeStatic(), event);
             sendEvent(PostUpdateEvent::getTypeStatic());

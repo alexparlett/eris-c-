@@ -57,6 +57,8 @@ namespace Eris
 
     void ResourceCache::terminate()
     {
+        m_initialized = false;
+
         m_loader->stop();
     }
 
