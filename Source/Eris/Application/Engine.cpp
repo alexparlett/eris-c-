@@ -138,6 +138,9 @@ namespace Eris
         Settings* settings = m_context->getModule<Settings>();
         Renderer* renderer = m_context->getModule<Renderer>();
 
+        graphics->minimize();
+        graphics->hide();
+
         rc->terminate();
         renderer->terminate();
         graphics->terminate();

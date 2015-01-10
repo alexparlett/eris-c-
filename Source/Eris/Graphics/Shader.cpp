@@ -35,6 +35,12 @@ namespace Eris
     {
     }
 
+    Shader::~Shader()
+    {
+        if (m_handle != -1)
+            release();
+    }
+
     bool Shader::load(Deserializer& deserializer)
     {
         std::size_t ds_size = deserializer.getSize();
@@ -86,5 +92,20 @@ namespace Eris
     bool Shader::save(Serializer& serializer)
     {
         return false;
+    }
+
+    void Shader::release()
+    {
+        Graphics* graphics = m_context->getModule<Graphics>();
+        GLFWwindow* win = glfwGetCurrentContext();
+
+        if (!win)
+            glfwMakeContextCurrent(graphics->getResourceWindow());
+        
+        glDeleteShader(m_handle);
+        m_handle = -1;
+        
+        if (!win)
+            glfwMakeContextCurrent(nullptr);
     }
 }

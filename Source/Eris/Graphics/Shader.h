@@ -38,12 +38,14 @@ namespace Eris
     {
     public:
         Shader(Context* context);
+        virtual ~Shader();
 
         virtual bool load(Deserializer& deserializer) override;
         virtual bool save(Serializer& serializer) override;
 
-        GLuint handle() const { return m_handle; }
+        GLuint use() const { return m_handle; }
         ShaderType type() const { return m_type; }
+        void release();
 
     private:
         GLuint m_handle;

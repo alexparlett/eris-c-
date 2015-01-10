@@ -36,14 +36,8 @@ namespace Eris
 
     ResourceCache::~ResourceCache()
     {
-        if (m_loader)
-        {
-            m_loader->stop();
-            m_loader.reset();
-            m_loader = nullptr;
-        }
-
-        releaseResources(true);
+        if (m_initialized)
+            terminate();
     }
 
     void ResourceCache::initialize()
@@ -59,7 +53,14 @@ namespace Eris
     {
         m_initialized = false;
 
-        m_loader->stop();
+        if (m_loader)
+        {
+            m_loader->stop();
+            m_loader.reset();
+            m_loader = nullptr;
+        }
+
+        releaseResources(true);
     }
 
     bool ResourceCache::addDirectory(const Path& path, glm::uint priority /*= PRIORITY_LAST*/)
