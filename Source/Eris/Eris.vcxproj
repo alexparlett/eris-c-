@@ -281,6 +281,7 @@ xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
     <ClInclude Include="Core\Events.h" />
     <ClInclude Include="Core\Log.h" />
     <ClInclude Include="Graphics\Events.h" />
+    <ClInclude Include="Graphics\Renderer.h" />
     <ClInclude Include="Input\Input.h" />
     <ClInclude Include="Input\Events.h" />
     <ClInclude Include="IO\Deserializer.h" />
@@ -328,6 +329,7 @@ xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
     <ClCompile Include="Application\Settings.cpp" />
     <ClCompile Include="Core\Clock.cpp" />
     <ClCompile Include="Core\Log.cpp" />
+    <ClCompile Include="Graphics\Renderer.cpp" />
     <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="IO\File.cpp" />
     <ClCompile Include="IO\FileSystem.cpp" />

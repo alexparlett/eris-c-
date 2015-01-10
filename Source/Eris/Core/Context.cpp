@@ -30,6 +30,7 @@
 #include "Application/Locale.h"
 #include "Application/Settings.h"
 #include "Graphics/Graphics.h"
+#include "Graphics/Renderer.h"
 #include "Input/Input.h"
 #include "IO/FileSystem.h"
 #include "Resource/ResourceCache.h"
@@ -46,7 +47,8 @@ namespace Eris
         m_log(nullptr),
         m_fs(nullptr),
         m_cache(nullptr),
-        m_settings(nullptr)
+        m_settings(nullptr),
+        m_renderer(nullptr)
     {
     }
 

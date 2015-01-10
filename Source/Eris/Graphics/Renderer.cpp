@@ -20,9 +20,103 @@
 // THE SOFTWARE.
 //
 
+#include "Graphics.h"
 #include "Renderer.h"
+
+#include "Core/Clock.h"
+#include "Core/Log.h"
 
 namespace Eris
 {
+    Renderer::Renderer(Context* context) :
+        Object(context),
+        m_thread_exit(false),
+        m_initialized(false)
+    {
+    }
+
+    Renderer::~Renderer()
+    {
+        m_initialized = false;
+
+        m_thread_exit = true;
+        if (m_thread.joinable())
+            m_thread.join();
+    }
+
+    void Renderer::initialize()
+    {
+        if (m_initialized)
+            return;
+
+        Graphics* graphics = m_context->getModule<Graphics>();
+        glfwMakeContextCurrent(nullptr);
+
+        m_thread = std::thread(&Renderer::run, this);
+    }
+
+    void Renderer::run()
+    {
+        Log::infof("Rendered Thread started: %d", std::this_thread::get_id().hash());
+
+        Clock* clock = m_context->getModule<Clock>();
+        Graphics* graphics = m_context->getModule<Graphics>();
+
+        GLFWwindow* window = graphics->getWindow();
+        if (!initializeOpenGL(window, graphics->getWidth(), graphics->getHeight()))
+            return;
+
+        glm::f64 current_time = clock->getElapsedTime();
+        while (!m_thread_exit)
+        {
+            glm::f64 new_time = clock->getElapsedTime();
+            glm::f64 delta_time = new_time - current_time;
+            current_time = new_time;
+
+            glClearColor(0.f, 0.f, 0.f, 1.0f);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+            glfwSwapBuffers(window);
+        }
+
+        glfwMakeContextCurrent(nullptr);
+
+        Log::infof("Renderer Thread stopped: %d", std::this_thread::get_id().hash());
+
+    }
+
+    void Renderer::terminate()
+    {
+        m_initialized = false;
+
+        Graphics* graphics = m_context->getModule<Graphics>();
+        GLFWwindow* window = graphics->getWindow();
+        if (window)
+            glfwMakeContextCurrent(window);
+
+        m_thread_exit = true;
+        if (m_thread.joinable())
+            m_thread.join();
+    }
+
+    bool Renderer::initializeOpenGL(GLFWwindow* window, glm::i32 width, glm::i32 height)
+    {
+        // Make current
+        if (window)
+            glfwMakeContextCurrent(window);
+        else
+        {
+            Log::error("Renderer initialized and run with no window.");
+            return false;
+        }
+
+        // Enable GL Flags
+        glEnable(GL_MULTISAMPLE);
+
+        // Set Viewport
+        glViewport(0, 0, width, height);
+
+        return true;
+    }
 
 }

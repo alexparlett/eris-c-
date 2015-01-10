@@ -25,6 +25,8 @@
 #include "Core/Context.h"
 #include "Core/Object.h"
 
+#include "Memory/Pointers.h"
+
 namespace Eris
 {
     class Renderer : public Object
@@ -38,7 +40,21 @@ namespace Eris
         void terminate();
 
     private:
+        bool initializeOpenGL(GLFWwindow* window, glm::i32 width, glm::i32 height);
+
+        bool m_initialized;
         std::thread m_thread;
-        std::atomic_bool m_thread_exit;
+        std::atomic<bool> m_thread_exit;
     };
+
+    template<> inline void Context::registerModule(Renderer* module)
+    {
+        m_renderer = SharedPtr<Renderer>(module);
+    }
+
+    template<> inline Renderer* Context::getModule()
+    {
+        ERIS_ASSERT(m_renderer);
+        return m_renderer.get();
+    }
 }

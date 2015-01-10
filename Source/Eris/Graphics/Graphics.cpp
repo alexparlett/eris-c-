@@ -104,6 +104,10 @@ namespace Eris
         glfwSetFramebufferSizeCallback(m_window, &Graphics::handleFramebufferCallback);
         glfwSetWindowCloseCallback(m_window, &Graphics::handleCloseCallback);
 
+        Log::rawf("Open GL: %s", glGetString(GL_VERSION));
+        Log::rawf("\tGLSL: %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
+        Log::rawf("\tGLEW: %s", glewGetString(GLEW_VERSION));
+
         m_initialized = true;
     }
 

@@ -29,6 +29,7 @@
 #include "Core/Log.h"
 #include "Collections/Functions.h"
 #include "Graphics/Graphics.h"
+#include "Graphics/Renderer.h"
 #include "Input/Input.h"
 #include "IO/FileSystem.h"
 #include "Resource/ResourceCache.h"
@@ -51,6 +52,7 @@ namespace Eris
         context->registerModule(new Graphics(context));
         context->registerModule(new Input(context));
         context->registerModule(new Locale(context));
+        context->registerModule(new Renderer(context));
         context->registerModule(new ResourceCache(context));
         context->registerModule(new Settings(context));
 
@@ -66,6 +68,7 @@ namespace Eris
         Input* input = m_context->getModule<Input>();
         Settings* settings = m_context->getModule<Settings>();
         Locale* locale = m_context->getModule<Locale>();
+        Renderer* renderer = m_context->getModule<Renderer>();
 
         log->open(fs->getApplicationPreferencesDir() /= "log.log");
 
@@ -95,9 +98,10 @@ namespace Eris
         graphics->setResizable(settings->getBool("Graphics/Resizable", false));
         graphics->setVSync(settings->getBool("Graphics/VSync", true));
         graphics->setSamples(settings->getI32("Graphics/Multisamples", 4));
-        graphics->initialize();
 
+        graphics->initialize();
         input->initialize();
+        renderer->initialize();
     }
 
     void Engine::run()
@@ -107,7 +111,6 @@ namespace Eris
         Input* input = m_context->getModule<Input>();
 
         glm::f64 current_time = clock->getElapsedTime();
-
         while (!m_exiting)
         {
             glm::f64 new_time = clock->getElapsedTime();
@@ -122,8 +125,6 @@ namespace Eris
             sendEvent(UpdateEvent::getTypeStatic(), event);
             sendEvent(PostUpdateEvent::getTypeStatic());
 
-            glfwSwapBuffers(graphics->getWindow());
-
             clock->endFrame();
             m_context->resetFrameAllocator();
         }
@@ -135,11 +136,13 @@ namespace Eris
         ResourceCache* rc = m_context->getModule<ResourceCache>();
         Clock* clock = m_context->getModule<Clock>();
         Settings* settings = m_context->getModule<Settings>();
+        Renderer* renderer = m_context->getModule<Renderer>();
 
+        renderer->terminate();
         graphics->terminate();
         rc->terminate();
 
-        glm::f64 duration = clock->getElapsedTime() / 1000.0;
+        glm::f64 duration = clock->getElapsedTime();
         glm::u64 frames = clock->getFrameNumber();
 
         glfwTerminate();

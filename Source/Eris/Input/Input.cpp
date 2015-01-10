@@ -153,10 +153,12 @@ namespace Eris
     {
         resetState();
 
+        Graphics* graphics = m_context->getModule<Graphics>();
+
         subscribeToEvent(BeginFrameEvent::getTypeStatic(), HANDLER(Input, handleBeginFrame));
         subscribeToEvent(ScreenModeEvent::getTypeStatic(), HANDLER(Input, handleScreenMode));
 
-        GLFWwindow* window = glfwGetCurrentContext();
+        GLFWwindow* window = graphics->getWindow();
         if (!window)
             return;
 

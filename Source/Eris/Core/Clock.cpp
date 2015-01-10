@@ -58,7 +58,7 @@ namespace Eris
 
     glm::f64 Clock::getElapsedTime() const
     {
-        return glfwGetTime() * 1000.0;
+        return glfwGetTime();
     }
 
     glm::f64 Clock::getTimeStep() const
