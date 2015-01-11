@@ -57,7 +57,8 @@ namespace Eris
     {
         m_cursor_mode = cm;
 
-        GLFWwindow* window = glfwGetCurrentContext();
+        Graphics* graphics = m_context->getModule<Graphics>();
+        GLFWwindow* window = graphics->getWindow();
         if (!window)
             return;
 
@@ -197,7 +198,8 @@ namespace Eris
         else
             resetState();
 
-        GLFWwindow* window = glfwGetCurrentContext();
+        Graphics* graphics = m_context->getModule<Graphics>();
+        GLFWwindow* window = graphics->getWindow();
 
         m_minimized = glfwGetWindowAttrib(window, GLFW_ICONIFIED) == GL_TRUE;
     }

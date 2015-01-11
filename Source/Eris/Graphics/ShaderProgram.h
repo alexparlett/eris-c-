@@ -28,27 +28,20 @@
 
 namespace Eris
 {
-    enum class ShaderType : glm::u8
-    {
-        VERT,
-        FRAG
-    };
-
-    class Shader : public Resource
+    class ShaderProgram : public Resource
     {
     public:
-        Shader(Context* context);
-        virtual ~Shader();
+        ShaderProgram(Context* context);
 
         virtual bool load(Deserializer& deserializer) override;
         virtual bool save(Serializer& serializer) override;
 
-        GLuint use() const { return m_handle; }
-        ShaderType type() const { return m_type; }
-        void release();
+        GLuint handle() const { return m_handle; }
+        void use() const;
 
     private:
+        bool compile(const char* vert_source, const char* frag_source);
+
         GLuint m_handle;
-        ShaderType m_type;
     };
 }

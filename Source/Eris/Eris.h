@@ -27,7 +27,10 @@
 #include <algorithm>
 #include <utility>
 
+#ifndef GLEW_STATIC
 #define GLEW_STATIC
+#endif
+
 #include <glew/glew.h>
 #include <glm/glm.hpp>
 #include <glfw3/glfw3.h>
