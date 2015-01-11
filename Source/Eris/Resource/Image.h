@@ -37,21 +37,24 @@ namespace Eris
         virtual bool save(Serializer& serializer) override;
 
         bool resize(glm::i32 width, glm::i32 height);
+        void flip();
 
         void setWidth(glm::i32 width);
         void setHeight(glm::i32 height);
-        void setChannels(glm::i32 channels);
+        void setComponents(glm::i32 channels);
         void setData(unsigned char* data);
 
         glm::i32 getWidth() const { return m_width; }
         glm::i32 getHeight() const { return m_height; }
-        glm::i32 getChannels() const { return m_channels; }
+        glm::i32 getChannels() const { return m_components; }
         const unsigned char* getData() const { return m_data; }
 
     private:
+        glm::u32 getPixelOffset(glm::u32 column, glm::u32 row, glm::i32 width, glm::i32 height, glm::i32 channels);
+
         glm::i32 m_width;
         glm::i32 m_height;
-        glm::i32 m_channels;
+        glm::i32 m_components;
         SharedArrayPtr<unsigned char> m_data;
     };
 }

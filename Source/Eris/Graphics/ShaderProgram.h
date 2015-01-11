@@ -36,7 +36,8 @@ namespace Eris
         virtual bool load(Deserializer& deserializer) override;
         virtual bool save(Serializer& serializer) override;
 
-        GLuint handle() const { return m_handle; }
+        GLuint getHandle() const { return m_handle; }
+
         void use() const;
 
     private:

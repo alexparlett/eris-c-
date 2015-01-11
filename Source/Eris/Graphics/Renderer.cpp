@@ -72,10 +72,8 @@ namespace Eris
             glm::f64 delta_time = new_time - current_time;
             current_time = new_time;
 
-            glClearColor(0.f, 0.f, 0.f, 1.0f);
+            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-            //TODO rendering
 
             glfwSwapBuffers(window);
 
@@ -103,6 +101,10 @@ namespace Eris
 
     bool Renderer::initializeOpenGL(GLFWwindow* window, glm::i32 width, glm::i32 height)
     {
+        ERIS_ASSERT(window);
+        ERIS_ASSERT(width > 0);
+        ERIS_ASSERT(height > 0);
+
         // Make current
         if (window)
             glfwMakeContextCurrent(window);
@@ -114,6 +116,8 @@ namespace Eris
 
         // Enable GL Flags
         glEnable(GL_MULTISAMPLE);
+        glEnable(GL_TEXTURE_2D);
+        glEnable(GL_TEXTURE_CUBE_MAP);
 
         // Set Viewport
         //TODO remove this to camera class

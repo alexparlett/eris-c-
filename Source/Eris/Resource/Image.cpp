@@ -39,7 +39,7 @@ namespace Eris
         m_data(nullptr),
         m_height(0),
         m_width(0),
-        m_channels(0)
+        m_components(0)
     {
     }
 
@@ -53,10 +53,13 @@ namespace Eris
         if (!buffer || read_size != ds_size)
             return false;
 
-        m_data = stbi_load_from_memory(buffer, ds_size, &m_width, &m_height, &m_channels, 0);
+        m_data = stbi_load_from_memory(buffer, ds_size, &m_width, &m_height, &m_components, 0);
 
-        if (!m_data || m_width <= 0 || m_height <= 0 || m_channels <= 0)
+        if (!m_data || m_width <= 0 || m_height <= 0 || m_components <= 0)
+        {
+            Log::errorf("Image loading failed: %s", stbi_failure_reason());
             return false;
+        }
 
         return true;
     }
@@ -64,7 +67,7 @@ namespace Eris
     bool Image::save(Serializer& serializer)
     {
         glm::i32 out_size;
-        SharedArrayPtr<unsigned char> buffer(stbi_write_png_to_mem(m_data, 0, m_width, m_height, m_channels, &out_size));
+        SharedArrayPtr<unsigned char> buffer(stbi_write_png_to_mem(m_data, 0, m_width, m_height, m_components, &out_size));
 
         if (!buffer || out_size <= 0)
             return false;
@@ -74,7 +77,7 @@ namespace Eris
         return true;
     }
 
-    bool Image::resize(glm::i32 width, glm::i32 height)   
+    bool Image::resize(glm::i32 width, glm::i32 height)
     {
         if (m_width == width && m_height == height)
             return false;
@@ -82,9 +85,9 @@ namespace Eris
         if (width == 0 || height == 0)
             return false;
 
-        SharedArrayPtr<unsigned char> new_buffer(width * height * m_channels);
+        SharedArrayPtr<unsigned char> new_buffer(width * height * m_components);
         glm::i32 new_width = 0, new_height = 0;
-        if (stbir_resize_uint8(m_data.get(), m_width, m_height, 0, new_buffer.get(), new_width, new_height, 0, m_channels) == 0)
+        if (stbir_resize_uint8(m_data.get(), m_width, m_height, 0, new_buffer.get(), new_width, new_height, 0, m_components) == 0)
         {
             Log::errorf("Failed to resize image: %d to width: %d height: %d", getName().string().c_str(), width, height);
             return false;
@@ -97,28 +100,54 @@ namespace Eris
         return true;
     }
 
+    void Image::flip()
+    {
+        glm::u64 row_size = m_components * m_width;
+        SharedArrayPtr<unsigned char> row_buffer(row_size);
+        glm::u32 half_rows = m_height / 2;
+
+        for (glm::u32 i = 0; i < half_rows; i++)
+        {
+            unsigned char* row = m_data.get() + getPixelOffset(0, i, m_width, m_height, m_components);
+            unsigned char* oppositeRow = m_data.get() + getPixelOffset(0, m_height - i - 1, m_width, m_height, m_components);
+
+            memcpy(row_buffer.get(), row, row_size);
+            memcpy(row, oppositeRow, row_size);
+            memcpy(oppositeRow, row_buffer.get(), row_size);
+        }
+    }
+
     void Image::setWidth(glm::i32 width)
     {
+        ERIS_ASSERT(width > 0);
         if (width > 0)
             m_width = width;
     }
 
     void Image::setHeight(glm::i32 height)
     {
+        ERIS_ASSERT(height > 0);
         if (height > 0)
             m_height = height;
     }
 
-    void Image::setChannels(glm::i32 channels)
+    void Image::setComponents(glm::i32 components)
     {
-        if (channels > 0)
-            m_channels = channels;
+        ERIS_ASSERT(components > 0);
+        if (components > 0)
+            m_components = components;
     }
 
     void Image::setData(unsigned char* data)
     {
+        ERIS_ASSERT(data);
         if (data)
             m_data = data;
+    }
+
+    glm::u32 Image::getPixelOffset(glm::u32 column, glm::u32 row, glm::i32 width, glm::i32 height, glm::i32 channels)
+    {
+        return (row * width + column) * channels;
     }
 
 }

@@ -57,12 +57,14 @@ namespace Eris
     {
     }
 
-    void Locale::load(const Path& fileName)
+    void Locale::load(const Path& file_name)
     {
+        ERIS_ASSERT(!file_name.empty());
+
         m_pages.clear();
 
         Path full_path = "Locales/";
-        full_path /= fileName;
+        full_path /= file_name;
         full_path.replace_extension(".xml");
 
         XMLFile* file = m_context->getModule<ResourceCache>()->getResource<XMLFile>(full_path);

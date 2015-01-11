@@ -40,6 +40,9 @@ namespace Eris
 
     void ResourceLoader::add(const Path& path, Resource* res)
     {
+        ERIS_ASSERT(res);
+        ERIS_ASSERT(!path.empty());
+
         if (res->getAsyncState() == AsyncState::QUEUED || res->getAsyncState() == AsyncState::LOADING)
             return;
 

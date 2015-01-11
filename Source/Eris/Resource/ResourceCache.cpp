@@ -170,6 +170,9 @@ namespace Eris
 
     bool ResourceCache::_loadResource(Resource* res, const Path& path, bool immediate /*= true*/)
     {
+        ERIS_ASSERT(res);
+        ERIS_ASSERT(!path.empty());
+
         if (!immediate)
         {
             m_loader->add(path, res);

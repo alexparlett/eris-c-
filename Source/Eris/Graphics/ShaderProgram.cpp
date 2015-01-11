@@ -32,7 +32,7 @@ namespace Eris
 
     ShaderProgram::ShaderProgram(Context* context) :
         Resource(context),
-        m_handle(-1)
+        m_handle(0)
     {
     }
 
@@ -55,22 +55,22 @@ namespace Eris
         {
             if (line[0] == '#')
             {
-                vert_stream << line << "\n";
-                frag_stream << line << "\n";
+                vert_stream << line << std::endl;
+                frag_stream << line << std::endl;
             }
             if (strstr(line, "frag"))
             {
                 line = strtok_s(nullptr, "[]\0", &next_line);
                 line = strtok_s(nullptr, "[]\0", &next_line);
                 if (line)
-                    frag_stream << line;
+                    frag_stream << line << std::endl;
             }
             else if (strstr(line, "vert"))
             {
                 line = strtok_s(nullptr, "[]\0", &next_line);
                 line = strtok_s(nullptr, "[]\0", &next_line);
                 if (line)
-                    vert_stream << line;
+                    vert_stream << line << std::endl;
             }
 
             line = strtok_s(nullptr, "[\r\n\0", &next_line);
@@ -86,11 +86,15 @@ namespace Eris
 
     void ShaderProgram::use() const
     {
+        ERIS_ASSERT(m_handle > 0);
         glUseProgram(m_handle);
     }
 
     bool ShaderProgram::compile(const char* vert_source, const char* frag_source)
     {
+        ERIS_ASSERT(vert_source);
+        ERIS_ASSERT(frag_source);
+
         GLuint vertex, fragment;
         GLint success;
         GLchar info_log[512];
