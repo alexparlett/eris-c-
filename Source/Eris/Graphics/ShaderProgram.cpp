@@ -81,7 +81,7 @@ namespace Eris
 
     bool ShaderProgram::save(Serializer& serializer)
     {
-        return false;
+        return true;
     }
 
     void ShaderProgram::use() const

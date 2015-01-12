@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2015 the Eris project.
+// Copyright (c) 2008-2014 the Eris project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,39 +22,43 @@
 
 #pragma once
 
-#include "Resource.h"
-
-#include "Memory/ArrayPointers.h"
+#include "Core/Context.h"
+#include "Resource/Resource.h"
 
 namespace Eris
 {
-    class Image : public Resource
+    enum class WrapMode : GLint
+    {
+        REPEAT = GL_REPEAT,
+        MIRRORED_REPEAT = GL_MIRRORED_REPEAT,
+        CLAMP_TO_EDGE = GL_CLAMP_TO_EDGE,
+        CLAMP_TO_BORDER = GL_CLAMP_TO_BORDER,
+        CLAMP = GL_CLAMP
+    };
+
+    class Texture2D : public Resource
     {
     public:
-        Image(Context* context);
+        Texture2D(Context* context);
 
         virtual bool load(Deserializer& deserializer) override;
         virtual bool save(Serializer& serializer) override;
 
-        bool resize(glm::i32 width, glm::i32 height);
-        void flip();
+        GLuint getHandle() const { return m_handle; }
+        bool getGenerateMipMaps() const { return m_generate_mip_maps; }
+        WrapMode getUWrapMode() const { return m_u_wrap_mode; }
+        WrapMode getVWrapMode() const { return m_v_wrap_mode; }
 
-        void setWidth(glm::i32 width);
-        void setHeight(glm::i32 height);
-        void setComponents(glm::i32 channels);
-        void setData(unsigned char* data);
+        void setGenerateMipMaps(bool generate);
+        void setUWrapMode(WrapMode u_wrap_mode);
+        void setVWrapMode(WrapMode v_wrap_mode);
 
-        glm::i32 getWidth() const { return m_width; }
-        glm::i32 getHeight() const { return m_height; }
-        glm::i32 getComponents() const { return m_components; }
-        const unsigned char* getData() const { return m_data; }
+        void use() const;
 
     private:
-        glm::u32 getPixelOffset(glm::u32 column, glm::u32 row, glm::i32 width, glm::i32 height, glm::i32 channels);
-
-        glm::i32 m_width;
-        glm::i32 m_height;
-        glm::i32 m_components;
-        SharedArrayPtr<unsigned char> m_data;
+        bool m_generate_mip_maps;
+        WrapMode m_u_wrap_mode;
+        WrapMode m_v_wrap_mode;
+        GLuint m_handle;
     };
 }
