@@ -48,10 +48,12 @@ namespace Eris
         bool getGenerateMipMaps() const { return m_generate_mip_maps; }
         WrapMode getUWrapMode() const { return m_u_wrap_mode; }
         WrapMode getVWrapMode() const { return m_v_wrap_mode; }
+        WrapMode getKWrapMode() const { return m_k_wrap_mode; }
 
         void setGenerateMipMaps(bool generate);
         void setUWrapMode(WrapMode u_wrap_mode);
         void setVWrapMode(WrapMode v_wrap_mode);
+        void setKWrapMode(WrapMode k_wrap_mode);
 
     protected:
         glm::i32 getFormat(Image* image);

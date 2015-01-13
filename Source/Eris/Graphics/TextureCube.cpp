@@ -63,9 +63,7 @@ namespace Eris
             
             SharedPtr<Image> image = SharedPtr<Image>(rc->getTempResource<Image>(image_path));
             if (!image)
-            {
                 return false;
-            }
 
             image->flip();
 

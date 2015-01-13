@@ -45,7 +45,7 @@ namespace Eris
         image->flip();
 
         Path xml_path = deserializer.getPath();
-        xml_path.replace_extension(".xml");
+        xml_path.replace_extension(".tex");
         SharedPtr<XMLFile> properties = SharedPtr<XMLFile>(m_context->getModule<ResourceCache>()->getTempResource<XMLFile>(xml_path));
         if (properties)
             parseParameters(properties->getRoot());

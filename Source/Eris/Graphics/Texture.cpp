@@ -61,6 +61,11 @@ namespace Eris
         m_v_wrap_mode = v_wrap_mode;
     }
 
+    void Texture::setKWrapMode(WrapMode k_wrap_mode)
+    {
+        m_k_wrap_mode = k_wrap_mode;
+    }
+
     glm::i32 Texture::getFormat(Image* image)
     {
         switch (image->getComponents())
