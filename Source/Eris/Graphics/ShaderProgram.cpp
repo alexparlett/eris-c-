@@ -112,6 +112,9 @@ namespace Eris
         {
             glGetShaderInfoLog(vertex, 512, NULL, info_log);
             Log::errorf("Vertex Shader compilation failed: %s", info_log);
+
+            glDeleteShader(vertex);
+
             glfwMakeContextCurrent(win);
             return false;
         }
@@ -125,6 +128,10 @@ namespace Eris
         {
             glGetShaderInfoLog(fragment, 512, NULL, info_log);
             Log::errorf("Vertex Shader compilation failed: %s", info_log);
+
+            glDeleteShader(vertex);
+            glDeleteShader(fragment);
+
             glfwMakeContextCurrent(win);
             return false;
         }
@@ -139,6 +146,11 @@ namespace Eris
         {
             glGetProgramInfoLog(m_handle, 512, NULL, info_log);
             Log::errorf("Shader Program linking failed: %s", info_log);
+
+            glDeleteShader(vertex);
+            glDeleteShader(fragment);
+            glDeleteProgram(m_handle);
+
             glfwMakeContextCurrent(win);
             return false;
         }

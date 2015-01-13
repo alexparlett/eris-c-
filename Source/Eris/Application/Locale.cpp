@@ -37,10 +37,10 @@ namespace Eris
     {
         for (auto line : element)
         {
-            glm::i32 id = std::stoi(line.getAttribute("id"));
+            glm::i32 id = line.getI32("id", -1);
             std::string value = line.getString(StringEmpty);
 
-            if (id > 0 && !value.empty())
+            if (id >= 0 && !value.empty())
                 m_lines[id] = value;
         }
     }
@@ -72,7 +72,7 @@ namespace Eris
         {
             for (auto page : file->getRoot())
             {
-                glm::i32 id = std::stoi(page.getAttribute("id"));
+                glm::i32 id = page.getI32("id", -1);
                 if (id >= 0)
                     m_pages[id] = new Page(page);
             }

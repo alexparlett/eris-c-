@@ -26,16 +26,13 @@
 #include "Core/Log.h"
 #include "Memory/Pointers.h"
 #include "Resource/Image.h"
+#include "Resource/ResourceCache.h"
+#include "Resource/XMLFile.h"
 
 namespace Eris
 {
-
     Texture2D::Texture2D(Context* context) :
-        Resource(context),
-        m_handle(0),
-        m_u_wrap_mode(WrapMode::REPEAT),
-        m_v_wrap_mode(WrapMode::REPEAT),
-        m_generate_mip_maps(true)
+        Resource(context)
     {
     }
 
@@ -47,22 +44,13 @@ namespace Eris
 
         image->flip();
 
-        GLint format;
-        switch (image->getComponents())
-        {
-        case 1:
-            format = GL_ALPHA;
-            break;
-        case 2:
-            format = GL_LUMINANCE_ALPHA;
-            break;
-        case 3:
-            format = GL_RGB;
-            break;
-        case 4:
-            format = GL_RGBA;
-            break;
-        }
+        Path xml_path = deserializer.getPath();
+        xml_path.replace_extension(".xml");
+        SharedPtr<XMLFile> properties = SharedPtr<XMLFile>(m_context->getModule<ResourceCache>()->getTempResource<XMLFile>(xml_path));
+        if (properties)
+            parseParameters(properties->getRoot());
+
+        glm::i32 format = getFormat(image);
 
         GLFWwindow *win = glfwGetCurrentContext();
         Graphics* graphics = m_context->getModule<Graphics>();
@@ -75,22 +63,15 @@ namespace Eris
         glTexImage2D(GL_TEXTURE_2D, 0, format, image->getWidth(), image->getHeight(), 0, format, GL_UNSIGNED_BYTE, image->getData());
         if (glGetError())
         {
-            Log::errorf("Failed creating texture: %d", deserializer.getPath().string().c_str());
             glfwMakeContextCurrent(win);
+            glBindTexture(GL_TEXTURE_2D, 0);
+            glDeleteTextures(1, &m_handle);
             return false;
         }
 
-        if (m_generate_mip_maps)
-            glGenerateMipmap(GL_TEXTURE_2D);
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, (GLint) m_u_wrap_mode);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, (GLint) m_v_wrap_mode);
+        setParameters();
 
         glBindTexture(GL_TEXTURE_2D, 0);
-
         glfwMakeContextCurrent(win);
 
         return true;
@@ -101,24 +82,9 @@ namespace Eris
         return true;
     }
 
-    void Texture2D::setGenerateMipMaps(bool generate)
-    {
-        m_generate_mip_maps = generate;
-    }
-
-    void Texture2D::setUWrapMode(WrapMode u_wrap_mode)
-    {
-        m_u_wrap_mode = u_wrap_mode;
-    }
-
-    void Texture2D::setVWrapMode(WrapMode v_wrap_mode)
-    {
-        m_v_wrap_mode = v_wrap_mode;
-    }
-
     void Texture2D::use() const
     {
+        ERIS_ASSERT(m_handle > 0);
         glBindTexture(GL_TEXTURE_2D, m_handle);
     }
-
 }

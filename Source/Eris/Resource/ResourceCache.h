@@ -60,6 +60,7 @@ namespace Eris
         bool removeDirectory(const Path& path);
 
         template<typename T> T* getResource(const Path& path, bool error_on_fail = true);
+        template<typename T> T* getTempResource(const Path& path, bool error_on_fail = false);
         template<typename T> void loadResource(const Path& path, bool immediate = true, bool error_on_fail = true);
 
         void releaseResource(std::type_index type, const Path& path, bool force = false);
@@ -105,6 +106,49 @@ namespace Eris
             event->resource = path;
             event->type = typeid(T).name();
             sendEvent(ResourceLoadingFailed::getTypeStatic(), event);
+        }
+
+        return nullptr;
+    }
+
+    template<typename T>
+    inline T* ResourceCache::getTempResource(const Path& path, bool error_on_fail)
+    {
+        std::type_index type(typeid(T));
+
+        Path final_path = path;
+        if (path.is_complete())
+        {
+            for (auto dir : m_directories)
+            {
+                Path new_path = "";
+                std::size_t start_pos = path.string().find(dir.string());
+                if (start_pos != std::string::npos)
+                {
+                    new_path = path.string().replace(start_pos, dir.string().length() + 1, "");
+                    if (new_path.string().length() < final_path.string().length())
+                        final_path = new_path;
+                }
+            }
+        }
+
+        Resource* resource = findResource(type, final_path);
+        if (resource && resource->getAsyncState() == AsyncState::SUCCESS)
+            return static_cast<T*>(resource);
+        else if (resource && resource->getAsyncState() == AsyncState::LOADING)
+        {
+            while (resource->getAsyncState() == AsyncState::LOADING);
+            if (resource->getAsyncState() == AsyncState::SUCCESS)
+                return static_cast<T*>(resource);
+        }
+        else if (!resource)
+        {
+            resource = new T(m_context);
+            resource->setName(path);
+
+            Path full_path = findFile(final_path);
+            if (!full_path.empty() && _loadResource(resource, full_path))
+                return static_cast<T*>(resource);
         }
 
         return nullptr;

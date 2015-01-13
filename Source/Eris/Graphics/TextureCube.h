@@ -29,14 +29,17 @@
 
 namespace Eris
 {
-    class Texture2D : public Resource, public Texture
+    class TextureCube : public Resource, public Texture
     {
     public:
-        Texture2D(Context* context);
+        TextureCube(Context* context);
 
         virtual bool load(Deserializer& deserializer) override;
         virtual bool save(Serializer& serializer) override;
 
         void use() const;
+
+    private:
+        bool compile(const std::map<glm::i32, SharedPtr<Image>>& faces);
     };
 }

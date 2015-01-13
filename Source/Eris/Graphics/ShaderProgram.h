@@ -36,13 +36,13 @@ namespace Eris
         virtual bool load(Deserializer& deserializer) override;
         virtual bool save(Serializer& serializer) override;
 
-        GLuint getHandle() const { return m_handle; }
+        glm::u32 getHandle() const { return m_handle; }
 
         void use() const;
 
     private:
         bool compile(const char* vert_source, const char* frag_source);
 
-        GLuint m_handle;
+        glm::u32 m_handle;
     };
 }

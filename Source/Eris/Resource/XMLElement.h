@@ -66,6 +66,7 @@ namespace Eris
         std::string getName() const;
         std::string getAttribute(const std::string& name = StringEmpty) const;
         XMLElement getChild(const std::string& name = StringEmpty) const;
+        XMLElement getNext(const std::string& name = StringEmpty) const;
         std::string getValue() const;
 
         bool getBool(bool default) const;
@@ -76,6 +77,15 @@ namespace Eris
         glm::u64 getU64(glm::u64 default) const;
         glm::f64 getF64(glm::f64 default) const;
         std::string getString(std::string default) const;
+
+        bool getBool(const std::string& name, bool default) const;
+        glm::i32 getI32(const std::string& name, glm::i32 default) const;
+        glm::u32 getU32(const std::string& name, glm::u32 default) const;
+        glm::f32 getF32(const std::string& name, glm::f32 default) const;
+        glm::i64 getI64(const std::string& name, glm::i64 default) const;
+        glm::u64 getU64(const std::string& name, glm::u64 default) const;
+        glm::f64 getF64(const std::string& name, glm::f64 default) const;
+        std::string getString(const std::string& name, std::string default) const;
 
         bool setValue(const std::string& value);
         bool setAttribute(const std::string& name, const std::string& value);

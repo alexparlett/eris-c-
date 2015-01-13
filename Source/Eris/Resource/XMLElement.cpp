@@ -177,7 +177,7 @@ namespace Eris
         return m_node.attribute(name.c_str()).value();
     }
 
-    Eris::XMLElement XMLElement::getChild(const std::string& name /*= StringEmpty*/) const
+    XMLElement XMLElement::getChild(const std::string& name /*= StringEmpty*/) const
     {
         if (!m_file || !m_node)
             return EMPTY;
@@ -185,6 +185,13 @@ namespace Eris
         return XMLElement(m_file, m_node.child(name.c_str()));
     }
 
+    XMLElement XMLElement::getNext(const std::string& name /* = StringEmpty */) const
+    {
+        if (!m_file || !m_node)
+            return EMPTY;
+
+        return XMLElement(m_file, m_node.next_sibling(name.c_str()));
+    }
 
     std::string XMLElement::getValue() const
     {
@@ -261,6 +268,79 @@ namespace Eris
     std::string XMLElement::getString(std::string default) const
     {
         std::string value = getValue();
+        if (value == StringEmpty)
+            return default;
+
+        return value;
+    }
+
+    bool XMLElement::getBool(const std::string& name, bool default) const
+    {
+        std::string value = getAttribute(name);
+        if (value == StringEmpty)
+            return default;
+
+        return std::string_lower(value) == "true";
+    }
+
+    glm::i32 XMLElement::getI32(const std::string& name, glm::i32 default) const
+    {
+        std::string value = getAttribute(name);
+        if (value == StringEmpty)
+            return default;
+
+        return std::stoi(value);
+    }
+
+    glm::u32 XMLElement::getU32(const std::string& name, glm::u32 default) const
+    {
+        std::string value = getAttribute(name);
+        if (value == StringEmpty)
+            return default;
+
+        return std::stoul(value);
+    }
+
+    glm::f32 XMLElement::getF32(const std::string& name, glm::f32 default) const
+    {
+        std::string value = getAttribute(name);
+        if (value == StringEmpty)
+            return default;
+
+        return std::stof(value);
+    }
+
+    glm::i64 XMLElement::getI64(const std::string& name, glm::i64 default) const
+    {
+        std::string value = getAttribute(name);
+        if (value == StringEmpty)
+            return default;
+
+        return std::stoll(value);
+    }
+
+    glm::u64 XMLElement::getU64(const std::string& name, glm::u64 default) const
+    {
+        std::string value = getAttribute(name);
+        if (value == StringEmpty)
+            return default;
+
+        return std::stoull(value);
+    }
+
+    glm::f64 XMLElement::getF64(const std::string& name, glm::f64 default) const
+    {
+        std::string value = getAttribute(name);
+        if (value == StringEmpty)
+            return default;
+
+        return std::stod(value);
+    }
+
+
+    std::string XMLElement::getString(const std::string& name, std::string default) const
+    {
+        std::string value = getAttribute(name);
         if (value == StringEmpty)
             return default;
 

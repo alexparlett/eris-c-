@@ -283,7 +283,9 @@ xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
     <ClInclude Include="Graphics\Events.h" />
     <ClInclude Include="Graphics\Renderer.h" />
     <ClInclude Include="Graphics\ShaderProgram.h" />
+    <ClInclude Include="Graphics\Texture.h" />
     <ClInclude Include="Graphics\Texture2D.h" />
+    <ClInclude Include="Graphics\TextureCube.h" />
     <ClInclude Include="Input\Input.h" />
     <ClInclude Include="Input\Events.h" />
     <ClInclude Include="IO\Deserializer.h" />
@@ -333,7 +335,9 @@ xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
     <ClCompile Include="Core\Log.cpp" />
     <ClCompile Include="Graphics\Renderer.cpp" />
     <ClCompile Include="Graphics\ShaderProgram.cpp" />
+    <ClCompile Include="Graphics\Texture.cpp" />
     <ClCompile Include="Graphics\Texture2D.cpp" />
+    <ClCompile Include="Graphics\TextureCube.cpp" />
     <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="IO\File.cpp" />
     <ClCompile Include="IO\FileSystem.cpp" />
