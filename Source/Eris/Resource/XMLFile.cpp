@@ -80,7 +80,7 @@ namespace Eris
         pugi::xml_parse_result result = m_doc->load_buffer_inplace_own(buffer, ds_size);
         if (!result)
         {
-            Log::errorf("Failed parsing XMLFile %s due to %s", deserializer.getPath().string().c_str(), result.description());
+            Log::errorf("Failed loading XMLFile: %s", deserializer.getPath().string().c_str(), result.description());
             m_doc->reset();
             return false;
         }

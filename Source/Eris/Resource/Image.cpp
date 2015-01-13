@@ -57,7 +57,7 @@ namespace Eris
 
         if (!m_data || m_width <= 0 || m_height <= 0 || m_components <= 0)
         {
-            Log::errorf("Image loading failed: %s", stbi_failure_reason());
+            Log::errorf("Failed loading Image: %s", stbi_failure_reason());
             return false;
         }
 

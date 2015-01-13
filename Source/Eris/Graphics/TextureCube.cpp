@@ -64,19 +64,18 @@ namespace Eris
             SharedPtr<Image> image = SharedPtr<Image>(rc->getTempResource<Image>(image_path));
             if (!image)
             {
-                Log::errorf("Failed loading cubemap: could not load image %s", image_path.string().c_str());
                 return false;
             }
 
             image->flip();
 
-            faces[facesMap[face.getI32("side", 0)]] = image;
+            faces[facesMap[face.getI32("pos", 0)]] = image;
             face = face.getNext("face");
         }
 
         if (faces.size() != 6)
         {
-            Log::error("Failed loading cubemap: not enough faces defined");
+            Log::error("Failed loading TextureCube: not enough faces defined");
             return false;
         }
 
