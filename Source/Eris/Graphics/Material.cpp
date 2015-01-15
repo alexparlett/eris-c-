@@ -121,5 +121,7 @@ namespace Eris
                     glUniform1i(glGetUniformLocation(m_program->getHandle(), texture_unit.uniform.c_str()), texture_unit.unit);
                 }
             }
+
+            glActiveTexture(GL_TEXTURE0);
         }
 }

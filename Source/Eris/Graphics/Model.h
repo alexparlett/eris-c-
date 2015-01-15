@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2013-2015 the Eris project.
+// Copyright (c) 2008-2014 the Eris project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,35 +22,43 @@
 
 #pragma once
 
-#include <windows.h>
-
-#include <algorithm>
-#include <utility>
-
-#ifndef GLEW_STATIC
-#define GLEW_STATIC
-#endif
-
-#include <glew/glew.h>
-#include <glfw3/glfw3.h>
-#include <glfw3/glfw3native.h>
-
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/matrix_access.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
-#include "Util/Assert.h"
-#include "Util/Debug.h"
-
-#include "Collections/Types.h"
-#include "IO/Types.h"
-#include "Thread/Types.h"
-
-#define ERIS_ORG "Homonoia Studios"
-#define ERIS_APP "Solarian Wars"
+#include "Core/Context.h"
+#include "Memory/Pointers.h"
+#include "Resource/Resource.h"
 
 namespace Eris
 {
-    static const std::string StringEmpty = std::string();
+    struct Vertex
+    {
+        glm::vec3 position;
+        glm::vec3 normal;
+        glm::vec2 texcoords;
+    };
+
+    class Model : public Resource
+    {
+    public:
+        Model(Context* context);
+
+        virtual bool load(Deserializer& deserializer) override;
+        virtual bool save(Serializer& serializer) override;
+
+        void draw() const;
+
+        glm::u32 getVao() const { return m_vao; }
+        glm::u32 getVbo() const { return m_vbo; }
+        glm::u32 getEbo() const { return m_ebo; }
+        std::vector<glm::u32> getIndices() const { return m_indices; }
+        std::vector<Vertex> getVertices() const { return m_vertices; }
+
+    private:
+        void compile();
+
+        glm::u32 m_vao;
+        glm::u32 m_vbo;
+        glm::u32 m_ebo;
+        std::vector<glm::u32> m_indices;
+        std::vector<Vertex> m_vertices;
+    };
 }
+
