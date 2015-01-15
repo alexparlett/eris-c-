@@ -32,7 +32,7 @@
 namespace Eris
 {
     Texture2D::Texture2D(Context* context) :
-        Resource(context)
+        Texture(context)
     {
     }
 

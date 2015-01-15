@@ -103,7 +103,7 @@ namespace Eris
     class XMLElementIterator
     {
     public:
-        XMLElementIterator(XMLFile* file, XMLElement element, pugi::xml_node_iterator iter);
+        XMLElementIterator(XMLFile* file, XMLElement element, pugi::xml_node_iterator iter, pugi::xml_node_iterator end);
 
         XMLElementIterator operator++ ();
         XMLElementIterator operator++ (glm::i32 junk);
@@ -117,5 +117,6 @@ namespace Eris
         XMLElement m_element;
         WeakPtr<XMLFile> m_file;
         pugi::xml_node_iterator m_iter;
+        pugi::xml_node_iterator m_end;
     };
 }

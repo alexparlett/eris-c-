@@ -59,9 +59,9 @@ namespace Eris
         bool addDirectory(const Path& path, glm::uint priority = PRIORITY_LAST);
         bool removeDirectory(const Path& path);
 
-        template<typename T> T* getResource(const Path& path, bool error_on_fail = true);
-        template<typename T> T* getTempResource(const Path& path, bool error_on_fail = false);
-        template<typename T> void loadResource(const Path& path, bool immediate = true, bool error_on_fail = true);
+        template<typename T, typename Base = T> T* getResource(const Path& path, bool error_on_fail = true);
+        template<typename T, typename Base = T> T* getTempResource(const Path& path, bool error_on_fail = false);
+        template<typename T, typename Base = T> void loadResource(const Path& path, bool immediate = true, bool error_on_fail = true);
 
         void releaseResource(std::type_index type, const Path& path, bool force = false);
         void releaseResources(std::type_index type, bool force = false);
@@ -79,10 +79,10 @@ namespace Eris
         std::mutex m_resource_mutex;
     };
 
-    template<typename T>
+    template<typename T, typename Base>
     inline T* ResourceCache::getResource(const Path& path, bool error_on_fail /*= true*/)
     {
-        std::type_index type(typeid(T));
+        std::type_index type(typeid(Base));
 
         Resource* resource = findResource(type, path);
         if (resource && resource->getAsyncState() == AsyncState::SUCCESS)
@@ -94,7 +94,7 @@ namespace Eris
                 return static_cast<T*>(resource);
         }
 
-        loadResource<T>(path, true, false);
+        loadResource<T, Base>(path, true, false);
 
         resource = findResource(type, path);
         if (resource)
@@ -111,10 +111,10 @@ namespace Eris
         return nullptr;
     }
 
-    template<typename T>
+    template<typename T, typename Base>
     inline T* ResourceCache::getTempResource(const Path& path, bool error_on_fail)
     {
-        std::type_index type(typeid(T));
+        std::type_index type(typeid(Base));
 
         Path final_path = path;
         if (path.is_complete())
@@ -141,31 +141,31 @@ namespace Eris
             if (resource->getAsyncState() == AsyncState::SUCCESS)
                 return static_cast<T*>(resource);
         }
-        else if (!resource)
-        {
-            resource = new T(m_context);
-            resource->setName(path);
 
-            Path full_path = findFile(final_path);
-            if (!full_path.empty() && _loadResource(resource, full_path))
-                return static_cast<T*>(resource);
-        }
+        resource = new T(m_context);
+        resource->setName(path);
+
+        Path full_path = findFile(final_path);
+        if (!full_path.empty() && _loadResource(resource, full_path))
+            return static_cast<T*>(resource);
+
+        delete resource;
 
         return nullptr;
     }
 
-    template<typename T> 
+    template<typename T, typename Base> 
     inline void ResourceCache::loadResource(const Path& path, bool immediate, bool error_on_fail)
     {
         Path full_path = findFile(path);
         if (!path.empty())
         {
-            T* resource = new T(m_context);
+            Base* resource = new T(m_context);
             resource->setName(path);
 
             {
                 std::lock_guard<std::mutex> lock(m_resource_mutex);
-                m_groups[std::type_index(typeid(T))].m_resources[path] = SharedPtr<Resource>(resource);
+                m_groups[std::type_index(typeid(Base))].m_resources[path] = SharedPtr<Resource>(resource);
             }
 
             if (_loadResource(resource, full_path, immediate))

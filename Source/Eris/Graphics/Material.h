@@ -22,51 +22,48 @@
 
 #pragma once
 
+#include "ShaderProgram.h"
+#include "Texture.h"
+
 #include "Core/Context.h"
+#include "Memory/Pointers.h"
 #include "Resource/Resource.h"
 
 namespace Eris
 {
-    class Image;
-    class XMLElement;
-
-    enum class WrapMode : glm::i32
+    struct TextureUnit
     {
-        REPEAT = GL_REPEAT,
-        MIRRORED_REPEAT = GL_MIRRORED_REPEAT,
-        CLAMP_TO_EDGE = GL_CLAMP_TO_EDGE,
-        CLAMP_TO_BORDER = GL_CLAMP_TO_BORDER,
-        CLAMP = GL_CLAMP
+        glm::i32 unit;
+        std::string uniform;
+        SharedPtr<Texture> texture;
     };
 
-    class Texture : public Resource
+    enum class CullMode : glm::u32
+    {
+        BACK = GL_BACK,
+        FRONT = GL_FRONT,
+        FRONT_BACK = GL_FRONT_AND_BACK
+    };
+
+    class Material : public Resource
     {
     public:
-        Texture(Context* context);
-        virtual ~Texture() {}
+        Material(Context* context);
 
-        glm::u32 getHandle() const { return m_handle; }
-        bool getGenerateMipMaps() const { return m_generate_mip_maps; }
-        WrapMode getUWrapMode() const { return m_u_wrap_mode; }
-        WrapMode getVWrapMode() const { return m_v_wrap_mode; }
-        WrapMode getWWrapMode() const { return m_k_wrap_mode; }
+        virtual bool load(Deserializer& deserializer) override;
+        virtual bool save(Serializer& serializer) override;
 
-        void setGenerateMipMaps(bool generate);
-        void setUWrapMode(WrapMode u_wrap_mode);
-        void setVWrapMode(WrapMode v_wrap_mode);
-        void setWWrapMode(WrapMode k_wrap_mode);
+        ShaderProgram* getProgram() const { return m_program; }
+        Texture* getTexture(glm::i32 index) const { return m_textures[index].texture; }
+        CullMode getCullMode() const { return m_cull_mode; }
 
-        virtual void use() const = 0;
+        void setCullMode(CullMode mode);
 
-    protected:
-        glm::i32 getFormat(Image* image);
-        void parseParameters(const XMLElement& element);
-        void setParameters();
+        void use() const;
 
-        bool m_generate_mip_maps;
-        WrapMode m_u_wrap_mode;
-        WrapMode m_v_wrap_mode;
-        WrapMode m_k_wrap_mode;
-        glm::u32 m_handle;
+    private:
+        CullMode m_cull_mode;
+        SharedPtr<ShaderProgram> m_program;
+        TextureUnit m_textures[32];
     };
 }

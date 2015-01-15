@@ -29,7 +29,7 @@
 
 namespace Eris
 {
-    class Texture2D : public Resource, public Texture
+    class Texture2D : public Texture
     {
     public:
         Texture2D(Context* context);
@@ -37,6 +37,6 @@ namespace Eris
         virtual bool load(Deserializer& deserializer) override;
         virtual bool save(Serializer& serializer) override;
 
-        void use() const;
+        virtual void use() const override;
     };
 }

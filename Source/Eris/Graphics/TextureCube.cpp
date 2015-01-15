@@ -41,7 +41,7 @@ namespace Eris
     };
 
     TextureCube::TextureCube(Context* context) :
-        Resource(context)
+        Texture(context)
     {
     }
 
@@ -54,8 +54,8 @@ namespace Eris
             return false;
 
         std::map<glm::i32, SharedPtr<Image>> faces;
-        XMLElement face = file->getRoot().getChild("face");
-        while (face)
+        XMLElement facesEle = file->getRoot().getChild("faces");
+        for (auto face : facesEle)
         {
             Path image_path = face.getValue();
             if (image_path.parent_path().empty())
@@ -68,7 +68,6 @@ namespace Eris
             image->flip();
 
             faces[facesMap[face.getI32("pos", 0)]] = image;
-            face = face.getNext("face");
         }
 
         if (faces.size() != 6)

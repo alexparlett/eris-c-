@@ -29,7 +29,7 @@
 
 namespace Eris
 {
-    class TextureCube : public Resource, public Texture
+    class TextureCube : public Texture
     {
     public:
         TextureCube(Context* context);
@@ -37,7 +37,7 @@ namespace Eris
         virtual bool load(Deserializer& deserializer) override;
         virtual bool save(Serializer& serializer) override;
 
-        void use() const;
+        virtual void use() const override;
 
     private:
         bool compile(const std::map<glm::i32, SharedPtr<Image>>& faces);

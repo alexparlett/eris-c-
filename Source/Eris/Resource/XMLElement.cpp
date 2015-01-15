@@ -110,23 +110,23 @@ namespace Eris
     XMLElement::iterator XMLElement::begin()
     {
         auto iter = m_node.begin();
-        return XMLElementIterator(m_file, XMLElement(m_file, *iter), iter);
+        return XMLElementIterator(m_file, XMLElement(m_file, *iter), iter, m_node.end());
     }
 
     XMLElement::iterator XMLElement::end()
     {
-        return XMLElementIterator(m_file, XMLElement(), m_node.end());
+        return XMLElementIterator(m_file, XMLElement(), m_node.end(), m_node.end());
     }
 
     XMLElement::const_iterator XMLElement::begin() const
     {
         auto iter = m_node.begin();
-        return XMLElementIterator(m_file, XMLElement(m_file, *iter), iter);
+        return XMLElementIterator(m_file, XMLElement(m_file, *iter), iter, m_node.end());
     }
 
     XMLElement::const_iterator XMLElement::end() const
     {
-        return XMLElementIterator(m_file, XMLElement(), m_node.end());
+        return XMLElementIterator(m_file, XMLElement(), m_node.end(), m_node.end());
     }
 
     bool XMLElement::empty() const
@@ -367,9 +367,10 @@ namespace Eris
             return m_node.append_attribute(name.c_str()).set_value(value.c_str());
     }
 
-    XMLElementIterator::XMLElementIterator(XMLFile* file, XMLElement elemenet, pugi::xml_node_iterator iter) :
+    XMLElementIterator::XMLElementIterator(XMLFile* file, XMLElement elemenet, pugi::xml_node_iterator iter, pugi::xml_node_iterator end) :
         m_file(file),
         m_iter(iter),
+        m_end(end),
         m_element(elemenet)
     {
     }
@@ -377,13 +378,24 @@ namespace Eris
     XMLElementIterator XMLElementIterator::operator++ ()
     {
         XMLElementIterator i = *this;
+
         m_iter++;
+        if (m_iter != m_end)
+            m_element = XMLElement(m_file, *m_iter);
+        else
+            m_element = XMLElement();
+
         return i;
     }
 
     XMLElementIterator XMLElementIterator::operator++ (glm::i32 junk)
     {
         m_iter++;
+        if (m_iter != m_end)
+            m_element = XMLElement(m_file, *m_iter);
+        else
+            m_element = XMLElement();
+
         return *this;
     }
 

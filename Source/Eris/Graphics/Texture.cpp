@@ -30,14 +30,14 @@ namespace Eris
     WrapMode wrapModesMap[]
     {
         WrapMode::REPEAT,
-            WrapMode::MIRRORED_REPEAT,
-            WrapMode::CLAMP_TO_BORDER,
-            WrapMode::CLAMP_TO_EDGE,
-            WrapMode::CLAMP
+        WrapMode::MIRRORED_REPEAT,
+        WrapMode::CLAMP_TO_BORDER,
+        WrapMode::CLAMP_TO_EDGE,
+        WrapMode::CLAMP
     };
 
-    Texture::Texture() :
-        RefCounted(),
+    Texture::Texture(Context* context) :
+        Resource(context),
         m_handle(0),
         m_u_wrap_mode(WrapMode::REPEAT),
         m_v_wrap_mode(WrapMode::REPEAT),
@@ -61,9 +61,9 @@ namespace Eris
         m_v_wrap_mode = v_wrap_mode;
     }
 
-    void Texture::setKWrapMode(WrapMode k_wrap_mode)
+    void Texture::setWWrapMode(WrapMode w_wrap_mode)
     {
-        m_k_wrap_mode = k_wrap_mode;
+        m_k_wrap_mode = w_wrap_mode;
     }
 
     glm::i32 Texture::getFormat(Image* image)
@@ -95,7 +95,7 @@ namespace Eris
             {
                 m_u_wrap_mode = wrapModesMap[ele.getI32("u", 0)];
                 m_v_wrap_mode = wrapModesMap[ele.getI32("v", 0)];
-                m_k_wrap_mode = wrapModesMap[ele.getI32("k", 0)];
+                m_k_wrap_mode = wrapModesMap[ele.getI32("w", 0)];
             }
         }
     }
