@@ -143,7 +143,7 @@ namespace Eris
         }
 
         resource = new T(m_context);
-        resource->setName(path);
+        resource->setName(final_path);
 
         Path full_path = findFile(final_path);
         if (!full_path.empty() && _loadResource(resource, full_path))
