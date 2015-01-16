@@ -23,7 +23,6 @@
 #pragma once
 
 #ifdef _DEBUG
-    #include <crtdbg.h>
     #define ERIS_ASSERT(expr) \
         if (!(expr) && _CrtDbgReport(_CRT_ASSERT, __FILE__, __LINE__, __FUNCTION__, #expr) == 1) \
             _CrtDbgBreak(); \

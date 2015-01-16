@@ -41,7 +41,6 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Util/Assert.h"
-#include "Util/Debug.h"
 
 #include "Collections/Types.h"
 #include "IO/Types.h"
@@ -49,8 +48,3 @@
 
 #define ERIS_ORG "Homonoia Studios"
 #define ERIS_APP "Solarian Wars"
-
-namespace Eris
-{
-    static const std::string StringEmpty = std::string();
-}

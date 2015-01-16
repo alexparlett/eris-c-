@@ -20,6 +20,12 @@
 // THE SOFTWARE.
 //
 
+#ifdef _DEBUG
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+#endif
+
 #include "Core/Context.h"
 #include "Memory/Pointers.h"
 #include "Application/Engine.h"

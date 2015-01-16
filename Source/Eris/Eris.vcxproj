@@ -282,6 +282,7 @@ xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
     <ClInclude Include="Core\Log.h" />
     <ClInclude Include="Graphics\Events.h" />
     <ClInclude Include="Graphics\Material.h" />
+    <ClInclude Include="Graphics\Mesh.h" />
     <ClInclude Include="Graphics\Model.h" />
     <ClInclude Include="Graphics\Renderer.h" />
     <ClInclude Include="Graphics\ShaderProgram.h" />
@@ -317,7 +318,6 @@ xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
     <ClInclude Include="Thread\Types.h" />
     <ClInclude Include="Util\Aligned.h" />
     <ClInclude Include="Util\Assert.h" />
-    <ClInclude Include="Util\Debug.h" />
     <ClInclude Include="Core\Object.h" />
     <ClInclude Include="Eris.h" />
     <ClInclude Include="Graphics\Graphics.h" />
@@ -336,6 +336,7 @@ xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
     <ClCompile Include="Core\Clock.cpp" />
     <ClCompile Include="Core\Log.cpp" />
     <ClCompile Include="Graphics\Material.cpp" />
+    <ClCompile Include="Graphics\Mesh.cpp" />
     <ClCompile Include="Graphics\Model.cpp" />
     <ClCompile Include="Graphics\Renderer.cpp" />
     <ClCompile Include="Graphics\ShaderProgram.cpp" />

@@ -51,7 +51,9 @@ namespace Eris
             return false;
 
         Assimp::Importer importer;
-        const aiScene* scene = importer.ReadFileFromMemory(buffer.get(), ds_size, aiProcess_Triangulate | aiProcess_FlipUVs);
+
+        const aiScene* scene = importer.ReadFileFromMemory(buffer.get(), ds_size, aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_FixInfacingNormals | aiProcess_GenUVCoords | aiProcess_JoinIdenticalVertices | aiProcess_OptimizeGraph | aiProcess_OptimizeMeshes);
+
         if (!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
         {
             Log::errorf("Failed loading Model: %s", importer.GetErrorString());
@@ -64,35 +66,45 @@ namespace Eris
             return false;
         }
 
-        const aiMesh* aimesh = scene->mMeshes[0];
-        for (auto j = 0; j < aimesh->mNumVertices; j++)
+        for (auto i = 0; i < scene->mNumMeshes; i++)
         {
-            Vertex vertex;
-
-            vertex.position.x = aimesh->mVertices[j].x;
-            vertex.position.y = aimesh->mVertices[j].y;
-            vertex.position.z = aimesh->mVertices[j].z;
-
-            vertex.normal.x = aimesh->mNormals[j].x;
-            vertex.normal.y = aimesh->mNormals[j].y;
-            vertex.normal.z = aimesh->mNormals[j].z;
-
-            if (aimesh->HasTextureCoords(0))
+            aiMesh* aimesh = scene->mMeshes[i];
+            std::vector<Vertex> vertices;
+            for (auto j = 0; j < aimesh->mNumVertices; j++)
             {
-                vertex.texcoords.x = aimesh->mTextureCoords[0][j].x;
-                vertex.texcoords.y = aimesh->mTextureCoords[0][j].y;
+                Vertex vertex;
+
+                vertex.position.x = aimesh->mVertices[j].x;
+                vertex.position.y = aimesh->mVertices[j].y;
+                vertex.position.z = aimesh->mVertices[j].z;
+
+                vertex.normal.x = aimesh->mNormals[j].x;
+                vertex.normal.y = aimesh->mNormals[j].y;
+                vertex.normal.z = aimesh->mNormals[j].z;
+
+                if (aimesh->HasTextureCoords(0))
+                {
+                    vertex.texcoords.x = aimesh->mTextureCoords[0][j].x;
+                    vertex.texcoords.y = aimesh->mTextureCoords[0][j].y;
+                }
+                else
+                    vertex.texcoords = glm::vec2(0.0f, 0.0f);
+
+                vertices.push_back(vertex);
             }
-            else
-                vertex.texcoords = glm::vec2(0.0f, 0.0f);
 
-            m_vertices.push_back(vertex);
-        }
+            std::vector<glm::u32> indices;
+            for (auto j = 0; j < aimesh->mNumFaces; j++)
+            {
+                aiFace face = aimesh->mFaces[j];
+                for (auto k = 0; k < face.mNumIndices; k++)
+                    indices.push_back(face.mIndices[k]);
+            }
 
-        for (auto j = 0; j < aimesh->mNumFaces; j++)
-        {
-            aiFace face = aimesh->mFaces[j];
-            for (auto k = 0; k < face.mNumIndices; k++)
-                m_indices.push_back(face.mIndices[k]);
+            SharedPtr<Mesh> mesh = SharedPtr<Mesh>(new Mesh(m_context));
+            mesh->setVertices(vertices);
+            mesh->setIndices(indices);
+            m_meshes.push_back(mesh);
         }
 
         compile();
@@ -107,11 +119,8 @@ namespace Eris
 
     void Model::draw() const
     {
-        ERIS_ASSERT(m_vao > 0);
-
-        glBindVertexArray(m_vao);
-        glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0);
-        glBindVertexArray(0);
+        for (auto mesh : m_meshes)
+            mesh->draw();
     }
 
     void Model::compile()
@@ -120,29 +129,9 @@ namespace Eris
         Graphics* graphics = m_context->getModule<Graphics>();
         glfwMakeContextCurrent(win ? win : graphics->getResourceWindow());
 
-        glGenVertexArrays(1, &m_vao);
-        glGenBuffers(1, &m_vbo);
-        glGenBuffers(1, &m_ebo);
-
-        glBindVertexArray(m_vao);
-        glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-
-        glBufferData(GL_ARRAY_BUFFER, m_vertices.size() * sizeof(Vertex), &m_vertices[0], GL_STATIC_DRAW);
-
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices.size() * sizeof(glm::u32), &m_indices[0], GL_STATIC_DRAW);
-
-        // Vertex Positions
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) 0);
-        // Vertex Normals
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Vertex, normal));
-        // Vertex Texture Coords
-        glEnableVertexAttribArray(2);
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Vertex, texcoords));
-
-        glBindVertexArray(0);
+        for (auto mesh : m_meshes)
+            mesh->compile();
+        
         glfwMakeContextCurrent(win);
     }
 }

@@ -29,10 +29,10 @@
 
 namespace std
 {
-    inline string& string_ltrim(string &s)
+    inline string& string_ltrim(string &str)
     {
-        s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
-        return s;
+        str.erase(str.begin(), std::find_if(str.begin(), str.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
+        return str;
     }
 
     inline string string_format(const string& fmt_str, ...)

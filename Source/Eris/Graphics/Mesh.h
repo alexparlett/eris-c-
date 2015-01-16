@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2013-2015 the Eris project.
+// Copyright (c) 2008-2014 the Eris project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,13 +22,40 @@
 
 #pragma once
 
-#ifdef _DEBUG
-    #define _CRTDBG_MAP_ALLOC
+#include "Core/Context.h"
+#include "Core/Object.h"
 
-    #ifdef _malloca
-    #undef _malloca
-    #endif
+namespace Eris
+{
+    struct Vertex
+    {
+        glm::vec3 position;
+        glm::vec3 normal;
+        glm::vec2 texcoords;
+    };
 
-    #include <cstdlib>
-    #include <crtdbg.h>
-#endif
+    class Mesh : public Object
+    {
+    public:
+        Mesh(Context* context);
+
+        void draw() const;
+        void compile();
+
+        void setVertices(std::vector<Vertex> vertices) { m_vertices = vertices; }
+        void setIndices(std::vector<glm::u32> indices) { m_indices = indices; }
+
+        glm::u32 getVao() const { return m_vao; }
+        glm::u32 getVbo() const { return m_vbo; }
+        glm::u32 getEbo() const { return m_ebo; }
+        std::vector<glm::u32> getIndices() const { return m_indices; }
+        std::vector<Vertex> getVertices() const { return m_vertices; }
+
+    private:
+        glm::u32 m_vao;
+        glm::u32 m_vbo;
+        glm::u32 m_ebo;
+        std::vector<glm::u32> m_indices;
+        std::vector<Vertex> m_vertices;
+    };
+}

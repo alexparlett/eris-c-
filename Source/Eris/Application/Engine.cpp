@@ -81,6 +81,7 @@ namespace Eris
         rc->addDirectory(fs->getApplicationPreferencesDir());
         rc->addDirectory(fs->getProgramDir());
         rc->addDirectory(fs->getProgramDir() /= "Data");
+        rc->initialize();
 
         settings->load();
         locale->load(settings->getString("General/Language", "enGB"));
@@ -100,7 +101,6 @@ namespace Eris
 
         graphics->initialize();
         renderer->initialize();
-        rc->initialize();
         input->initialize();
     }
 
@@ -141,8 +141,8 @@ namespace Eris
         graphics->minimize();
         graphics->hide();
 
-        rc->terminate();
         renderer->terminate();
+        rc->terminate();
         graphics->terminate();
 
         glm::f64 duration = clock->getElapsedTime();

@@ -140,10 +140,14 @@ namespace Eris
                 {
                     m_ref_count->m_refs = -1;
                     delete[] m_ptr;
+                    m_ptr = nullptr;
                 }
 
                 if (m_ref_count->m_refs < 0 && !m_ref_count->m_weak_refs)
+                {
                     delete m_ref_count;
+                    m_ref_count = nullptr;
+                }
             }
         }
 

@@ -29,3 +29,8 @@
 #include <string>
 #include <vector>
 #include <map>
+
+namespace Eris
+{
+    static const std::string StringEmpty = std::string();
+}

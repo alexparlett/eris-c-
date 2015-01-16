@@ -22,19 +22,14 @@
 
 #pragma once
 
+#include "Mesh.h"
+
 #include "Core/Context.h"
 #include "Memory/Pointers.h"
 #include "Resource/Resource.h"
 
 namespace Eris
 {
-    struct Vertex
-    {
-        glm::vec3 position;
-        glm::vec3 normal;
-        glm::vec2 texcoords;
-    };
-
     class Model : public Resource
     {
     public:
@@ -45,20 +40,10 @@ namespace Eris
 
         void draw() const;
 
-        glm::u32 getVao() const { return m_vao; }
-        glm::u32 getVbo() const { return m_vbo; }
-        glm::u32 getEbo() const { return m_ebo; }
-        std::vector<glm::u32> getIndices() const { return m_indices; }
-        std::vector<Vertex> getVertices() const { return m_vertices; }
-
     private:
         void compile();
 
-        glm::u32 m_vao;
-        glm::u32 m_vbo;
-        glm::u32 m_ebo;
-        std::vector<glm::u32> m_indices;
-        std::vector<Vertex> m_vertices;
+        std::vector<SharedPtr<Mesh>> m_meshes;
     };
 }
 
