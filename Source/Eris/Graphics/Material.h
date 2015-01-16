@@ -61,7 +61,7 @@ namespace Eris
 
         void setCullMode(CullMode mode);
 
-        void addUniform(const std::string& uniform, const Variant& data);
+        void setUniform(const std::string& uniform, const Variant& data);
         ShaderUniform* getUniform(std::string uniform);
         void removeUniform(std::string uniform);
 

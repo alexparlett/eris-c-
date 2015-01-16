@@ -93,32 +93,16 @@ namespace Eris
         glUseProgram(m_handle);
 
         for (auto parameter : m_parameters)
-            graphics->bindUniform(parameter.second.location, parameter.second.type, parameter.second.data);
+        {
+            if (parameter.second.data.which() != 0)
+                graphics->bindUniform(parameter.second.location, parameter.second.type, parameter.second.data);
+        }
     }
 
-    void ShaderProgram::addUniform(const std::string& uniform, const Variant& data)
+    void ShaderProgram::setUniform(const std::string& uniform, const Variant& data)
     {
-        ERIS_ASSERT(m_handle);
-
-        GLFWwindow *win = glfwGetCurrentContext();
-        Graphics* graphics = m_context->getModule<Graphics>();
-        glfwMakeContextCurrent(win ? win : graphics->getResourceWindow());
-
-        glm::u32 location = glGetUniformLocation(m_handle, uniform.c_str());
-
-        glm::i32 size;
-        glm::u32 type;
-        char name[64];
-        glGetActiveUniform(m_handle, location, 64, nullptr, &size, &type, name);
-
-        ShaderUniform parameter;
-        parameter.data = data;
-        parameter.type = type;
-        parameter.location = location;
-
-        m_parameters[uniform] = parameter;
-
-        glfwMakeContextCurrent(win);
+        if (m_parameters.find(uniform) != m_parameters.end())
+            m_parameters[uniform].data = data;
     }
 
     ShaderUniform* ShaderProgram::getUniform(std::string uniform)
@@ -202,6 +186,25 @@ namespace Eris
 
         glDeleteShader(vertex);
         glDeleteShader(fragment);
+
+        glm::i32 uniform_count;
+        glGetProgramiv(m_handle, GL_ACTIVE_UNIFORMS, &uniform_count);
+
+        for (auto i = 0; i < uniform_count; i++)
+        {
+            glm::i32 size;
+            glm::u32 type;
+            char name[64];
+            glGetActiveUniform(m_handle, i, 64, nullptr, &size, &type, name);
+
+            if (type == GL_SAMPLER_2D || type == GL_SAMPLER_CUBE)
+                continue;
+
+            ShaderUniform parameter;
+            parameter.type = type;
+            parameter.location = i;
+            m_parameters[name] = parameter;
+        }
 
         glfwMakeContextCurrent(win);
 
