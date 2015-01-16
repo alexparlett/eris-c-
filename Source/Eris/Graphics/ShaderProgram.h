@@ -28,6 +28,13 @@
 
 namespace Eris
 {
+    struct ShaderUniform
+    {
+        Variant data;
+        glm::u32 type;
+        glm::i32 location;
+    };
+
     class ShaderProgram : public Resource
     {
     public:
@@ -36,13 +43,18 @@ namespace Eris
         virtual bool load(Deserializer& deserializer) override;
         virtual bool save(Serializer& serializer) override;
 
-        glm::u32 getHandle() const { return m_handle; }
-
         void use() const;
+
+        void addUniform(const std::string& uniform, const Variant& data);
+        ShaderUniform* getUniform(std::string uniform);
+        void removeUniform(std::string uniform);
+
+        glm::u32 getHandle() const { return m_handle; }
 
     private:
         bool compile(const char* vert_source, const char* frag_source);
 
         glm::u32 m_handle;
+        std::map<std::string, ShaderUniform> m_parameters;
     };
 }

@@ -20,6 +20,7 @@
 // THE SOFTWARE.
 //
 
+#include "Graphics.h"
 #include "Material.h"
 #include "Texture2D.h"
 #include "TextureCube.h"
@@ -77,6 +78,12 @@ namespace Eris
                 m_textures[texture_unit.unit]  = texture_unit;
             }
 
+            XMLElement uniforms = root.getChild("uniforms");
+            for (auto uniform : uniforms)
+            {
+
+            }
+
             XMLElement cull = root.getChild("cull");
             if (cull)
             {
@@ -103,14 +110,56 @@ namespace Eris
             m_cull_mode = mode;
         }
 
+        void Material::addUniform(const std::string& uniform, const Variant& data)
+        {
+            ERIS_ASSERT(m_program->getHandle());
+
+            GLFWwindow *win = glfwGetCurrentContext();
+            Graphics* graphics = m_context->getModule<Graphics>();
+            glfwMakeContextCurrent(win ? win : graphics->getResourceWindow());
+
+            glm::u32 location = glGetUniformLocation(m_program->getHandle(), uniform.c_str());
+
+            glm::i32 size;
+            glm::u32 type;
+            char name[64];
+            glGetActiveUniform(m_program->getHandle(), location, 64, nullptr, &size, &type, name);
+
+            ShaderUniform parameter;
+            parameter.data = data;
+            parameter.type = type;
+            parameter.location = location;
+
+            m_parameters[uniform] = parameter;
+
+            glfwMakeContextCurrent(win);
+        }
+
+        ShaderUniform* Material::getUniform(std::string uniform)
+        {
+            auto find = m_parameters.find(uniform);
+            if (find != m_parameters.end())
+                return &find->second;
+            return nullptr;
+        }
+
+        void Material::removeUniform(std::string uniform)
+        {
+            m_parameters.erase(uniform);
+        }
 
         void Material::use() const
         {
             ERIS_ASSERT(m_program);
 
+            Graphics* graphics = m_context->getModule<Graphics>();
+
             glCullFace((glm::u32) m_cull_mode);
 
             m_program->use();
+
+            for (auto parameter : m_parameters)
+                graphics->bindUniform(parameter.second.location, parameter.second.type, parameter.second.data);
             
             for (auto texture_unit : m_textures)
             {

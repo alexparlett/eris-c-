@@ -66,11 +66,11 @@ namespace Eris
             return false;
         }
 
-        for (auto i = 0; i < scene->mNumMeshes; i++)
+        for (auto i = 0U; i < scene->mNumMeshes; i++)
         {
             aiMesh* aimesh = scene->mMeshes[i];
             std::vector<Vertex> vertices;
-            for (auto j = 0; j < aimesh->mNumVertices; j++)
+            for (auto j = 0U; j < aimesh->mNumVertices; j++)
             {
                 Vertex vertex;
 
@@ -94,10 +94,10 @@ namespace Eris
             }
 
             std::vector<glm::u32> indices;
-            for (auto j = 0; j < aimesh->mNumFaces; j++)
+            for (auto j = 0U; j < aimesh->mNumFaces; j++)
             {
                 aiFace face = aimesh->mFaces[j];
-                for (auto k = 0; k < face.mNumIndices; k++)
+                for (auto k = 0U; k < face.mNumIndices; k++)
                     indices.push_back(face.mIndices[k]);
             }
 

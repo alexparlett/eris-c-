@@ -95,6 +95,8 @@ namespace Eris
         /// Get current resolution.
         glm::ivec2 getResolution() const;
 
+        void bindUniform(glm::i32 location, glm::u32 type, const Variant& data);
+
         /// Get initialized.
         bool initialized() const { return m_initialized; }
 

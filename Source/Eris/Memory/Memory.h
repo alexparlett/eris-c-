@@ -45,7 +45,7 @@ namespace Eris
         virtual ~BaseMemoryPool() {}
 
         void* allocate(std::size_t size, std::size_t alignment_bits);
-        void free(void* ptr);
+        void deallocate(void* ptr);
 
         glm::u32 getAllocations() const { return m_allocations.load(); }
 
@@ -63,7 +63,7 @@ namespace Eris
         virtual ~HeapMemoryPool() final;
 
         void* allocate(std::size_t size, std::size_t alignment_bits);
-        void free(void* ptr);
+        void deallocate(void* ptr);
     };
 
     class StackMemoryPool : public BaseMemoryPool
@@ -75,7 +75,7 @@ namespace Eris
         virtual ~StackMemoryPool() final;
 
         void* allocate(std::size_t size, std::size_t alignment_bits);
-        void free(void* ptr);
+        void deallocate(void* ptr);
 
         std::size_t getTotalSize() const { return m_mem_size; }
         std::size_t getAllocatedSize() const { return m_head.load() - m_memory; }
@@ -114,7 +114,7 @@ namespace Eris
         virtual ~ChainMemoryPool() final;
 
         void* allocate(std::size_t size, std::size_t alignment_bits);
-        void free(void* ptr);
+        void deallocate(void* ptr);
 
         std::size_t getChunksCount() const;
         std::size_t getAllocatedSize() const;

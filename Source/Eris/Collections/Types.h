@@ -30,7 +30,11 @@
 #include <vector>
 #include <map>
 
+#include <boost/variant.hpp>
+
 namespace Eris
 {
     static const std::string StringEmpty = std::string();
+
+    using Variant = boost::variant < std::string, glm::f32, glm::fvec2, glm::fvec3, glm::fvec4, glm::i32, glm::ivec2, glm::ivec3, glm::ivec4, bool, glm::bvec2, glm::bvec3, glm::bvec4, glm::mat2, glm::mat3, glm::mat4 > ;
 }

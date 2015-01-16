@@ -87,7 +87,51 @@ namespace Eris
     void ShaderProgram::use() const
     {
         ERIS_ASSERT(m_handle > 0);
+
+        Graphics* graphics = m_context->getModule<Graphics>();
+
         glUseProgram(m_handle);
+
+        for (auto parameter : m_parameters)
+            graphics->bindUniform(parameter.second.location, parameter.second.type, parameter.second.data);
+    }
+
+    void ShaderProgram::addUniform(const std::string& uniform, const Variant& data)
+    {
+        ERIS_ASSERT(m_handle);
+
+        GLFWwindow *win = glfwGetCurrentContext();
+        Graphics* graphics = m_context->getModule<Graphics>();
+        glfwMakeContextCurrent(win ? win : graphics->getResourceWindow());
+
+        glm::u32 location = glGetUniformLocation(m_handle, uniform.c_str());
+
+        glm::i32 size;
+        glm::u32 type;
+        char name[64];
+        glGetActiveUniform(m_handle, location, 64, nullptr, &size, &type, name);
+
+        ShaderUniform parameter;
+        parameter.data = data;
+        parameter.type = type;
+        parameter.location = location;
+
+        m_parameters[uniform] = parameter;
+
+        glfwMakeContextCurrent(win);
+    }
+
+    ShaderUniform* ShaderProgram::getUniform(std::string uniform)
+    {
+        auto find = m_parameters.find(uniform);
+        if (find != m_parameters.end())
+            return &find->second;
+        return nullptr;
+    }
+
+    void ShaderProgram::removeUniform(std::string uniform)
+    {
+        m_parameters.erase(uniform);
     }
 
     bool ShaderProgram::compile(const char* vert_source, const char* frag_source)
@@ -137,6 +181,7 @@ namespace Eris
         }
 
         m_handle = glCreateProgram();
+
         glAttachShader(m_handle, vertex);
         glAttachShader(m_handle, fragment);
         glLinkProgram(m_handle);
@@ -162,5 +207,4 @@ namespace Eris
 
         return true;
     }
-
 }

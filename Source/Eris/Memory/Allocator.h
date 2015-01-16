@@ -115,7 +115,7 @@ namespace Eris
         void deallocate(void* p, size_type n)
         {
             (void) n;
-            m_pool->free(p);
+            m_pool->deallocate(p);
         }
 
         void construct(pointer p, const T& val)

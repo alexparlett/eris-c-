@@ -53,17 +53,22 @@ namespace Eris
         virtual bool load(Deserializer& deserializer) override;
         virtual bool save(Serializer& serializer) override;
 
+        void use() const;
+
         ShaderProgram* getProgram() const { return m_program; }
         Texture* getTexture(glm::i32 index) const { return m_textures[index].texture; }
         CullMode getCullMode() const { return m_cull_mode; }
 
         void setCullMode(CullMode mode);
 
-        void use() const;
+        void addUniform(const std::string& uniform, const Variant& data);
+        ShaderUniform* getUniform(std::string uniform);
+        void removeUniform(std::string uniform);
 
     private:
         CullMode m_cull_mode;
         SharedPtr<ShaderProgram> m_program;
         TextureUnit m_textures[32];
+        std::map<std::string, ShaderUniform> m_parameters;
     };
 }

@@ -57,18 +57,18 @@ namespace Eris
         return out;
     }
 
-    void BaseMemoryPool::free(void* ptr)
+    void BaseMemoryPool::deallocate(void* ptr)
     {
         switch (m_type)
         {
         case Type::HEAP:
-            static_cast<HeapMemoryPool*>(this)->free(ptr);
+            static_cast<HeapMemoryPool*>(this)->deallocate(ptr);
             break;
         case Type::STACK:
-            static_cast<StackMemoryPool*>(this)->free(ptr);
+            static_cast<StackMemoryPool*>(this)->deallocate(ptr);
             break;
         case Type::CHAIN:
-            static_cast<ChainMemoryPool*>(this)->free(ptr);
+            static_cast<ChainMemoryPool*>(this)->deallocate(ptr);
             break;
         default:
             ERIS_ASSERT(0);
@@ -104,7 +104,7 @@ namespace Eris
         return out;
     }
 
-    void HeapMemoryPool::free(void* ptr)
+    void HeapMemoryPool::deallocate(void* ptr)
     {
         m_allocations--;
         _aligned_free(ptr);
@@ -170,7 +170,7 @@ namespace Eris
         return out;
     }
 
-    void StackMemoryPool::free(void* ptr)
+    void StackMemoryPool::deallocate(void* ptr)
     {
         ERIS_ASSERT(ptr && aligned(m_alignment_bits, ptr));
         ERIS_ASSERT(m_memory);
@@ -288,7 +288,7 @@ namespace Eris
         return out;
     }
 
-    void ChainMemoryPool::free(void* ptr)
+    void ChainMemoryPool::deallocate(void* ptr)
     {
         if (!ptr)
             return;
