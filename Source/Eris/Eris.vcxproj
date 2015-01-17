@@ -361,6 +361,9 @@ xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
     <ClCompile Include="Resource\XMLFile.cpp" />
     <ClCompile Include="Thread\SpinLock.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\Assets\icon.ico" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

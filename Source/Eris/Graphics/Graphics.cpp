@@ -41,6 +41,7 @@ namespace Eris
         m_samples(4),
         m_gamma(1.0f),
         m_title(ERIS_APP),
+        m_icon("icon.ico"),
         m_main_window(nullptr),
         m_resource_window(nullptr)
     {
@@ -55,6 +56,8 @@ namespace Eris
             return;
 
         m_initialized = true;
+
+        setIcon(m_icon);
     }
 
     void Graphics::terminate()
@@ -182,6 +185,28 @@ namespace Eris
     void Graphics::setVSync(bool vsync)
     {
         m_vsync = vsync;
+    }
+
+    void Graphics::setIcon(const std::string& icon)
+    {
+        m_icon = icon;
+
+        if (!m_initialized || !m_main_window || !m_resource_window)
+            return;
+
+        HWND main_hwnd = glfwGetWin32Window(m_main_window);
+        HWND res_hwnd = glfwGetWin32Window(m_resource_window);
+        HANDLE hicon = (HICON) LoadImage(NULL, "icon.ico", IMAGE_ICON, 0, 0, LR_LOADFROMFILE | LR_DEFAULTSIZE | LR_SHARED);
+        if (hicon)
+        {
+            SendMessage(main_hwnd, WM_SETICON, ICON_SMALL, (LPARAM) hicon);
+            SendMessage(main_hwnd, WM_SETICON, ICON_BIG, (LPARAM) hicon);
+
+            SendMessage(res_hwnd, WM_SETICON, ICON_SMALL, (LPARAM) hicon);
+            SendMessage(res_hwnd, WM_SETICON, ICON_BIG, (LPARAM) hicon);
+        }
+        else
+            Log::errorf("Failed setting Window Icon: %d", GetLastError());
     }
 
     std::vector<glm::ivec2> Graphics::getResolutions() const

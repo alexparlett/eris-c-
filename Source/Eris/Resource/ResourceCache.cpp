@@ -143,7 +143,7 @@ namespace Eris
         if (group != m_groups.end())
         {
             auto resource = group->second.m_resources.find(path);
-            if (resource != group->second.m_resources.end())
+            if (resource != group->second.m_resources.end() && resource->second->getAsyncState() != AsyncState::FAILED)
                 return resource->second.get();
         }
 

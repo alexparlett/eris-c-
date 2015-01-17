@@ -32,6 +32,7 @@
 #include "Graphics/Renderer.h"
 #include "Input/Input.h"
 #include "IO/FileSystem.h"
+#include "Resource/Image.h"
 #include "Resource/ResourceCache.h"
 
 #include "../gitversion.h"
@@ -70,7 +71,7 @@ namespace Eris
         Locale* locale = m_context->getModule<Locale>();
         Renderer* renderer = m_context->getModule<Renderer>();
 
-        log->open(fs->getApplicationPreferencesDir() /= "log.log");
+        log->open(fs->getApplicationPreferencesDir() /= "engine.log");
 
         logSystemInfo();
 
@@ -98,6 +99,8 @@ namespace Eris
         graphics->setResizable(settings->getBool("Graphics/Resizable", false));
         graphics->setVSync(settings->getBool("Graphics/VSync", true));
         graphics->setSamples(settings->getI32("Graphics/Multisamples", 4));
+        graphics->setIcon("icon.ico");
+        graphics->setTitle(ERIS_APP);
 
         graphics->initialize();
         renderer->initialize();

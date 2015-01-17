@@ -67,6 +67,8 @@ namespace Eris
         void setBorderless(bool borderless);
         /// Set window vsync. Only effective before window initialization.
         void setVSync(bool vsync);
+        /// Set window icon.
+        void setIcon(const std::string& icon);
 
         /// Get whether fullscreen is set.
         bool getFullscreen() const { return m_fullscreen; }
@@ -90,6 +92,8 @@ namespace Eris
         GLFWwindow* getWindow() const { return m_main_window; }
         /// Get window ptr.
         GLFWwindow* getResourceWindow() const { return m_resource_window; }
+        /// Get icon name.
+        const std::string& getIcon() const { return m_icon; }
         /// Get available resolutions.
         std::vector<glm::ivec2> getResolutions() const;
         /// Get current resolution.
@@ -119,6 +123,7 @@ namespace Eris
         std::string m_title;
         GLFWwindow* m_main_window;
         GLFWwindow* m_resource_window;
+        std::string m_icon;
     };
 
     template<> inline void Context::registerModule(Graphics* graphics)
