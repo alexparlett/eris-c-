@@ -76,6 +76,18 @@ namespace Eris
         glm::i64 getI64(glm::i64 default) const;
         glm::u64 getU64(glm::u64 default) const;
         glm::f64 getF64(glm::f64 default) const;
+        glm::fvec2 getFVec2(glm::fvec2 default) const;
+        glm::fvec3 getFVec3(glm::fvec3 default) const;
+        glm::fvec4 getFVec4(glm::fvec4 default) const;
+        glm::ivec2 getIVec2(glm::ivec2 default) const;
+        glm::ivec3 getIVec3(glm::ivec3 default) const;
+        glm::ivec4 getIVec4(glm::ivec4 default) const;
+        glm::bvec2 getBVec2(glm::bvec2 default) const;
+        glm::bvec3 getBVec3(glm::bvec3 default) const;
+        glm::bvec4 getBVec4(glm::bvec4 default) const;
+        glm::mat2 getMat2(glm::mat2 default) const;
+        glm::mat3 getMat3(glm::mat3 default) const;
+        glm::mat4 getMat4(glm::mat4 default) const;
         std::string getString(std::string default) const;
 
         bool getBool(const std::string& name, bool default) const;

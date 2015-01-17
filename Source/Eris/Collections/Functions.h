@@ -27,8 +27,17 @@
 #include <cctype>
 #include <locale>
 
+#include <boost/algorithm/string.hpp>
+
 namespace std
 {
+    inline std::vector<std::string> string_split(const string& str, const string& delims)
+    {
+        std::vector<std::string> tokens;
+        boost::split(tokens, str, boost::is_any_of(delims));
+        return tokens;
+    }
+
     inline string& string_ltrim(string &str)
     {
         str.erase(str.begin(), std::find_if(str.begin(), str.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));

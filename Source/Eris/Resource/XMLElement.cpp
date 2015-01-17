@@ -25,6 +25,9 @@
 
 #include "Collections/Functions.h"
 
+#include <sstream>
+#include <iterator>
+
 namespace Eris
 {
     const XMLElement XMLElement::EMPTY;
@@ -264,6 +267,131 @@ namespace Eris
         return std::stod(value);
     }
 
+    glm::fvec2 XMLElement::getFVec2(glm::fvec2 default) const
+    {
+        std::string value = getValue();
+        if (value.empty())
+            return default;
+
+        std::vector<std::string> parts = std::string_split(value, " ");
+        return glm::fvec2(stof(parts[0]), stof(parts[1]));
+    }
+
+    glm::fvec3 XMLElement::getFVec3(glm::fvec3 default) const
+    {
+        std::string value = getValue();
+        if (value.empty())
+            return default;
+
+        std::vector<std::string> parts = std::string_split(value, " ");
+        return glm::fvec3(stof(parts[0]), stof(parts[1]), stof(parts[2]));
+    }
+
+    glm::fvec4 XMLElement::getFVec4(glm::fvec4 default) const
+    {
+        std::string value = getValue();
+        if (value.empty())
+            return default;
+
+        std::vector<std::string> parts = std::string_split(value, " ");
+        return glm::fvec4(stof(parts[0]), stof(parts[1]), stof(parts[2]), stof(parts[3]));
+    }
+
+    glm::ivec2 XMLElement::getIVec2(glm::ivec2 default) const
+    {
+        std::string value = getValue();
+        if (value.empty())
+            return default;
+
+        std::vector<std::string> parts = std::string_split(value, " ");
+        return glm::ivec2(stoi(parts[0]), stoi(parts[1]));
+    }
+
+    glm::ivec3 XMLElement::getIVec3(glm::ivec3 default) const
+    {
+        std::string value = getValue();
+        if (value.empty())
+            return default;
+
+        std::vector<std::string> parts = std::string_split(value, " ");
+        return glm::ivec3(stoi(parts[0]), stoi(parts[1]), stoi(parts[2]));
+    }
+
+    glm::ivec4 XMLElement::getIVec4(glm::ivec4 default) const
+    {
+        std::string value = getValue();
+        if (value.empty())
+            return default;
+
+        std::vector<std::string> parts = std::string_split(value, " ");
+        return glm::ivec4(stoi(parts[0]), stoi(parts[1]), stoi(parts[2]), stoi(parts[3]));
+    }
+
+    glm::bvec2 XMLElement::getBVec2(glm::bvec2 default) const
+    {
+        std::string value = getValue();
+        if (value.empty())
+            return default;
+
+        std::vector<std::string> parts = std::string_split(value, " ");
+        return glm::bvec2(stoi(parts[0]), stoi(parts[1]));
+    }
+
+    glm::bvec3 XMLElement::getBVec3(glm::bvec3 default) const
+    {
+        std::string value = getValue();
+        if (value.empty())
+            return default;
+
+        std::vector<std::string> parts = std::string_split(value, " ");
+        return glm::bvec3(stoi(parts[0]), stoi(parts[1]), stoi(parts[2]));
+    }
+
+    glm::bvec4 XMLElement::getBVec4(glm::bvec4 default) const
+    {
+        std::string value = getValue();
+        if (value.empty())
+            return default;
+
+        std::vector<std::string> parts = std::string_split(value, " ");
+        return glm::bvec4(stoi(parts[0]), stoi(parts[1]), stoi(parts[2]), stoi(parts[3]));
+    }
+
+    glm::mat2 XMLElement::getMat2(glm::mat2 default) const
+    {
+        std::string value = getValue();
+        if (value.empty())
+            return default;
+
+        std::vector<std::string> parts = std::string_split(value, " ");
+        return glm::mat2(stof(parts[0]), stof(parts[1]), 
+                         stof(parts[2]), stof(parts[3]));
+    }
+
+    glm::mat3 XMLElement::getMat3(glm::mat3 default) const
+    {
+        std::string value = getValue();
+        if (value.empty())
+            return default;
+
+        std::vector<std::string> parts = std::string_split(value, " ");
+        return glm::mat3(stof(parts[0]), stof(parts[1]), stof(parts[2]),
+                         stof(parts[3]), stof(parts[4]), stof(parts[5]),
+                         stof(parts[6]), stof(parts[7]), stof(parts[8]));
+    }
+
+    glm::mat4 XMLElement::getMat4(glm::mat4 default) const
+    {
+        std::string value = getValue();
+        if (value.empty())
+            return default;
+
+        std::vector<std::string> parts = std::string_split(value, " ");
+        return glm::mat4(stof(parts[0]), stof(parts[1]), stof(parts[2]), stof(parts[3]),
+                         stof(parts[4]), stof(parts[5]), stof(parts[6]), stof(parts[7]),
+                         stof(parts[8]), stof(parts[9]), stof(parts[10]), stof(parts[11]),
+                         stof(parts[12]), stof(parts[13]), stof(parts[14]), stof(parts[15]));
+    }
 
     std::string XMLElement::getString(std::string default) const
     {
@@ -336,7 +464,6 @@ namespace Eris
 
         return std::stod(value);
     }
-
 
     std::string XMLElement::getString(const std::string& name, std::string default) const
     {

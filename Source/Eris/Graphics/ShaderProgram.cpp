@@ -155,7 +155,7 @@ namespace Eris
         if (!success)
         {
             glGetShaderInfoLog(fragment, 512, NULL, info_log);
-            Log::errorf("Vertex Shader compilation failed: %s", info_log);
+            Log::errorf("Fragment Shader compilation failed: %s", info_log);
 
             glDeleteShader(vertex);
             glDeleteShader(fragment);

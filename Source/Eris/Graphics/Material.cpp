@@ -81,7 +81,47 @@ namespace Eris
             XMLElement uniforms = root.getChild("uniforms");
             for (auto uniform : uniforms)
             {
+                std::string name = uniform.getAttribute("name");
+                std::string type = uniform.getAttribute("type");
 
+                Variant value;
+                if (type == "f32")
+                    value = uniform.getF32(0.f);
+                else if (type == "fvec2")
+                    value = uniform.getFVec2(glm::fvec2());
+                else if (type == "fvec3")
+                    value = uniform.getFVec3(glm::fvec3());
+                else if (type == "fvec4")
+                    value = uniform.getFVec4(glm::fvec4());
+                else if (type == "i32")
+                    value = uniform.getI32(0);
+                else if (type == "ivec2")
+                    value = uniform.getIVec2(glm::ivec2());
+                else if (type == "ivec3")
+                    value = uniform.getIVec3(glm::ivec3());
+                else if (type == "ivec4")
+                    value = uniform.getIVec4(glm::ivec4());
+                else if (type == "bool")
+                    value = uniform.getBool(false);
+                else if (type == "bvec2")
+                    value = uniform.getBVec2(glm::bvec2());
+                else if (type == "bvec3")
+                    value = uniform.getBVec3(glm::bvec3());
+                else if (type == "bvec4")
+                    value = uniform.getBVec4(glm::bvec4());
+                else if (type == "mat2")
+                    value = uniform.getMat2(glm::mat2());
+                else if (type == "mat3")
+                    value = uniform.getMat3(glm::mat3());
+                else if (type == "mat4")
+                    value = uniform.getMat4(glm::mat4());
+                else
+                {
+                    Log::errorf("Failed loading Material: %s is not a valid uniform type", type);
+                    return false;
+                }
+
+                setUniform(name, value);
             }
 
             XMLElement cull = root.getChild("cull");
@@ -125,6 +165,8 @@ namespace Eris
                     material_uniform.data = data;
                     m_parameters[uniform] = material_uniform;
                 }
+                else
+                    Log::warnf("Attempting to set undefined uniform %s in material %s", uniform.c_str(), getName().string().c_str());
             }
         }
 
