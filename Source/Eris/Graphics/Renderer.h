@@ -24,7 +24,6 @@
 
 #include "Core/Context.h"
 #include "Core/Object.h"
-
 #include "Memory/Pointers.h"
 
 namespace Eris

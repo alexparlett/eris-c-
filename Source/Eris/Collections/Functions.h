@@ -28,6 +28,7 @@
 #include <locale>
 
 #include <boost/algorithm/string.hpp>
+#include <boost/format.hpp>
 
 namespace std
 {
@@ -38,52 +39,51 @@ namespace std
         return tokens;
     }
 
-    inline string& string_ltrim(string &str)
+    inline string& string_ltrim(string& str)
     {
-        str.erase(str.begin(), std::find_if(str.begin(), str.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
+        boost::trim_left(str);
         return str;
     }
 
-    inline string string_format(const string& fmt_str, ...)
+    inline string& string_rtrim(string& str)
     {
-        int final_n, n = ((int) fmt_str.size()) * 2;
-        unique_ptr<char[]> formatted;
-        va_list ap;
-        while (1)
-        {
-            formatted.reset(new char[n]);
-            strcpy_s(&formatted[0], n, fmt_str.c_str());
-            va_start(ap, fmt_str);
-            final_n = vsnprintf_s(&formatted[0], n, _TRUNCATE, fmt_str.c_str(), ap);
-            va_end(ap);
-            if (final_n < 0 || final_n >= n)
-                n += abs(final_n - n + 1);
-            else
-                break;
-        }
-        return string(formatted.get());
+        boost::trim_right(str);
+        return str;
+    }
+
+    inline string string_format_recursive(boost::format& format)
+    {
+        return format.str();
+    }
+
+    template<typename T, typename... Args>
+    inline string string_format_recursive(boost::format& format, T&& arg, Args&&... args)
+    {
+        return string_format_recursive(format % std::forward<T>(arg), std::forward<Args>(args)...);
+    }
+
+    template<typename... Arguments>
+    inline string string_format(const string& fmt_str, Arguments&&... args)
+    {
+        boost::format format(fmt_str);
+        return string_format_recursive(format, std::forward<Arguments>(args)...);
     }
 
     inline string& string_replace(string& str, const string& from, const string& to)
     {
-        size_t start_pos = 0;
-        while ((start_pos = str.find(from, start_pos)) != string::npos)
-        {
-            str.replace(start_pos, from.length(), to);
-            start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
-        }
+        boost::replace_all(str, from, to);
         return str;
     }
 
     inline string& string_upper(string& str)
     {
-        transform(str.begin(), str.end(), str.begin(), ::toupper);
+        boost::to_upper(str);
         return str;
     }
 
     inline string& string_lower(string& str)
     {
-        transform(str.begin(), str.end(), str.begin(), ::tolower);
+        boost::to_lower(str);
         return str;
     }
 }

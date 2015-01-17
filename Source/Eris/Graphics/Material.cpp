@@ -166,7 +166,7 @@ namespace Eris
                     m_parameters[uniform] = material_uniform;
                 }
                 else
-                    Log::warnf("Attempting to set undefined uniform %s in material %s", uniform.c_str(), getName().string().c_str());
+                    Log::warnf("Attempting to set undefined uniform %s in material %s", uniform, getName());
             }
         }
 

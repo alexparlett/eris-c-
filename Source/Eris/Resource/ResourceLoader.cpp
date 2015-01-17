@@ -112,18 +112,18 @@ namespace Eris
                 if (task->m_resource->load(*file))
                 {
                     task->m_resource->setAsyncState(AsyncState::SUCCESS);
-                    Log::infof("Successful loading %s: %s", &typeid(*task->m_resource).name()[12], task->m_resource->getName().string().c_str());
+                    Log::infof("Successful loading %s: %s", &typeid(*task->m_resource).name()[12], task->m_resource->getName());
                 }
                 else
                 {
                     task->m_resource->setAsyncState(AsyncState::FAILED);
-                    Log::errorf("Failed loading %s: %s", &typeid(*task->m_resource).name()[12], task->m_resource->getName().string().c_str());
+                    Log::errorf("Failed loading %s: %s", &typeid(*task->m_resource).name()[12], task->m_resource->getName());
                 }
             }
             else
             {
                 task->m_resource->setAsyncState(AsyncState::FAILED);
-                Log::errorf("Failed loading %s: %s", &typeid(*task->m_resource).name()[12], task->m_resource->getName().string().c_str());
+                Log::errorf("Failed loading %s: %s", &typeid(*task->m_resource).name()[12], task->m_resource->getName());
             }
         }
         

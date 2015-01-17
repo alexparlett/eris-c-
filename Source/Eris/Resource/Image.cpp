@@ -89,7 +89,7 @@ namespace Eris
         glm::i32 new_width = 0, new_height = 0;
         if (stbir_resize_uint8(m_data.get(), m_width, m_height, 0, new_buffer.get(), new_width, new_height, 0, m_components) == 0)
         {
-            Log::errorf("Failed to resize image: %d to width: %d height: %d", getName().string().c_str(), width, height);
+            Log::errorf("Failed to resize image: %d to width: %d height: %d", getName(), width, height);
             return false;
         }
 

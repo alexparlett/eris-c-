@@ -178,7 +178,7 @@ namespace Eris
     void Engine::logSystemInfo()
     {
         Log::raw("Initializing...");
-        Log::rawf("\tVersion: %s", std::string_upper(std::string(getVersion())).c_str());
+        Log::rawf("\tVersion: %s", std::string_upper(std::string{ getVersion() }));
 
         SYSTEM_INFO sys_info;
         BOOL is_64 = FALSE;
@@ -229,7 +229,7 @@ namespace Eris
                 memcpy(cpu_brand_string + 32, cpu_info, sizeof(cpu_info));
         }
         //string includes manufacturer, model and clockspeed
-        Log::rawf("\tCPU: %s", std::string_ltrim(std::string(cpu_brand_string)).c_str());
+        Log::rawf("\tCPU: %s", std::string_ltrim(std::string{ cpu_brand_string }));
 
         Log::rawf("\t\tCores: %d", sys_info.dwNumberOfProcessors);
 

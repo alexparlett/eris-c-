@@ -74,7 +74,7 @@ namespace Eris
         else
             m_directories.push_back(path);
 
-        Log::infof("Added resource directory %s", path.string().c_str());
+        Log::infof("Added resource directory %s", path);
 
         return true;
     }
@@ -86,7 +86,7 @@ namespace Eris
             if (m_directories[i] == path)
             {
                 m_directories.erase(m_directories.begin() + i);
-                Log::infof("Removed resource directory %s", path.string().c_str());
+                Log::infof("Removed resource directory %s", path);
                 return true;
             }
         }
@@ -188,20 +188,20 @@ namespace Eris
                 if (res->load(*file))
                 {
                     res->setAsyncState(AsyncState::SUCCESS);
-                    Log::infof("Successful loading %s: %s", &typeid(*res).name()[12], res->getName().string().c_str());
+                    Log::infof("Successful loading %s: %s", &typeid(*res).name()[12], res->getName());
                     return true;
                 }
                 else
                 {
                     res->setAsyncState(AsyncState::FAILED);
-                    Log::errorf("Failed loading %s: %s", &typeid(*res).name()[12], res->getName().string().c_str());
+                    Log::errorf("Failed loading %s: %s", &typeid(*res).name()[12], res->getName());
                 }
 
             }
             else
             {
                 res->setAsyncState(AsyncState::FAILED);
-                Log::errorf("Failed loading %s: %s", &typeid(*res).name()[12], res->getName().string().c_str());
+                Log::errorf("Failed loading %s: %s", &typeid(*res).name()[12], res->getName());
             }
         }
 
