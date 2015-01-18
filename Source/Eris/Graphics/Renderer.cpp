@@ -27,12 +27,20 @@
 #include "Core/Clock.h"
 #include "Core/Log.h"
 
+#include "Model.h"
+#include "Material.h"
+#include "ShaderProgram.h"
+#include "Texture2D.h"
+#include "TextureCube.h"
+#include "Resource/ResourceCache.h"
+
 namespace Eris
 {
     Renderer::Renderer(Context* context) :
         Object(context),
         m_thread_exit(false),
-        m_initialized(false)
+        m_initialized(false),
+        m_state(new RenderState())
     {
         subscribeToEvent(ScreenModeEvent::getTypeStatic(), HANDLER(Renderer, handleScreenMode));
     }
@@ -60,10 +68,28 @@ namespace Eris
 
         Clock* clock = m_context->getModule<Clock>();
         Graphics* graphics = m_context->getModule<Graphics>();
+        ResourceCache* rc = m_context->getModule<ResourceCache>();
 
         GLFWwindow* window = graphics->getWindow();
         if (!initializeOpenGL(window, graphics->getWidth(), graphics->getHeight()))
             return;
+
+        Material* mat = rc->getResource<Material>("Materials/planet.mat");
+        Model* model = rc->getResource<Model>("Models/sphere.obj");
+
+        glm::mat4 projection = glm::perspective(45.f, 800.f / 600.f, 0.1f, 100.0f);
+        mat->getProgram()->setUniform("projection", projection);
+
+        glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+        glm::vec3 cameraDir = glm::vec3(0.0f, 0.0f, -1.0f);
+        glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+        glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraDir, cameraUp);
+        mat->getProgram()->setUniform("view", view);
+
+        glm::mat4 model_matrix;
+        model_matrix = glm::translate(model_matrix, glm::vec3(0.f, 0.f, 0.f));
+        model_matrix = glm::scale(model_matrix, glm::vec3(1.f, 1.f, 1.f));
+        mat->setUniform("model", model_matrix);
 
         glm::f64 current_time = clock->getElapsedTime();
         while (!m_thread_exit)
@@ -74,6 +100,10 @@ namespace Eris
 
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            glEnable(GL_CULL_FACE);
+
+            mat->use();
+            model->draw();
 
             glfwSwapBuffers(window);
 
@@ -118,6 +148,7 @@ namespace Eris
         glEnable(GL_MULTISAMPLE);
         glEnable(GL_TEXTURE_2D);
         glEnable(GL_TEXTURE_CUBE_MAP);
+        glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
         // Set Viewport
         //TODO remove this to camera class

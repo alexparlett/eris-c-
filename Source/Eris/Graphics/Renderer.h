@@ -22,6 +22,8 @@
 
 #pragma once
 
+#include "RenderState.h"
+
 #include "Core/Context.h"
 #include "Core/Object.h"
 #include "Memory/Pointers.h"
@@ -38,6 +40,8 @@ namespace Eris
         void run();
         void terminate();
 
+        RenderState* getState() const { return m_state; }
+
     private:
         bool initializeOpenGL(GLFWwindow* window, glm::i32 width, glm::i32 height);
 
@@ -47,6 +51,7 @@ namespace Eris
         std::thread m_thread;
         std::atomic<bool> m_thread_exit;
         std::atomic<bool> m_viewport_dirty;
+        SharedPtr<RenderState> m_state;
     };
 
     template<> inline void Context::registerModule(Renderer* module)

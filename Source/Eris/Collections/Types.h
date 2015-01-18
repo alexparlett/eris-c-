@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <array>
 #include <list>
 #include <queue>
 #include <unordered_set>
