@@ -58,6 +58,7 @@ namespace Eris
         ShaderProgram* getProgram() const { return m_program; }
         Texture* getTexture(glm::i32 index) const { return m_textures[index].texture; }
         CullMode getCullMode() const { return m_cull_mode; }
+        glm::u64 getRenderKey() const { return m_render_key; }
 
         void setCullMode(CullMode mode);
 
@@ -66,6 +67,7 @@ namespace Eris
         void removeUniform(std::string uniform);
 
     private:
+        glm::u64 m_render_key;
         CullMode m_cull_mode;
         SharedPtr<ShaderProgram> m_program;
         TextureUnit m_textures[32];

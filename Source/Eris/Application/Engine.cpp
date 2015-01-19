@@ -173,7 +173,7 @@ namespace Eris
             renderer->getState()->add(command2);
 
             EnableCommand* command3 = new EnableCommand();
-            command3->key.command = 2;
+            command3->key.command = 1;
             command3->key.depth = 0;
             command3->key.extra = 0;
             command3->key.material = 0;
@@ -187,7 +187,7 @@ namespace Eris
             command4->key.command = 3;
             command4->key.depth = 0;
             command4->key.extra = 0;
-            command4->key.material = 1;
+            command4->key.material = mat->getRenderKey();
             command4->key.target = 0;
             command4->key.target_layer = 1;
             command4->key.transparency = 0;

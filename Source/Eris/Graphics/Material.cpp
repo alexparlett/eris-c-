@@ -29,11 +29,16 @@
 #include "Resource/ResourceCache.h"
 #include "Resource/XMLFile.h"
 
+#include <boost/functional/hash.hpp>
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_generators.hpp>
+
 namespace Eris
 {
         Material::Material(Context* context) :
             Resource(context),
-            m_cull_mode(CullMode::BACK)
+            m_cull_mode(CullMode::BACK),
+            m_render_key(boost::hash<boost::uuids::uuid>()(boost::uuids::random_generator()()))
         {
         }
 
