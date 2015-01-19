@@ -54,6 +54,9 @@ namespace Eris
     struct ClearCommand : public RenderCommand
     {
         virtual void operator()(Graphics* graphics, const RenderKey* last_key);
+
+        glm::u32 bitfield;
+        glm::vec4 color;
     };
 
     struct EnableCommand : public RenderCommand

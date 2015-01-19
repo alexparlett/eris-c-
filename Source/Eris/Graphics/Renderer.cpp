@@ -23,7 +23,6 @@
 #include "Events.h"
 #include "Graphics.h"
 #include "Renderer.h"
-#include "RenderQueue.h"
 
 #include "Core/Clock.h"
 #include "Core/Log.h"

@@ -159,6 +159,8 @@ namespace Eris
             command1->key.target = 0;
             command1->key.target_layer = 0;
             command1->key.transparency = 0;
+            command1->color = glm::vec4(0.2f, 0.5f, 0.2f, 1.f);
+            command1->bitfield = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
             renderer->getState()->add(command1);
 
             EnableCommand* command2 = new EnableCommand();
