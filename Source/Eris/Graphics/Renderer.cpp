@@ -23,16 +23,10 @@
 #include "Events.h"
 #include "Graphics.h"
 #include "Renderer.h"
+#include "RenderQueue.h"
 
 #include "Core/Clock.h"
 #include "Core/Log.h"
-
-#include "Model.h"
-#include "Material.h"
-#include "ShaderProgram.h"
-#include "Texture2D.h"
-#include "TextureCube.h"
-#include "Resource/ResourceCache.h"
 
 namespace Eris
 {
@@ -40,7 +34,7 @@ namespace Eris
         Object(context),
         m_thread_exit(false),
         m_initialized(false),
-        m_state(new RenderState())
+        m_state(new RenderState(context))
     {
         subscribeToEvent(ScreenModeEvent::getTypeStatic(), HANDLER(Renderer, handleScreenMode));
     }
@@ -74,37 +68,9 @@ namespace Eris
         if (!initializeOpenGL(window, graphics->getWidth(), graphics->getHeight()))
             return;
 
-        Material* mat = rc->getResource<Material>("Materials/planet.mat");
-        Model* model = rc->getResource<Model>("Models/sphere.obj");
-
-        glm::mat4 projection = glm::perspective(45.f, 800.f / 600.f, 0.1f, 100.0f);
-        mat->getProgram()->setUniform("projection", projection);
-
-        glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-        glm::vec3 cameraDir = glm::vec3(0.0f, 0.0f, -1.0f);
-        glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-        glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraDir, cameraUp);
-        mat->getProgram()->setUniform("view", view);
-
-        glm::mat4 model_matrix;
-        model_matrix = glm::translate(model_matrix, glm::vec3(0.f, 0.f, 0.f));
-        model_matrix = glm::scale(model_matrix, glm::vec3(1.f, 1.f, 1.f));
-        mat->setUniform("model", model_matrix);
-
-        glm::f64 current_time = clock->getElapsedTime();
         while (!m_thread_exit)
         {
-            glm::f64 new_time = clock->getElapsedTime();
-            glm::f64 delta_time = new_time - current_time;
-            current_time = new_time;
-
-            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            glEnable(GL_CULL_FACE);
-
-            mat->use();
-            model->draw();
-
+            m_state->process();
             glfwSwapBuffers(window);
 
             if (m_viewport_dirty)
@@ -143,6 +109,8 @@ namespace Eris
             Log::error("Renderer initialized and run with no window.");
             return false;
         }
+
+        ERIS_ASSERT(glfwGetCurrentContext() == window);
 
         // Enable GL Flags
         glEnable(GL_MULTISAMPLE);

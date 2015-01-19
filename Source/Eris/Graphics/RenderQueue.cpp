@@ -20,44 +20,63 @@
 // THE SOFTWARE.
 //
 
+#include "Graphics.h"
 #include "RenderQueue.h"
+
+#include "Thread/SpinLock.h"
 
 namespace Eris
 {
     struct RenderQueueSorter
     {
-        bool operator () (SharedPtr<RenderQueueItem>& lhs, SharedPtr<RenderQueueItem>& rhs)
+        bool operator () (SharedPtr<RenderCommand>& lhs, SharedPtr<RenderCommand>& rhs)
         {
-
+            return lhs->key.key < rhs->key.key;
         }
     };
 
-    RenderQueue::RenderQueue() :
-        RefCounted()
+    RenderQueue::RenderQueue(Context* context) :
+        Object(context)
     {
     }
 
-    void RenderQueue::add(RenderQueueItem* item)
+    void RenderQueue::add(RenderCommand* item)
     {
-        std::lock_guard<std::mutex> lock(m_mutex);
-        m_queue_items.push_back(SharedPtr<RenderQueueItem>(item));
+        std::lock_guard<SpinLock> lock(m_lock);
+        if (!item->key.key)
+            item->key();
+
+        m_commands.push_back(SharedPtr<RenderCommand>(item));
     }
 
     void RenderQueue::sort()
     {
-        std::lock_guard<std::mutex> lock(m_mutex);
-        m_queue_items.sort(RenderQueueSorter());
+        std::lock_guard<SpinLock> lock(m_lock);
+        std::sort(m_commands.begin(), m_commands.end(), RenderQueueSorter());
     }
 
     void RenderQueue::process()
     {
-        std::lock_guard<std::mutex> lock(m_mutex);
+        std::lock_guard<SpinLock> lock(m_lock);
+        if (m_commands.empty())
+            return;
+
+        Graphics* graphics = m_context->getModule<Graphics>();
+        RenderCommand* last = m_commands[0];
+        (*last)(graphics, nullptr);
+
+        for (auto i = 1U; i < m_commands.size(); i++)
+        {
+            RenderCommand* current = m_commands[i];
+            (*current)(graphics, &last->key);
+            last = current;
+        }
     }
 
     void RenderQueue::clear()
     {
-        std::lock_guard<std::mutex> lock(m_mutex);
-        m_queue_items.clear();
+        std::lock_guard<SpinLock> lock(m_lock);
+        m_commands.clear();
     }
 
 }

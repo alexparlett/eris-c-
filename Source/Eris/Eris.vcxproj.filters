@@ -202,7 +202,10 @@
     <ClInclude Include="Graphics\RenderQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\RenderQueueItem.h">
+    <ClInclude Include="Graphics\RenderState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\RenderCommand.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -308,7 +311,10 @@
     <ClCompile Include="Graphics\RenderQueue.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\RenderQueueItem.cpp">
+    <ClCompile Include="Graphics\RenderState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\RenderCommand.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

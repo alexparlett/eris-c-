@@ -22,25 +22,27 @@
 
 #pragma once
 
-#include "RenderQueueItem.h"
+#include "RenderCommand.h"
 
-#include "Memory/RefCounted.h"
+#include "Core/Context.h"
+#include "Core/Object.h"
 #include "Memory/Pointers.h"
+#include "Thread/SpinLock.h"
 
 namespace Eris
 {
-    class RenderQueue : public RefCounted
+    class RenderQueue : public Object
     {
     public:
-        RenderQueue();
+        RenderQueue(Context* context);
 
-        void add(RenderQueueItem* item);
+        void add(RenderCommand* item);
         void sort();
         void process();
         void clear();
 
     private:
-        std::mutex m_mutex;
-        std::list<SharedPtr<RenderQueueItem>> m_queue_items;
+        SpinLock m_lock;
+        std::vector<SharedPtr<RenderCommand>> m_commands;
     };
 }

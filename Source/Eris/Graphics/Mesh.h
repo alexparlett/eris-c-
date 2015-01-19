@@ -27,6 +27,13 @@
 
 namespace Eris
 {
+    enum class GenerationState : glm::u8
+    {
+        RENDERER,
+        LOADER,
+        NONE
+    };
+
     struct Vertex
     {
         glm::vec3 position;
@@ -39,7 +46,7 @@ namespace Eris
     public:
         Mesh(Context* context);
 
-        void draw() const;
+        void draw();
         void compile();
 
         void setVertices(std::vector<Vertex> vertices) { m_vertices = vertices; }
@@ -52,6 +59,7 @@ namespace Eris
         std::vector<Vertex> getVertices() const { return m_vertices; }
 
     private:
+        GenerationState m_gen_state;
         glm::u32 m_vao;
         glm::u32 m_vbo;
         glm::u32 m_ebo;

@@ -22,29 +22,28 @@
 
 #pragma once
 
+#include "RenderCommand.h"
 #include "RenderQueue.h"
 
-#include "Memory/RefCounted.h"
+#include "Core/Context.h"
+#include "Core/Object.h"
 #include "Memory/Pointers.h"
 
 namespace Eris
 {
-	class RenderState : public RefCounted
+	class RenderState : public Object
 	{
 	public:
-	    RenderState();
-        virtual ~RenderState();
+	    RenderState(Context* context);
 
+        void add(RenderCommand* command);
+        void process();
         void swap();
 
-        RenderQueue* getRenderable() const;
-        RenderQueue* getUpdatable() const;
-
     private:
-        std::mutex m_queue_mutex;
-        glm::i32 m_render_queue;
-        glm::i32 m_update_queue;
-        SharedPtr<RenderQueue> m_queue[3];
+        std::atomic<glm::i32> m_render_queue;
+        std::atomic<glm::i32> m_update_queue;
+        std::vector<SharedPtr<RenderQueue>> m_queues;
 	};
 }
 

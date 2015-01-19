@@ -25,6 +25,10 @@
 #include "Locale.h"
 #include "Settings.h"
 
+#include "Graphics/Material.h"
+#include "Graphics/Model.h"
+#include "Graphics/ShaderProgram.h"
+
 #include "Core/Clock.h"
 #include "Core/Log.h"
 #include "Collections/Functions.h"
@@ -112,6 +116,25 @@ namespace Eris
         Graphics* graphics = m_context->getModule<Graphics>();
         Clock* clock = m_context->getModule<Clock>();
         Input* input = m_context->getModule<Input>();
+        ResourceCache* rc = m_context->getModule<ResourceCache>();
+        Renderer* renderer = m_context->getModule<Renderer>();
+
+        Material* mat = rc->getResource<Material>("Materials/planet.mat");
+        Model* model = rc->getResource<Model>("Models/sphere.obj");
+
+        glm::mat4 projection = glm::perspective(45.f, 800.f / 600.f, 0.1f, 100.0f);
+        mat->getProgram()->setUniform("projection", projection);
+
+        glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+        glm::vec3 cameraDir = glm::vec3(0.0f, 0.0f, -1.0f);
+        glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+        glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraDir, cameraUp);
+        mat->getProgram()->setUniform("view", view);
+
+        glm::mat4 model_matrix;
+        model_matrix = glm::translate(model_matrix, glm::vec3(0.f, 0.f, 0.f));
+        model_matrix = glm::scale(model_matrix, glm::vec3(1.f, 1.f, 1.f));
+        mat->setUniform("model", model_matrix);
 
         glm::f64 current_time = clock->getElapsedTime();
         while (!m_exiting)
@@ -127,6 +150,59 @@ namespace Eris
 
             sendEvent(UpdateEvent::getTypeStatic(), event);
             sendEvent(PostUpdateEvent::getTypeStatic());
+
+            ClearCommand* command1 = new ClearCommand();
+            command1->key.command = 0;
+            command1->key.depth = 0;
+            command1->key.extra = 0;
+            command1->key.material = 0;
+            command1->key.target = 0;
+            command1->key.target_layer = 0;
+            command1->key.transparency = 0;
+            renderer->getState()->add(command1);
+
+            EnableCommand* command2 = new EnableCommand();
+            command2->key.command = 1;
+            command2->key.depth = 0;
+            command2->key.extra = 0;
+            command2->key.material = 0;
+            command2->key.target = 0;
+            command2->key.target_layer = 1;
+            command2->key.transparency = 0;
+            command2->capability = GL_DEPTH_TEST;
+            renderer->getState()->add(command2);
+
+            EnableCommand* command3 = new EnableCommand();
+            command3->key.command = 2;
+            command3->key.depth = 0;
+            command3->key.extra = 0;
+            command3->key.material = 0;
+            command3->key.target = 0;
+            command3->key.target_layer = 1;
+            command3->key.transparency = 0;
+            command3->capability = GL_CULL_FACE;
+            renderer->getState()->add(command3);
+
+            DrawRenderCommand* command4 = new DrawRenderCommand();
+            command4->key.command = 3;
+            command4->key.depth = 0;
+            command4->key.extra = 0;
+            command4->key.material = 1;
+            command4->key.target = 0;
+            command4->key.target_layer = 1;
+            command4->key.transparency = 0;
+            command4->material = mat;
+            command4->model = model;
+
+            ShaderUniform* uniform = mat->getProgram()->getUniform("model");
+            ShaderUniform new_uniform;
+            new_uniform.location = uniform->location;
+            new_uniform.type = uniform->type;
+            new_uniform.data = model_matrix;
+            command4->uniforms.push_back(new_uniform);
+
+            renderer->getState()->add(command4);
+            renderer->getState()->swap();
 
             clock->endFrame();
             m_context->resetFrameAllocator();

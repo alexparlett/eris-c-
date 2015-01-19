@@ -22,19 +22,53 @@
 
 #pragma once
 
+#include "Material.h"
+#include "Model.h"
+#include "ShaderProgram.h"
+
 #include "Memory/RefCounted.h"
 
 namespace Eris
 {
-    class RenderQueueId : public RefCounted
+    struct RenderKey
     {
-    public:
-        RenderQueueId();
+        glm::u64 key = 0;
+        glm::u64 target; // 2
+        glm::u64 target_layer; // 2
+        glm::u64 transparency; // 2
+        glm::u64 command; // 1
+        glm::u64 extra; // 3
+        glm::u64 depth; // 24
+        glm::u64 material; // 32
+
+        glm::u64 operator()();
     };
 
-    class RenderQueueItem : public RefCounted
+    struct RenderCommand : public RefCounted
     {
-    public:
-        RenderQueueItem();
+        RenderKey key;
+
+        virtual void operator()(Graphics* graphics, const RenderKey* queue_id) = 0;
+    };
+
+    struct ClearCommand : public RenderCommand
+    {
+        virtual void operator()(Graphics* graphics, const RenderKey* last_key);
+    };
+
+    struct EnableCommand : public RenderCommand
+    {
+        virtual void operator()(Graphics* graphics, const RenderKey* last_key);
+
+        glm::u32 capability;
+    };
+
+    struct DrawRenderCommand : public RenderCommand
+    {
+        virtual void operator()(Graphics* graphics, const RenderKey* last_key);
+
+        SharedPtr<Model> model;
+        SharedPtr<Material> material;
+        std::list<ShaderUniform> uniforms;
     };
 }

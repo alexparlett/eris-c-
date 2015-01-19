@@ -24,46 +24,31 @@
 
 namespace Eris
 {
-
-
-    RenderState::RenderState() :
-        RefCounted(),
-        m_render_queue(3),
-        m_update_queue(0)
+    RenderState::RenderState(Context* context) :
+        Object(context),
+        m_render_queue(0),
+        m_update_queue(1)
     {
-        for (auto queue : m_queue)
-            queue = new RenderQueue();
+        m_queues = { SharedPtr<RenderQueue>(new RenderQueue(context)), SharedPtr<RenderQueue>(new RenderQueue(context)), SharedPtr<RenderQueue>(new RenderQueue(context)) };
     }
 
-    RenderState::~RenderState()
+    void RenderState::add(RenderCommand* command)
     {
-        for (auto queue : m_queue)
-        {
-            queue.reset();
-            queue = nullptr;
-        }
+        m_queues[m_update_queue]->add(command);
     }
 
     void RenderState::swap()
     {
-        std::lock_guard<std::mutex> lock(m_queue_mutex);
-
-        m_render_queue = m_update_queue;
-        if (++m_update_queue == 3)
+        m_render_queue = m_update_queue++;
+        if (m_update_queue == m_queues.size())
             m_update_queue = 0;
 
-        m_queue[m_update_queue]->clear();
+        m_queues[m_update_queue]->clear();
+        m_queues[m_render_queue]->sort();
     }
 
-    RenderQueue* RenderState::getRenderable() const
+    void RenderState::process()
     {
-        std::lock_guard<const std::mutex> lock(m_queue_mutex);
-        return m_queue[m_render_queue];
-    }
-
-    RenderQueue* RenderState::getUpdatable() const
-    {
-        std::lock_guard<const std::mutex> lock(m_queue_mutex);
-        return m_queue[m_update_queue];
+        m_queues[m_render_queue]->process();
     }
 }
