@@ -24,6 +24,7 @@
 #include "Model.h"
 
 #include "Core/Log.h"
+#include "Core/Profiler.h"
 #include "Memory/ArrayPointers.h"
 
 #include <assimp/Importer.hpp>
@@ -42,6 +43,8 @@ namespace Eris
 
     bool Model::load(Deserializer& deserializer)
     {
+        PROFILE(LoadModel);
+
         std::size_t ds_size = deserializer.getSize();
 
         SharedArrayPtr<char> buffer = SharedArrayPtr<char>(ds_size + 1);

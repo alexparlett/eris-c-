@@ -24,6 +24,7 @@
 #include "ShaderProgram.h"
 
 #include "Core/Log.h"
+#include "Core/Profiler.h"
 
 #include <sstream>
 
@@ -38,6 +39,8 @@ namespace Eris
 
     bool ShaderProgram::load(Deserializer& deserializer)
     {
+        PROFILE(LoadProgram);
+
         std::size_t ds_size = deserializer.getSize();
         SharedArrayPtr<char> buffer(ds_size);
         std::size_t in_size = deserializer.read(buffer.get(), ds_size);

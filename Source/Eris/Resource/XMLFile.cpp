@@ -23,6 +23,7 @@
 #include "XMLFile.h"
 
 #include "Core/Log.h"
+#include "Core/Profiler.h"
 #include "IO/File.h"
 #include "Memory/ArrayPointers.h"
 
@@ -67,6 +68,8 @@ namespace Eris
 
     bool XMLFile::load(Deserializer& deserializer)
     {
+        PROFILE(LoadXMLFile);
+
         std::size_t ds_size = deserializer.getSize();
         pugi::allocation_function alloc = pugi::get_memory_allocation_function();
 

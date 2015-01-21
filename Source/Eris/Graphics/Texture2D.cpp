@@ -24,6 +24,7 @@
 #include "Texture2D.h"
 
 #include "Core/Log.h"
+#include "Core/Profiler.h"
 #include "Memory/Pointers.h"
 #include "Resource/Image.h"
 #include "Resource/ResourceCache.h"
@@ -38,6 +39,8 @@ namespace Eris
 
     bool Texture2D::load(Deserializer& deserializer)
     {
+        PROFILE(LoadTexture2D);
+
         SharedPtr<Image> image(new Image(m_context));
         if (!image->load(deserializer))
             return false;

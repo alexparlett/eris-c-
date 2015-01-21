@@ -23,6 +23,7 @@
 #include "Graphics.h"
 #include "RenderQueue.h"
 
+#include "Core/Profiler.h"
 #include "Thread/SpinLock.h"
 
 namespace Eris
@@ -51,12 +52,14 @@ namespace Eris
 
     void RenderQueue::sort()
     {
+        PROFILE(SortQueue);
         std::lock_guard<SpinLock> lock(m_lock);
         std::sort(m_commands.begin(), m_commands.end(), RenderQueueSorter());
     }
 
     void RenderQueue::process()
     {
+        PROFILE(ProcessQueue);
         std::lock_guard<SpinLock> lock(m_lock);
         if (m_commands.empty())
             return;

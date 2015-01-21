@@ -24,6 +24,7 @@
 #include "TextureCube.h"
 
 #include "Core/Log.h"
+#include "Core/Profiler.h"
 #include "Resource/ResourceCache.h"
 #include "Resource/Image.h"
 #include "Resource/XMLFile.h"
@@ -47,6 +48,8 @@ namespace Eris
 
     bool TextureCube::load(Deserializer& deserializer)
     {
+        PROFILE(LoadTextureCube);
+
         ResourceCache* rc = m_context->getModule<ResourceCache>();
 
         SharedPtr<XMLFile> file(new XMLFile(m_context));

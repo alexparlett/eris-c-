@@ -90,7 +90,7 @@ namespace std
 
 namespace Eris
 {
-    glm::vec4 rgbToGLSL(glm::f32 r, glm::f32 g, glm::f32 b)
+    inline glm::vec4 rgbToGLSL(glm::f32 r, glm::f32 g, glm::f32 b)
     {
         glm::clamp(r, 0.f, 255.f);
         glm::clamp(g, 0.f, 255.f);
@@ -98,7 +98,7 @@ namespace Eris
         return glm::vec4(r / 255.f, g / 255.f, b / 255.f, 1.f);
     }
 
-    glm::vec4 rgbaToGLSL(glm::f32 r, glm::f32 g, glm::f32 b, glm::f32 a)
+    inline glm::vec4 rgbaToGLSL(glm::f32 r, glm::f32 g, glm::f32 b, glm::f32 a)
     {
         glm::clamp(r, 0.f, 255.f);
         glm::clamp(g, 0.f, 255.f);

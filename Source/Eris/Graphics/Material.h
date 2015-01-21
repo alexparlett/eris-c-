@@ -29,6 +29,9 @@
 #include "Memory/Pointers.h"
 #include "Resource/Resource.h"
 
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_generators.hpp>
+
 namespace Eris
 {
     struct TextureUnit
@@ -72,5 +75,7 @@ namespace Eris
         SharedPtr<ShaderProgram> m_program;
         TextureUnit m_textures[32];
         std::map<std::string, ShaderUniform> m_parameters;
+
+        static boost::uuids::random_generator s_uuid_generator;
     };
 }

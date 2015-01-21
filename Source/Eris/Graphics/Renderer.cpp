@@ -23,9 +23,12 @@
 #include "Events.h"
 #include "Graphics.h"
 #include "Renderer.h"
+#include "RenderCommand.h"
 
+#include "Application/Events.h"
 #include "Core/Clock.h"
 #include "Core/Log.h"
+#include "Core/Profiler.h"
 
 namespace Eris
 {
@@ -52,6 +55,7 @@ namespace Eris
         if (m_initialized)
             return;
 
+        subscribeToEvent(RenderEvent::getTypeStatic(), HANDLER(Renderer, handleRender));
         m_thread = std::thread(&Renderer::run, this);
     }
 
@@ -69,6 +73,8 @@ namespace Eris
 
         while (!m_thread_exit)
         {
+            PROFILE(RenderFrame);
+
             m_state->process();
             glfwSwapBuffers(window);
 
@@ -127,6 +133,55 @@ namespace Eris
     void Renderer::handleScreenMode(const StringHash& type, const Event* event)
     {
         m_viewport_dirty = true;
+    }
+
+    void Renderer::handleRender(const StringHash& type, const Event* event)
+    {
+        ClearColorCommand* clear_color_command = new ClearColorCommand();
+        clear_color_command->key.command = 0;
+        clear_color_command->key.depth = 0;
+        clear_color_command->key.extra = 0;
+        clear_color_command->key.material = 0;
+        clear_color_command->key.target = 0;
+        clear_color_command->key.target_layer = 0;
+        clear_color_command->key.transparency = 0;
+        clear_color_command->color = glm::vec4(0.2f, 0.5f, 0.2f, 1.f);
+
+        ClearCommand* clear_command = new ClearCommand();
+        clear_command->key.command = 0;
+        clear_command->key.depth = 0;
+        clear_command->key.extra = 0;
+        clear_command->key.material = 0;
+        clear_command->key.target = 0;
+        clear_command->key.target_layer = 0;
+        clear_command->key.transparency = 0;
+        clear_command->bitfield = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
+        
+        EnableCommand* enable_depth_command = new EnableCommand();
+        enable_depth_command->key.command = 1;
+        enable_depth_command->key.depth = 0;
+        enable_depth_command->key.extra = 0;
+        enable_depth_command->key.material = 0;
+        enable_depth_command->key.target = 0;
+        enable_depth_command->key.target_layer = 1;
+        enable_depth_command->key.transparency = 0;
+        enable_depth_command->capability = GL_DEPTH_TEST;
+
+        EnableCommand* enable_cull_command = new EnableCommand();
+        enable_cull_command->key.command = 1;
+        enable_cull_command->key.depth = 0;
+        enable_cull_command->key.extra = 0;
+        enable_cull_command->key.material = 0;
+        enable_cull_command->key.target = 0;
+        enable_cull_command->key.target_layer = 1;
+        enable_cull_command->key.transparency = 0;
+        enable_cull_command->capability = GL_CULL_FACE;
+
+        auto state = getState();
+        state->add(clear_color_command);
+        state->add(clear_command);
+        state->add(enable_cull_command);
+        state->add(enable_depth_command);
     }
 
 }

@@ -145,7 +145,7 @@ namespace Eris
 
         explicit WeakPtr(T* ptr) :
             m_ptr(ptr),
-            m_ref_count(ptr->m_ref_count)
+            m_ref_count(ptr ? ptr->m_ref_count : nullptr)
         {
             incrementRef();
         }
@@ -188,7 +188,7 @@ namespace Eris
 
             releaseRef();
             m_ptr = ptr;
-            m_ref_count = ptr->m_ref_count;
+            m_ref_count = ptr ? ptr->m_ref_count : nullptr;
             incrementRef();
 
             return *this;

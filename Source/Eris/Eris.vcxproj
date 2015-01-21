@@ -280,6 +280,7 @@ xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
     <ClInclude Include="Core\Event.h" />
     <ClInclude Include="Core\Events.h" />
     <ClInclude Include="Core\Log.h" />
+    <ClInclude Include="Core\Timer.h" />
     <ClInclude Include="Graphics\Events.h" />
     <ClInclude Include="Graphics\Material.h" />
     <ClInclude Include="Graphics\Mesh.h" />
@@ -308,6 +309,7 @@ xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
     <ClInclude Include="Memory\RefCounted.h" />
     <ClInclude Include="Collections\StringHash.h" />
     <ClInclude Include="Core\Context.h" />
+    <ClInclude Include="Core\Profiler.h" />
     <ClInclude Include="Resource\Events.h" />
     <ClInclude Include="Resource\Image.h" />
     <ClInclude Include="Resource\INIFile.h" />
@@ -338,6 +340,7 @@ xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
     <ClCompile Include="Application\Settings.cpp" />
     <ClCompile Include="Core\Clock.cpp" />
     <ClCompile Include="Core\Log.cpp" />
+    <ClCompile Include="Core\Timer.cpp" />
     <ClCompile Include="Graphics\Material.cpp" />
     <ClCompile Include="Graphics\Mesh.cpp" />
     <ClCompile Include="Graphics\Model.cpp" />
@@ -358,6 +361,7 @@ xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
     <ClCompile Include="Core\Context.cpp" />
     <ClCompile Include="Core\Object.cpp" />
     <ClCompile Include="Graphics\Graphics.cpp" />
+    <ClCompile Include="Core\Profiler.cpp" />
     <ClCompile Include="Resource\Image.cpp" />
     <ClCompile Include="Resource\INIFile.cpp" />
     <ClCompile Include="Resource\INISection.cpp" />

@@ -23,6 +23,7 @@
 #include "Image.h"
 
 #include "Core/Log.h"
+#include "Core/Profiler.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_RESIZE_IMPLEMENTATION
@@ -45,6 +46,8 @@ namespace Eris
 
     bool Image::load(Deserializer& deserializer)
     {
+        PROFILE(LoadImage);
+
         std::size_t ds_size = deserializer.getSize();
 
         SharedArrayPtr<unsigned char> buffer(ds_size);

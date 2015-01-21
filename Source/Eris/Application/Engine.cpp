@@ -31,6 +31,7 @@
 
 #include "Core/Clock.h"
 #include "Core/Log.h"
+#include "Core/Profiler.h"
 #include "Collections/Functions.h"
 #include "Graphics/Graphics.h"
 #include "Graphics/Renderer.h"
@@ -60,6 +61,7 @@ namespace Eris
         context->registerModule(new Renderer(context));
         context->registerModule(new ResourceCache(context));
         context->registerModule(new Settings(context));
+        context->registerModule(new Profiler(context));
 
         subscribeToEvent(ExitRequestedEvent::getTypeStatic(), HANDLER(Engine, handleExitRequest));
     }
@@ -134,11 +136,12 @@ namespace Eris
         glm::mat4 model_matrix;
         model_matrix = glm::translate(model_matrix, glm::vec3(0.f, 0.f, 0.f));
         model_matrix = glm::scale(model_matrix, glm::vec3(1.f, 1.f, 1.f));
-        mat->setUniform("model", model_matrix);
 
         glm::f64 current_time = clock->getElapsedTime();
         while (!m_exiting)
         {
+            PROFILE(UpdateFrame);
+
             glm::f64 new_time = clock->getElapsedTime();
             glm::f64 delta_time = new_time - current_time;
             current_time = new_time;
@@ -150,40 +153,7 @@ namespace Eris
 
             sendEvent(UpdateEvent::getTypeStatic(), event);
             sendEvent(PostUpdateEvent::getTypeStatic());
-
-            ClearCommand* command1 = new ClearCommand();
-            command1->key.command = 0;
-            command1->key.depth = 0;
-            command1->key.extra = 0;
-            command1->key.material = 0;
-            command1->key.target = 0;
-            command1->key.target_layer = 0;
-            command1->key.transparency = 0;
-            command1->color = glm::vec4(0.2f, 0.5f, 0.2f, 1.f);
-            command1->bitfield = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
-            renderer->getState()->add(command1);
-
-            EnableCommand* command2 = new EnableCommand();
-            command2->key.command = 1;
-            command2->key.depth = 0;
-            command2->key.extra = 0;
-            command2->key.material = 0;
-            command2->key.target = 0;
-            command2->key.target_layer = 1;
-            command2->key.transparency = 0;
-            command2->capability = GL_DEPTH_TEST;
-            renderer->getState()->add(command2);
-
-            EnableCommand* command3 = new EnableCommand();
-            command3->key.command = 1;
-            command3->key.depth = 0;
-            command3->key.extra = 0;
-            command3->key.material = 0;
-            command3->key.target = 0;
-            command3->key.target_layer = 1;
-            command3->key.transparency = 0;
-            command3->capability = GL_CULL_FACE;
-            renderer->getState()->add(command3);
+            sendEvent(RenderEvent::getTypeStatic());
 
             DrawRenderCommand* command4 = new DrawRenderCommand();
             command4->key.command = 3;

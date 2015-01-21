@@ -23,6 +23,7 @@
 #include "INIFile.h"
 
 #include "Core/Log.h"
+#include "Core/Profiler.h"
 #include "Memory/ArrayPointers.h"
 
 #include <cstring>
@@ -37,6 +38,8 @@ namespace Eris
 
     bool INIFile::load(Deserializer& deserializer)
     {
+        PROFILE(LoadINIFile);
+
         std::size_t ds_size = deserializer.getSize();
 
         SharedArrayPtr<char> buffer = SharedArrayPtr<char>(ds_size + 1);

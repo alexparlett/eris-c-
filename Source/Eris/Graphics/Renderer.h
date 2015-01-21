@@ -46,6 +46,7 @@ namespace Eris
         bool initializeOpenGL(GLFWwindow* window, glm::i32 width, glm::i32 height);
 
         void handleScreenMode(const StringHash& type, const Event* event);
+        void handleRender(const StringHash& type, const Event* event);
 
         bool m_initialized;
         std::thread m_thread;

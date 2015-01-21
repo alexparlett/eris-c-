@@ -42,6 +42,7 @@ namespace Eris
     class Input;
     class Locale;
     class Log;
+    class Profiler;
     class Renderer;
     class ResourceCache;
     class Settings;
@@ -79,6 +80,7 @@ namespace Eris
         SharedPtr<Input> m_input;
         SharedPtr<Locale> m_locale;
         SharedPtr<Log> m_log;
+        SharedPtr<Profiler> m_profiler;
         SharedPtr<Renderer> m_renderer;
         SharedPtr<ResourceCache> m_cache;
         SharedPtr<Settings> m_settings;

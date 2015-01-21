@@ -51,15 +51,24 @@ namespace Eris
         return key;
     }
 
-    void ClearCommand::operator()(Graphics* graphics, const RenderKey* last_key)
+    void ClearColorCommand::operator()(Graphics* graphics, const RenderKey* last_key)
     {
         glClearColor(color.r, color.g, color.b, color.a);
+    }
+
+    void ClearCommand::operator()(Graphics* graphics, const RenderKey* last_key)
+    {
         glClear(bitfield);
     }
 
     void EnableCommand::operator()(Graphics* graphics, const RenderKey* last_key)
     {
         glEnable(capability);
+    }
+
+    void DisableCommand::operator()(Graphics* graphics, const RenderKey* last_key)
+    {
+        glDisable(capability);
     }
 
     void DrawRenderCommand::operator()(Graphics* graphics, const RenderKey* last_key)

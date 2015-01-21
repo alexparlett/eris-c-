@@ -26,6 +26,7 @@
 // Include all module definitions
 #include "Clock.h"
 #include "Log.h"
+#include "Profiler.h"
 #include "Application/Engine.h"
 #include "Application/Locale.h"
 #include "Application/Settings.h"
@@ -48,7 +49,8 @@ namespace Eris
         m_fs(nullptr),
         m_cache(nullptr),
         m_settings(nullptr),
-        m_renderer(nullptr)
+        m_renderer(nullptr),
+        m_profiler(nullptr)
     {
     }
 
