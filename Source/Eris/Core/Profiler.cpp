@@ -100,10 +100,6 @@ namespace Eris
         auto thread_block = getThreadBlock(std::this_thread::get_id());
         if (thread_block)
             thread_block->beginBlock(name);
-
-        SharedPtr<ProfilerThreadBlock> new_thread_block(new ProfilerThreadBlock());
-        m_thread_blocks[std::this_thread::get_id()] = new_thread_block;
-        new_thread_block->beginBlock(name);
     }
 
     void Profiler::endBlock()
@@ -113,11 +109,16 @@ namespace Eris
             thread_block->endBlock();
     }
 
-    ProfilerThreadBlock* Profiler::getThreadBlock(std::thread::id thread_id) const
+    ProfilerThreadBlock* Profiler::getThreadBlock(std::thread::id thread_id)
     {
+        std::lock_guard<SpinLock> lock(m_lock);
+
         auto find = m_thread_blocks.find(thread_id);
         if (find != m_thread_blocks.end())
             return find->second;
-        return nullptr;
+ 
+        SharedPtr<ProfilerThreadBlock> new_thread_block(new ProfilerThreadBlock());
+        m_thread_blocks[std::this_thread::get_id()] = new_thread_block;
+        return new_thread_block;
     }
 }

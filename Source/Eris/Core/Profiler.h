@@ -26,6 +26,7 @@
 #include "Core/Object.h"
 #include "Core/Timer.h"
 #include "Memory/RefCounted.h"
+#include "Thread/SpinLock.h"
 
 namespace Eris
 {
@@ -84,9 +85,10 @@ namespace Eris
         void beginBlock(const std::string& name);
         void endBlock();
 
-        ProfilerThreadBlock* getThreadBlock(std::thread::id) const;
+        ProfilerThreadBlock* getThreadBlock(std::thread::id);
 
     private:
+        SpinLock m_lock;
         std::unordered_map<std::thread::id, SharedPtr<ProfilerThreadBlock>> m_thread_blocks;
     };
 
