@@ -388,7 +388,7 @@ namespace Eris
 
             ERIS_ASSERT(current_max > 0);
 
-            glm::min(current_max, m_max_size);
+            current_max = glm::min(current_max, m_max_size);
         }
 
         size = glm::max(current_max, size) + m_alignment_bits;

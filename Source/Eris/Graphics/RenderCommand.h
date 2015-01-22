@@ -79,7 +79,7 @@ namespace Eris
         glm::u32 capability;
     };
 
-    struct DrawRenderCommand : public RenderCommand
+    struct Draw3DCommand : public RenderCommand
     {
         virtual void operator()(Graphics* graphics, const RenderKey* last_key);
 
