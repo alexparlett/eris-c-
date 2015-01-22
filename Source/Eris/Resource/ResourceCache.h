@@ -29,6 +29,7 @@
 #include "Core/Context.h"
 #include "Core/Object.h"
 #include "Core/Log.h"
+#include "Core/Profiler.h"
 #include "Collections/StringHash.h"
 #include "Memory/Pointers.h"
 #include "IO/File.h"
@@ -82,6 +83,8 @@ namespace Eris
     template<typename T, typename Base>
     inline T* ResourceCache::getResource(const Path& path, bool error_on_fail /*= true*/)
     {
+        PROFILE(GetResource);
+
         std::type_index type(typeid(Base));
 
         Resource* resource = findResource(type, path);

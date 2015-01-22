@@ -118,30 +118,11 @@ namespace Eris
         Graphics* graphics = m_context->getModule<Graphics>();
         Clock* clock = m_context->getModule<Clock>();
         Input* input = m_context->getModule<Input>();
-        ResourceCache* rc = m_context->getModule<ResourceCache>();
         Renderer* renderer = m_context->getModule<Renderer>();
-
-        Material* mat = rc->getResource<Material>("Materials/planet.mat");
-        Model* model = rc->getResource<Model>("Models/sphere.obj");
-
-        glm::mat4 projection = glm::perspective(45.f, 800.f / 600.f, 0.1f, 100.0f);
-        mat->getProgram()->setUniform("projection", projection);
-
-        glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-        glm::vec3 cameraDir = glm::vec3(0.0f, 0.0f, -1.0f);
-        glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-        glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraDir, cameraUp);
-        mat->getProgram()->setUniform("view", view);
-
-        glm::mat4 model_matrix;
-        model_matrix = glm::translate(model_matrix, glm::vec3(0.f, 0.f, 0.f));
-        model_matrix = glm::scale(model_matrix, glm::vec3(1.f, 1.f, 1.f));
 
         glm::f64 current_time = clock->getElapsedTime();
         while (!m_exiting)
         {
-            PROFILE(UpdateFrame);
-
             glm::f64 new_time = clock->getElapsedTime();
             glm::f64 delta_time = new_time - current_time;
             current_time = new_time;
@@ -151,30 +132,19 @@ namespace Eris
             UpdateEvent* event = m_context->getFrameAllocator().newInstance<UpdateEvent>();
             event->time_step = delta_time;
 
-            sendEvent(UpdateEvent::getTypeStatic(), event);
-            sendEvent(PostUpdateEvent::getTypeStatic());
-            sendEvent(RenderEvent::getTypeStatic());
-
-            DrawRenderCommand* command4 = new DrawRenderCommand();
-            command4->key.command = 3;
-            command4->key.depth = 0;
-            command4->key.extra = 0;
-            command4->key.material = mat->getRenderKey();
-            command4->key.target = 0;
-            command4->key.target_layer = 1;
-            command4->key.transparency = 0;
-            command4->material = mat;
-            command4->model = model;
-
-            ShaderUniform* uniform = mat->getProgram()->getUniform("model");
-            ShaderUniform new_uniform;
-            new_uniform.location = uniform->location;
-            new_uniform.type = uniform->type;
-            new_uniform.data = model_matrix;
-            command4->uniforms.push_back(new_uniform);
-
-            renderer->getState()->add(command4);
-            renderer->getState()->swap();
+            {
+                PROFILE(Update);
+                sendEvent(UpdateEvent::getTypeStatic(), event);
+            }
+            {
+                PROFILE(PostUpdate);
+                sendEvent(PostUpdateEvent::getTypeStatic());
+            }
+            {
+                PROFILE(Render);
+                sendEvent(RenderEvent::getTypeStatic());
+                renderer->getState()->swap();
+            }
 
             clock->endFrame();
             m_context->resetFrameAllocator();

@@ -23,6 +23,8 @@
 #include "Graphics.h"
 #include "RenderCommand.h"
 
+#include "Core/Profiler.h"
+
 namespace Eris
 {
     glm::u64 RenderKey::operator()()
@@ -71,8 +73,10 @@ namespace Eris
         glDisable(capability);
     }
 
-    void DrawRenderCommand::operator()(Graphics* graphics, const RenderKey* last_key)
+    void Draw3DCommand::operator()(Graphics* graphics, const RenderKey* last_key)
     {
+        AutoProfilerBlock profile(graphics->getContext()->getModule<Profiler>(), "Draw3DCommand");
+
         if (!last_key || last_key->material != key.material)
             material->use();
 

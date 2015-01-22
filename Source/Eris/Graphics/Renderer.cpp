@@ -73,8 +73,6 @@ namespace Eris
 
         while (!m_thread_exit)
         {
-            PROFILE(RenderFrame);
-
             m_state->process();
             glfwSwapBuffers(window);
 
@@ -145,7 +143,7 @@ namespace Eris
         clear_color_command->key.target = 0;
         clear_color_command->key.target_layer = 0;
         clear_color_command->key.transparency = 0;
-        clear_color_command->color = glm::vec4(0.2f, 0.5f, 0.2f, 1.f);
+        clear_color_command->color = glm::vec4(0.0f, 0.0f, 0.0f, 1.f);
 
         ClearCommand* clear_command = new ClearCommand();
         clear_command->key.command = 0;

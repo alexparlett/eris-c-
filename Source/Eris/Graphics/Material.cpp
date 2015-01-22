@@ -193,6 +193,7 @@ namespace Eris
 
     void Material::use() const
     {
+        PROFILE(UseMaterial);
         ERIS_ASSERT(m_program);
 
         Graphics* graphics = m_context->getModule<Graphics>();

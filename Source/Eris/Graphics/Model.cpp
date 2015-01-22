@@ -122,6 +122,8 @@ namespace Eris
 
     void Model::draw() const
     {
+        PROFILE(DrawModel);
+
         for (auto mesh : m_meshes)
             mesh->draw();
     }
