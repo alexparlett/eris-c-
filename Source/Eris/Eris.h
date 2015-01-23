@@ -30,6 +30,9 @@
 #include <crtdbg.h>
 #endif
 
+#include "Util/Aligned.h"
+#include "Util/Assert.h"
+
 #include <windows.h>
 
 #include <algorithm>
@@ -47,8 +50,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/matrix_access.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
-#include "Util/Assert.h"
 
 #include "Collections/Types.h"
 #include "IO/Types.h"

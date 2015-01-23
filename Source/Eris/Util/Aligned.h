@@ -22,13 +22,15 @@
 
 #pragma once
 
+#include <crtdefs.h>
+
 namespace Eris
 {
-    template<std::size_t alignment = 16>
+    template<size_t alignment = 16>
     class Aligned
     {
     public:
-        static void* operator new (std::size_t size)
+        static void* operator new (size_t size)
         {
             return _aligned_malloc(size, alignment);
         }
@@ -38,4 +40,14 @@ namespace Eris
             _aligned_free(ptr);
         }
     };
+}
+
+inline void* operator new (size_t size)
+{
+    return _aligned_malloc(size, 16);
+}
+
+inline void operator delete (void* ptr)
+{
+    _aligned_free(ptr);
 }

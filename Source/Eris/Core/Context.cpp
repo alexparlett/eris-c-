@@ -80,7 +80,7 @@ namespace Eris
     {
         std::unordered_set<Object*>* group = _getEventRecievers(event_type, sender);
         if (group)
-            group->insert(reciever);
+            group->erase(reciever);
     }
 
     const std::unordered_set<Object*>* Context::getEventRecievers(const StringHash& event_type, Object* sender)
