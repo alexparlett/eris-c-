@@ -121,7 +121,7 @@ namespace Eris
         }
 
         setParameters();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, (glm::i32) m_k_wrap_mode);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, (glm::i32) m_w_wrap_mode);
 
         glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
         glfwMakeContextCurrent(win);

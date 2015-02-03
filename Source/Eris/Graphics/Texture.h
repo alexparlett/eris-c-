@@ -49,7 +49,7 @@ namespace Eris
         bool getGenerateMipMaps() const { return m_generate_mip_maps; }
         WrapMode getUWrapMode() const { return m_u_wrap_mode; }
         WrapMode getVWrapMode() const { return m_v_wrap_mode; }
-        WrapMode getWWrapMode() const { return m_k_wrap_mode; }
+        WrapMode getWWrapMode() const { return m_w_wrap_mode; }
 
         void setGenerateMipMaps(bool generate);
         void setUWrapMode(WrapMode u_wrap_mode);
@@ -66,7 +66,7 @@ namespace Eris
         bool m_generate_mip_maps;
         WrapMode m_u_wrap_mode;
         WrapMode m_v_wrap_mode;
-        WrapMode m_k_wrap_mode;
+        WrapMode m_w_wrap_mode;
         glm::u32 m_handle;
     };
 }

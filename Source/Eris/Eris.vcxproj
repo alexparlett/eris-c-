@@ -319,6 +319,7 @@ xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
     <ClInclude Include="Resource\ResourceLoader.h" />
     <ClInclude Include="Resource\XMLElement.h" />
     <ClInclude Include="Resource\XMLFile.h" />
+    <ClInclude Include="Scene\Node.h" />
     <ClInclude Include="Thread\SpinLock.h" />
     <ClInclude Include="Thread\Types.h" />
     <ClInclude Include="Util\Aligned.h" />
@@ -369,6 +370,7 @@ xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
     <ClCompile Include="Resource\ResourceLoader.cpp" />
     <ClCompile Include="Resource\XMLElement.cpp" />
     <ClCompile Include="Resource\XMLFile.cpp" />
+    <ClCompile Include="Scene\Node.cpp" />
     <ClCompile Include="Thread\SpinLock.cpp" />
   </ItemGroup>
   <ItemGroup>

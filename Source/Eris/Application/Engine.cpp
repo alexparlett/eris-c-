@@ -121,11 +121,16 @@ namespace Eris
         Renderer* renderer = m_context->getModule<Renderer>();
 
         glm::f64 current_time = clock->getElapsedTime();
+        const glm::f64 maximum_delta = 0.06;
+        const glm::f64 growth_rate = 1.1;
         while (!m_exiting)
         {
             glm::f64 new_time = clock->getElapsedTime();
             glm::f64 delta_time = new_time - current_time;
             current_time = new_time;
+
+            if (delta_time > maximum_delta)
+                delta_time = maximum_delta * (growth_rate * (delta_time - maximum_delta));
 
             clock->beginFrame(delta_time);
 
