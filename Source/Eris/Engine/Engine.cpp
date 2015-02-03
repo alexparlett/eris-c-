@@ -50,7 +50,7 @@ namespace Eris
         Object(context),
         m_exitcode(EXIT_OK),
         m_exiting(false)
-    {        
+    {
         context->registerModule(new Log(context));
         context->registerModule(new Clock(context));
         context->registerModule(this);
@@ -266,5 +266,4 @@ namespace Eris
         GlobalMemoryStatusEx(&state_ex);
         Log::rawf("\tMemory: %d%s", (state_ex.ullTotalPhys / 1024) / 1024, "MB");
     }
-
 }

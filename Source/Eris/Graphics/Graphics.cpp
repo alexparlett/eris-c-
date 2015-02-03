@@ -23,8 +23,8 @@
 #include "Graphics.h"
 #include "Events.h"
 
-#include "Application/Engine.h"
-#include "Application/Events.h"
+#include "Engine/Engine.h"
+#include "Engine/Events.h"
 #include "Core/Log.h"
 
 namespace Eris
