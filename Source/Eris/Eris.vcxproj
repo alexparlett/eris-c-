@@ -159,7 +159,7 @@ xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(IntDir)$(TargetName).pdb</ProgramDatabaseFile>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(Platform)\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3d.lib;glew32sd.lib;opengl32.lib;pugixmld.lib;zlibstaticd.lib;assimpd.lib;angelscriptd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3d.lib;glew32sd.lib;opengl32.lib;pugixmld.lib;zlibstaticd.lib;assimpd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ProfileGuidedDatabase>$(IntDir)$(TargetName).pgd</ProfileGuidedDatabase>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
@@ -271,9 +271,6 @@ xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\gitversion.h" />
-    <ClInclude Include="Application\Events.h" />
-    <ClInclude Include="Application\Locale.h" />
-    <ClInclude Include="Application\Settings.h" />
     <ClInclude Include="Collections\Functions.h" />
     <ClInclude Include="Collections\Types.h" />
     <ClInclude Include="Core\Clock.h" />
@@ -281,6 +278,10 @@ xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
     <ClInclude Include="Core\Events.h" />
     <ClInclude Include="Core\Log.h" />
     <ClInclude Include="Core\Timer.h" />
+    <ClInclude Include="Engine\Engine.h" />
+    <ClInclude Include="Engine\Events.h" />
+    <ClInclude Include="Engine\Locale.h" />
+    <ClInclude Include="Engine\Settings.h" />
     <ClInclude Include="Graphics\Events.h" />
     <ClInclude Include="Graphics\Material.h" />
     <ClInclude Include="Graphics\Mesh.h" />
@@ -335,13 +336,13 @@ xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
     <ResourceCompile Include="Eris.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Application\Engine.cpp" />
     <ClCompile Include="Application\Eris.cpp" />
-    <ClCompile Include="Application\Locale.cpp" />
-    <ClCompile Include="Application\Settings.cpp" />
     <ClCompile Include="Core\Clock.cpp" />
     <ClCompile Include="Core\Log.cpp" />
     <ClCompile Include="Core\Timer.cpp" />
+    <ClCompile Include="Engine\Engine.cpp" />
+    <ClCompile Include="Engine\Locale.cpp" />
+    <ClCompile Include="Engine\Settings.cpp" />
     <ClCompile Include="Graphics\Material.cpp" />
     <ClCompile Include="Graphics\Mesh.cpp" />
     <ClCompile Include="Graphics\Model.cpp" />

@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "Component.h"
-
 #include "Core/Context.h"
 #include "Core/Object.h"
 #include "Memory/Pointers.h"
@@ -36,13 +34,40 @@ namespace Eris
         Node(Context* context);
         virtual ~Node();
 
+        Node* parent() const { return m_parent; }
+        std::vector<SharedPtr<Node>> children() const { return m_children; }
+
+        Node* createChild();
+        void addChild(Node* child);
+        void removeChild(Node* child);
+        glm::u32 childCount() const { return m_children.size(); }
+
+        void setPosition(const glm::vec3& position);
+        void setRotation(const glm::quat& rotation);
+        void setScale(glm::f32 scalar);
+        void setScale(const glm::vec3& scale);
+        void setWorldPosition(const glm::vec3& position);
+        void setWorldRotation(const glm::quat& rotation);
+        void setWorldScale(const glm::f32 scalar);
+        void setWorldScale(const glm::vec3& scale);
+
+        glm::vec3 position() const { return m_position; }
+        glm::quat rotation() const { return m_rotation; }
+        glm::vec3 scale() const { return m_scale; }
+        glm::vec3 worldPosition() const;
+        glm::quat worldRotation() const;
+        glm::vec3 worldScale() const;
+        glm::mat4 transform() const;
+        glm::mat4 worldTransform() const { return m_world_transform; }
+
     private:
-        mutable glm::mat4 m_world_transform;
+        void invalidateWorldTransform();
+
+        glm::mat4 m_world_transform;
         glm::vec3 m_position;
         glm::quat m_rotation;
         glm::vec3 m_scale;
         WeakPtr<Node> m_parent;
         std::vector<SharedPtr<Node>> m_children;
-        std::vector<SharedPtr<Component>> m_components;
     };
 }

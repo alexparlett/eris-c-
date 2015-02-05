@@ -41,13 +41,3 @@ namespace Eris
         }
     };
 }
-
-inline void* operator new (size_t size)
-{
-    return _aligned_malloc(size, 16);
-}
-
-inline void operator delete (void* ptr)
-{
-    _aligned_free(ptr);
-}
