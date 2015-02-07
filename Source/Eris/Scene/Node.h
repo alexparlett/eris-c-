@@ -22,6 +22,8 @@
 
 #pragma once
 
+#include "Component.h"
+
 #include "Core/Context.h"
 #include "Core/Object.h"
 #include "Memory/Pointers.h"
@@ -34,13 +36,31 @@ namespace Eris
         Node(Context* context);
         virtual ~Node();
 
+        glm::u64 id() const { return m_id; }
         Node* parent() const { return m_parent; }
-        std::vector<SharedPtr<Node>> children() const { return m_children; }
+        const std::list<SharedPtr<Node>>& children() const { return m_children; }
 
-        Node* createChild();
         void addChild(Node* child);
         void removeChild(Node* child);
-        glm::u32 childCount() const { return m_children.size(); }
+        void removeChildren() { m_children.clear(); }
+        Node* firstChild() const { return m_children.front(); }
+        Node* child(glm::u64 id) const;
+        Node* lastChild() const { return m_children.back(); }
+        std::size_t childCount() const { return m_children.size(); }
+
+        template<typename T>
+        T* createComponent<T>();
+        void removeComponent(Component* component);
+        template<typename T>
+        void removeComponents();
+        template<typename T>
+        T* component(glm::u64 id = 0ULL) const;
+        template<typename T>
+        T* componentOrCreate(glm::u64 id = 0ULL);
+        template<typename T>
+        std::list<T*> components() const;
+        std::size_t componentCount() const { return m_components.size(); }
+
 
         void setPosition(const glm::vec3& position);
         void setRotation(const glm::quat& rotation);
@@ -51,23 +71,58 @@ namespace Eris
         void setWorldScale(const glm::f32 scalar);
         void setWorldScale(const glm::vec3& scale);
 
-        glm::vec3 position() const { return m_position; }
-        glm::quat rotation() const { return m_rotation; }
-        glm::vec3 scale() const { return m_scale; }
+        const glm::vec3& position() const { return m_position; }
+        const glm::quat& rotation() const { return m_rotation; }
+        const glm::vec3& scale() const { return m_scale; }
+        glm::vec3 forward() const { return m_rotation * glm::vec3(1.f, 0.f, 0.f); }
+        glm::vec3 up() const { return m_rotation * glm::vec3(0.f, 1.f, 0.f); }
+        glm::vec3 right() const { return m_rotation * glm::vec3(0.f, 0.f, 1.f); }
+        glm::mat4 transform() const;
         glm::vec3 worldPosition() const;
         glm::quat worldRotation() const;
         glm::vec3 worldScale() const;
-        glm::mat4 transform() const;
+        glm::vec3 worldForward() const { return worldRotation() * glm::vec3(1.f, 0.f, 0.f); }
+        glm::vec3 worldUp() const { return worldRotation() * glm::vec3(0.f, 1.f, 0.f); }
+        glm::vec3 worldRight() const { return worldRotation() * glm::vec3(0.f, 0.f, 1.f); }
         glm::mat4 worldTransform() const { return m_world_transform; }
 
     private:
         void invalidateWorldTransform();
 
+        glm::u64 m_id;
         glm::mat4 m_world_transform;
         glm::vec3 m_position;
         glm::quat m_rotation;
         glm::vec3 m_scale;
         WeakPtr<Node> m_parent;
-        std::vector<SharedPtr<Node>> m_children;
+        std::list<SharedPtr<Node>> m_children;
+        std::list<SharedPtr<Component>> m_components;
+
+        static glm::u64 s_next_node_id;
     };
+
+    template<typename T>
+    std::list<T*>
+    Node::components() const
+    {
+
+    }
+
+    template<typename T>
+    T* Node::componentOrCreate(glm::u64 id /*= 0ULL*/)
+    {
+
+    }
+
+    template<typename T>
+    T* Node::component(glm::u64 id /*= 0ULL*/) const
+    {
+
+    }
+
+    template<typename T>
+    void Node::removeComponents()
+    {
+
+    }
 }

@@ -159,7 +159,7 @@ xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(IntDir)$(TargetName).pdb</ProgramDatabaseFile>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(Platform)\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3d.lib;glew32sd.lib;opengl32.lib;pugixmld.lib;zlibstaticd.lib;assimpd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3d.lib;glew32sd.lib;opengl32.lib;pugixmld.lib;zlibstaticd.lib;assimpd.lib;angelscriptd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ProfileGuidedDatabase>$(IntDir)$(TargetName).pgd</ProfileGuidedDatabase>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
@@ -320,6 +320,7 @@ xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
     <ClInclude Include="Resource\ResourceLoader.h" />
     <ClInclude Include="Resource\XMLElement.h" />
     <ClInclude Include="Resource\XMLFile.h" />
+    <ClInclude Include="Scene\Component.h" />
     <ClInclude Include="Scene\Node.h" />
     <ClInclude Include="Thread\SpinLock.h" />
     <ClInclude Include="Thread\Types.h" />
@@ -371,6 +372,7 @@ xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
     <ClCompile Include="Resource\ResourceLoader.cpp" />
     <ClCompile Include="Resource\XMLElement.cpp" />
     <ClCompile Include="Resource\XMLFile.cpp" />
+    <ClCompile Include="Scene\Component.cpp" />
     <ClCompile Include="Scene\Node.cpp" />
     <ClCompile Include="Thread\SpinLock.cpp" />
   </ItemGroup>

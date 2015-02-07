@@ -26,8 +26,11 @@
 
 namespace Eris
 {
+    glm::u64 Node::s_next_node_id = 1ULL;
+
     Node::Node(Context* context) :
         Object(context),
+        m_id(s_next_node_id++),
         m_parent(nullptr),
         m_scale(1.f)
     {
@@ -36,19 +39,10 @@ namespace Eris
     Node::~Node()
     {
         if (m_parent)
-            m_parent->removeChild(const_cast<Node*>(this));
-        m_children.clear();
-    }
-
-    Node* Node::createChild()
-    {
-        static glm::u64 next_node_id = 0ULL;
-
-        SharedPtr<Node> node(new Node(m_context));
-        node->m_parent = WeakPtr<Node>(this);
-        node->invalidateWorldTransform();
-        m_children.push_back(node);
-        return node;
+            m_parent->removeChild(this);
+        
+        removeChildren();
+        removeComponents<Component>();
     }
 
     void Node::addChild(Node* child)
@@ -60,13 +54,36 @@ namespace Eris
 
     void Node::removeChild(Node* child)
     {
-        for (auto c = m_children.begin(); c != m_children.end(); c++)
+        for (auto c : m_children)
         {
-            if (c->get() == child)
+            if (c == child)
             {
-                c->get()->m_parent.reset();
-                c->get()->invalidateWorldTransform();
-                m_children.erase(c);
+                c->m_parent.reset();
+                c->invalidateWorldTransform();
+                m_children.remove(c);
+                return;
+            }
+        }
+    }
+
+    Node* Node::child(glm::u64 id) const
+    {
+        for (auto c : m_children)
+        {
+            if (c->m_id == id)
+                return c;
+        }
+
+        return nullptr;
+    }
+
+    void Node::removeComponent(Component* component)
+    {
+        for (auto c : m_components)
+        {
+            if (c == component)
+            {
+                m_components.remove(c);
                 return;
             }
         }
@@ -116,6 +133,11 @@ namespace Eris
         setScale(m_parent ? scale / m_parent->worldScale() : scale);
     }
 
+    void Node::setWorldScale(const glm::f32 scalar)
+    {
+
+    }
+
     glm::vec3 Node::worldPosition() const
     {
         glm::vec3 scale, translation, skew;
@@ -146,8 +168,8 @@ namespace Eris
     glm::mat4 Node::transform() const
     {
         glm::mat4 transform = glm::mat4_cast(m_rotation);
-        transform = glm::scale(transform, m_scale);
         transform = glm::translate(transform, m_position);
+        transform = glm::scale(transform, m_scale);
         return transform;
     }
 
