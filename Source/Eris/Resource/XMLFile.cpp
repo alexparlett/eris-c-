@@ -114,7 +114,8 @@ namespace Eris
 
     void XMLFile::patch(const XMLElement& element)
     {
-        for (auto patch : element.getNode())
+        pugi::xml_node root = element.getNode();
+        for (auto patch : root)
         {
             pugi::xml_attribute sel = patch.attribute("sel");
             if (sel.empty())

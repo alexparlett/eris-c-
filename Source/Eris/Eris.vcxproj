@@ -315,6 +315,8 @@ xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
     <ClInclude Include="Resource\Image.h" />
     <ClInclude Include="Resource\INIFile.h" />
     <ClInclude Include="Resource\INISection.h" />
+    <ClInclude Include="Resource\JsonElement.h" />
+    <ClInclude Include="Resource\JsonFile.h" />
     <ClInclude Include="Resource\Resource.h" />
     <ClInclude Include="Resource\ResourceCache.h" />
     <ClInclude Include="Resource\ResourceLoader.h" />
@@ -368,6 +370,8 @@ xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
     <ClCompile Include="Resource\Image.cpp" />
     <ClCompile Include="Resource\INIFile.cpp" />
     <ClCompile Include="Resource\INISection.cpp" />
+    <ClCompile Include="Resource\JsonElement.cpp" />
+    <ClCompile Include="Resource\JsonFile.cpp" />
     <ClCompile Include="Resource\ResourceCache.cpp" />
     <ClCompile Include="Resource\ResourceLoader.cpp" />
     <ClCompile Include="Resource\XMLElement.cpp" />

@@ -1,11 +1,23 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<material>
-    <program>Shaders/textured.glsl</program>
-    <textures>
-        <texture type="2d" unit="0" uniform="diffuse">Textures/Planet-Alien-AshyGreen-Diffuse.jpg</texture>
-    </textures>
-    <uniforms>
-        <uniform name="ambient" type="fvec3">1.0 1.0 1.0</uniform>
-    </uniforms>
-    <cull>back</cull>
-</material>
+{
+	"program": "Shaders/textured.glsl",
+	"textures": [
+		{ 
+			"type": "2d",
+			"unit": "0",
+			"uniform": "diffuse",
+			"file": "Textures/Planet-Alien-AshyGreen-Diffuse.jpg"
+		}
+	],
+	"uniforms": [
+		{
+			"name": "ambient",
+			"type": "fvec3",
+			"value": "1.0 1.0 1.0"
+		}
+	],
+	"cull": "back",
+	"passes": [
+		"opaque",
+		"transparent"
+	]
+}

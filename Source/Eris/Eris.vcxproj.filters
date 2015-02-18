@@ -223,6 +223,12 @@
     <ClInclude Include="Scene\Component.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Resource\JsonFile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\JsonElement.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Eris.rc">
@@ -342,6 +348,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Scene\Component.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\JsonFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\JsonElement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

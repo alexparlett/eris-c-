@@ -29,9 +29,24 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/format.hpp>
+#include <boost/lexical_cast.hpp>
 
 namespace std
 {
+    template<typename T>
+    inline bool is_numeric(const std::string& str)
+    {
+        try
+        {
+            boost::lexical_cast<T>(str);
+            return true;
+        }
+        catch (boost::bad_lexical_cast& e)
+        {
+            return false;
+        }
+    }
+
     inline std::vector<std::string> string_split(const string& str, const string& delims)
     {
         std::vector<std::string> tokens;

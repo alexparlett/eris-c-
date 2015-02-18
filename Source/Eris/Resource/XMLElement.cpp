@@ -506,11 +506,12 @@ namespace Eris
     {
         XMLElementIterator i = *this;
 
-        m_iter++;
         if (m_iter != m_end)
             m_element = XMLElement(m_file, *m_iter);
         else
             m_element = XMLElement();
+
+        m_iter++;
 
         return i;
     }
@@ -518,6 +519,7 @@ namespace Eris
     XMLElementIterator XMLElementIterator::operator++ (glm::i32 junk)
     {
         m_iter++;
+
         if (m_iter != m_end)
             m_element = XMLElement(m_file, *m_iter);
         else

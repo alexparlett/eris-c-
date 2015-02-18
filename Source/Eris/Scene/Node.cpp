@@ -77,6 +77,22 @@ namespace Eris
         return nullptr;
     }
 
+    Node* Node::child(glm::u32 index) const
+    {
+        if (index < 0 || index > m_children.size())
+            return nullptr;
+
+        glm::u32 i = 0U;
+        for (auto c : m_children)
+        {
+            if (i == index)
+                return c;
+            i++;
+        }
+
+        return nullptr;
+    }
+
     void Node::removeComponent(Component* component)
     {
         for (auto c : m_components)
@@ -131,11 +147,6 @@ namespace Eris
     void Node::setWorldScale(const glm::vec3& scale)
     {
         setScale(m_parent ? scale / m_parent->worldScale() : scale);
-    }
-
-    void Node::setWorldScale(const glm::f32 scalar)
-    {
-
     }
 
     glm::vec3 Node::worldPosition() const

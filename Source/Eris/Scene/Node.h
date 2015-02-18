@@ -38,29 +38,25 @@ namespace Eris
 
         glm::u64 id() const { return m_id; }
         Node* parent() const { return m_parent; }
-        const std::list<SharedPtr<Node>>& children() const { return m_children; }
 
         void addChild(Node* child);
         void removeChild(Node* child);
         void removeChildren() { m_children.clear(); }
         Node* firstChild() const { return m_children.front(); }
-        Node* child(glm::u64 id) const;
+        Node* child(glm::u64 id = 0ULL) const;
+        Node* child(glm::u32 index) const;
         Node* lastChild() const { return m_children.back(); }
+        const std::list<SharedPtr<Node>>& children() const { return m_children; }
         std::size_t childCount() const { return m_children.size(); }
 
-        template<typename T>
-        T* createComponent<T>();
+        template<typename T> T* createComponent();
         void removeComponent(Component* component);
-        template<typename T>
-        void removeComponents();
-        template<typename T>
-        T* component(glm::u64 id = 0ULL) const;
-        template<typename T>
-        T* componentOrCreate(glm::u64 id = 0ULL);
-        template<typename T>
-        std::list<T*> components() const;
-        std::size_t componentCount() const { return m_components.size(); }
-
+        template<typename T> void removeComponents();
+        template<typename T> T* component(glm::u64 id = 0ULL) const;
+        template<typename T> T* component(glm::u32 index) const;
+        template<typename T> T* componentOrCreate(glm::u64 id = 0ULL);
+        template<typename T> std::list<T*> components() const;
+        template<typename T> std::size_t componentCount() const;
 
         void setPosition(const glm::vec3& position);
         void setRotation(const glm::quat& rotation);
@@ -68,7 +64,7 @@ namespace Eris
         void setScale(const glm::vec3& scale);
         void setWorldPosition(const glm::vec3& position);
         void setWorldRotation(const glm::quat& rotation);
-        void setWorldScale(const glm::f32 scalar);
+        void setWorldScale(glm::f32 scalar);
         void setWorldScale(const glm::vec3& scale);
 
         const glm::vec3& position() const { return m_position; }
@@ -102,27 +98,45 @@ namespace Eris
     };
 
     template<typename T>
-    std::list<T*>
-    Node::components() const
+    std::size_t Eris::Node::componentCount() const
+    {
+        return 0;
+    }
+
+    template<typename T> std::list < T* >
+    Eris::Node::components() const
+    {
+       
+    }
+
+    template<typename T>
+    T* Eris::Node::componentOrCreate(glm::u64 id /*= 0ULL*/)
+    {
+        return nullptr;
+    }
+
+    template<typename T>
+    T* Eris::Node::component(glm::u32 index) const
+    {
+        return nullptr;
+    }
+
+    template<typename T>
+    T* Eris::Node::component(glm::u64 id /*= 0ULL*/) const
+    {
+        return nullptr;
+    }
+
+    template<typename T>
+    void Eris::Node::removeComponents()
     {
 
     }
 
     template<typename T>
-    T* Node::componentOrCreate(glm::u64 id /*= 0ULL*/)
+    T* Eris::Node::createComponent()
     {
-
+        return nullptr;
     }
 
-    template<typename T>
-    T* Node::component(glm::u64 id /*= 0ULL*/) const
-    {
-
-    }
-
-    template<typename T>
-    void Node::removeComponents()
-    {
-
-    }
 }
