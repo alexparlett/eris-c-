@@ -54,28 +54,28 @@ namespace Eris
             return false;
 
         JsonElement root = file->getRoot();
-        JsonElement program = root.getChild("program");
+        JsonElement program = root["program"];
         if (!program)
         {
             Log::errorf("Failed loading Material: missing <program> element.");
             return false;
         }
 
-        m_program = rc->getResource<ShaderProgram>(program.getString(StringEmpty));
+        m_program = rc->getResource<ShaderProgram>(program.getString());
         if (!m_program)
             return false;
 
-        JsonElement textures = root.getChild("textures");
+        JsonElement textures = root["textures"];
         for (auto texture : textures)
         {
             TextureUnit texture_unit;
-            texture_unit.unit = texture.getChild("unit").getI32(-1);
-            texture_unit.uniform = texture.getChild("uniform").getString("diffuse");
+            texture_unit.unit = texture["unit"].getI32(-1);
+            texture_unit.uniform = texture["uniform"].getString("diffuse");
 
             if (texture.getChild("type").getString("2d") == "2d")
-                texture_unit.texture = rc->getResource<Texture2D, Texture>(texture.getChild("file").getString(StringEmpty));
+                texture_unit.texture = rc->getResource<Texture2D, Texture>(texture["file"].getString());
             else if (texture.getChild("type").getString("2d") == "cube")
-                texture_unit.texture = rc->getResource<TextureCube, Texture>(texture.getChild("file").getString(StringEmpty));
+                texture_unit.texture = rc->getResource<TextureCube, Texture>(texture["file"].getString());
 
             if (!texture_unit.texture || texture_unit.uniform.empty() || texture_unit.unit < 0 || texture_unit.unit > 31)
             {
@@ -86,43 +86,43 @@ namespace Eris
             m_textures[texture_unit.unit]  = texture_unit;
         }
 
-        JsonElement uniforms = root.getChild("uniforms");
+        JsonElement uniforms = root["uniforms"];
         for (auto uniform : uniforms)
         {
-            std::string name = uniform.getChild("name").getString(StringEmpty);
-            std::string type = uniform.getChild("type").getString(StringEmpty);
+            std::string name = uniform["name"].getString();
+            std::string type = uniform["type"].getString();
 
             Variant value;
             if (type == "f32")
-                value = uniform.getChild("value").getF32(0.f);
+                value = uniform["value"].getF32();
             else if (type == "fvec2")
-                value = uniform.getChild("value").getFVec2(glm::fvec2());
+                value = uniform["value"].getFVec2();
             else if (type == "fvec3")
-                value = uniform.getChild("value").getFVec3(glm::fvec3());
+                value = uniform["value"].getFVec3();
             else if (type == "fvec4")
-                value = uniform.getChild("value").getFVec4(glm::fvec4());
+                value = uniform["value"].getFVec4();
             else if (type == "i32")
-                value = uniform.getChild("value").getI32(0);
+                value = uniform["value"].getI32();
             else if (type == "ivec2")
-                value = uniform.getChild("value").getIVec2(glm::ivec2());
+                value = uniform["value"].getIVec2();
             else if (type == "ivec3")
-                value = uniform.getChild("value").getIVec3(glm::ivec3());
+                value = uniform["value"].getIVec3();
             else if (type == "ivec4")
-                value = uniform.getChild("value").getIVec4(glm::ivec4());
+                value = uniform["value"].getIVec4();
             else if (type == "bool")
-                value = uniform.getChild("value").getBool(false);
+                value = uniform["value"].getBool();
             else if (type == "bvec2")
-                value = uniform.getChild("value").getBVec2(glm::bvec2());
+                value = uniform["value"].getBVec2();
             else if (type == "bvec3")
-                value = uniform.getChild("value").getBVec3(glm::bvec3());
+                value = uniform["value"].getBVec3();
             else if (type == "bvec4")
-                value = uniform.getChild("value").getBVec4(glm::bvec4());
+                value = uniform["value"].getBVec4();
             else if (type == "mat2")
-                value = uniform.getChild("value").getMat2(glm::mat2());
+                value = uniform["value"].getMat2();
             else if (type == "mat3")
-                value = uniform.getChild("value").getMat3(glm::mat3());
+                value = uniform["value"].getMat3();
             else if (type == "mat4")
-                value = uniform.getChild("value").getMat4(glm::mat4());
+                value = uniform["value"].getMat4();
             else
             {
                 Log::errorf("Failed loading Material: %s is not a valid uniform type", type);
@@ -132,7 +132,7 @@ namespace Eris
             setUniform(name, value);
         }
 
-        JsonElement cull = root.getChild("cull");
+        JsonElement cull = root["cull"];
         if (cull)
         {
             std::string value = cull.getString("back");

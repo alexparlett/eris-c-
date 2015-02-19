@@ -58,6 +58,32 @@ namespace Eris
         return m_file && m_value ? !m_value->IsNull() : false; 
     }
 
+
+    JsonElement JsonElement::operator[] (glm::i32 index) const
+    {
+        if (!m_file || !m_value || !m_value->IsArray() || index < 0 || index > m_value->Size())
+            return EMPTY;
+
+        return JsonElement(m_file, &m_value[index]);
+    }
+
+    JsonElement JsonElement::operator[] (const std::string& name) const
+    {
+        return (*this)[name.c_str()];
+    }
+
+    JsonElement JsonElement::operator[] (const char* name) const
+    {
+        if (!m_file || !m_value || !m_value->IsObject() || !name)
+            return EMPTY;
+
+        auto it = m_value->FindMember(name);
+        if (it != m_value->MemberEnd())
+            return JsonElement(m_file, &it->value);
+
+        return EMPTY;
+    }
+
     JsonElement::iterator JsonElement::begin()
     {
         if (m_value->IsArray())
@@ -207,9 +233,22 @@ namespace Eris
         return false;
     }
 
-    bool JsonElement::empty() const
+    bool JsonElement::null() const
     {
         return this;
+    }
+
+    std::size_t JsonElement::childCount() const
+    {
+        if (!m_file || !m_value)
+            return 0;
+
+        if (m_value->IsArray())
+            return m_value->Size();
+        else if (m_value->IsObject())
+            return m_value->MemberCount();
+
+        return 0;
     }
 
     bool JsonElement::hasChild(const std::string& name) const
@@ -233,7 +272,7 @@ namespace Eris
         return false;
     }
 
-    JsonElement JsonElement::getChild(const std::string& name)
+    JsonElement JsonElement::getChild(const std::string& name) const
     {
         if (name.empty() || !m_value->IsObject())
             return EMPTY;
@@ -245,7 +284,7 @@ namespace Eris
         return EMPTY;
     }
 
-    JsonElement JsonElement::getChild(glm::i32 index)
+    JsonElement JsonElement::getChild(glm::i32 index) const
     {
         if (index < 0 || index > m_value->Size() || !m_value->IsArray())
             return EMPTY;

@@ -1,0 +1,14 @@
+[
+	{
+		"id": "0",
+		"lines": [
+			{ "id": "1", "value": "NEW" }
+			{ "id": "2", "value": "LOAD" }
+			{ "id": "3", "value": "MODS" }
+			{ "id": "4", "value": "OPTIONS" }
+			{ "id": "5", "value": "EXIT" }
+			{ "id": "6", "value": "CONTINUE" }
+			{ "id": "7", "value": "SAVE" }
+		]
+	}
+]

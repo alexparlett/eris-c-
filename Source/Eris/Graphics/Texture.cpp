@@ -23,7 +23,7 @@
 #include "Texture.h"
 
 #include "Resource/Image.h"
-#include "Resource/XMLElement.h"
+#include "Resource/JsonElement.h"
 
 namespace Eris
 {
@@ -83,20 +83,19 @@ namespace Eris
         }
     }
 
-    void Texture::parseParameters(const XMLElement& element)
+    void Texture::parseParameters(const JsonElement& element)
     {
-        for (auto ele : element)
+        if (element.hasChild("mipmaps"))
         {
-            if (ele.getName() == "mipmaps")
-            {
-                m_generate_mip_maps = ele.getBool(true);
-            }
-            else if (ele.getName() == "wrap")
-            {
-                m_u_wrap_mode = wrapModesMap[ele.getI32("u", 0)];
-                m_v_wrap_mode = wrapModesMap[ele.getI32("v", 0)];
-                m_w_wrap_mode = wrapModesMap[ele.getI32("w", 0)];
-            }
+            m_generate_mip_maps = element["mipmaps"].getBool(true);
+        }
+
+        if (element.hasChild("wrap"))
+        {
+            JsonElement wrap = element.getChild("wrap");
+            m_u_wrap_mode = wrapModesMap[wrap["u"].getI32()];
+            m_v_wrap_mode = wrapModesMap[wrap["v"].getI32()];
+            m_w_wrap_mode = wrapModesMap[wrap["w"].getI32()];
         }
     }
 

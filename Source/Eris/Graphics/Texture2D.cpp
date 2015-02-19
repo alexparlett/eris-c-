@@ -28,7 +28,7 @@
 #include "Memory/Pointers.h"
 #include "Resource/Image.h"
 #include "Resource/ResourceCache.h"
-#include "Resource/XMLFile.h"
+#include "Resource/JsonFile.h"
 
 namespace Eris
 {
@@ -41,17 +41,23 @@ namespace Eris
     {
         PROFILE(LoadTexture2D);
 
-        SharedPtr<Image> image(new Image(m_context));
-        if (!image->load(deserializer))
+        ResourceCache* rc = m_context->getModule<ResourceCache>();
+
+        SharedPtr<JsonFile> file(new JsonFile(m_context));
+        if (!file->load(deserializer))
+            return false;
+
+        Path image_path = file->getRoot()["file"].getString();
+        if (image_path.parent_path().empty())
+            image_path = deserializer.getPath().parent_path() /= image_path;
+
+        SharedPtr<Image> image(rc->getTempResource<Image>(image_path));
+        if (!image)
             return false;
 
         image->flip();
 
-        Path xml_path = deserializer.getPath();
-        xml_path.replace_extension(".tex");
-        SharedPtr<XMLFile> properties = SharedPtr<XMLFile>(m_context->getModule<ResourceCache>()->getTempResource<XMLFile>(xml_path));
-        if (properties)
-            parseParameters(properties->getRoot());
+        parseParameters(file->getRoot());
 
         glm::i32 format = getFormat(image);
 

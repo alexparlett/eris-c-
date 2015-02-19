@@ -22,7 +22,7 @@
 
 #include "Locale.h"
 
-#include "Resource/XMLFile.h"
+#include "Resource/JsonFile.h"
 #include "Resource/ResourceCache.h"
 
 namespace Eris
@@ -32,13 +32,13 @@ namespace Eris
     {
     }
 
-    Page::Page(const XMLElement& element) :
+    Page::Page(const JsonElement& element) :
         RefCounted()
     {
-        for (auto line : element)
+        for (auto line : element["lines"])
         {
-            glm::i32 id = line.getI32("id", -1);
-            std::string value = line.getString(StringEmpty);
+            glm::i32 id = line["id"].getI32(-1);
+            std::string value = line["value"].getString();
 
             if (id >= 0 && !value.empty())
                 m_lines[id] = value;
@@ -65,14 +65,14 @@ namespace Eris
 
         Path full_path = "Locales/";
         full_path /= file_name;
-        full_path.replace_extension(".xml");
+        full_path.replace_extension(".lang");
 
-        XMLFile* file = m_context->getModule<ResourceCache>()->getResource<XMLFile>(full_path);
+        JsonFile* file = m_context->getModule<ResourceCache>()->getResource<JsonFile>(full_path);
         if (file)
         {
             for (auto page : file->getRoot())
             {
-                glm::i32 id = page.getI32("id", -1);
+                glm::i32 id = page["id"].getI32(-1);
                 if (id >= 0)
                     m_pages[id] = new Page(page);
             }

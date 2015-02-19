@@ -28,7 +28,7 @@
 namespace Eris
 {
     class Image;
-    class XMLElement;
+    class JsonElement;
 
     enum class WrapMode : glm::i32
     {
@@ -60,7 +60,7 @@ namespace Eris
 
     protected:
         glm::i32 getFormat(Image* image);
-        void parseParameters(const XMLElement& element);
+        void parseParameters(const JsonElement& element);
         void setParameters();
 
         bool m_generate_mip_maps;

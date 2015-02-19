@@ -27,7 +27,7 @@
 #include "Core/Profiler.h"
 #include "Resource/ResourceCache.h"
 #include "Resource/Image.h"
-#include "Resource/XMLFile.h"
+#include "Resource/JsonFile.h"
 
 namespace Eris
 {
@@ -52,25 +52,25 @@ namespace Eris
 
         ResourceCache* rc = m_context->getModule<ResourceCache>();
 
-        SharedPtr<XMLFile> file(new XMLFile(m_context));
+        SharedPtr<JsonFile> file(new JsonFile(m_context));
         if (!file->load(deserializer))
             return false;
 
         std::map<glm::i32, SharedPtr<Image>> faces;
-        XMLElement facesEle = file->getRoot().getChild("faces");
+        JsonElement facesEle = file->getRoot()["faces"];
         for (auto face : facesEle)
         {
-            Path image_path = face.getValue();
+            Path image_path = face["file"].getString();
             if (image_path.parent_path().empty())
                 image_path = deserializer.getPath().parent_path() /= image_path;
             
-            SharedPtr<Image> image = SharedPtr<Image>(rc->getTempResource<Image>(image_path));
+            SharedPtr<Image> image(rc->getTempResource<Image>(image_path));
             if (!image)
                 return false;
 
             image->flip();
 
-            faces[facesMap[face.getI32("pos", 0)]] = image;
+            faces[facesMap[face["pos"].getI32()]] = image;
         }
 
         if (faces.size() != 6)

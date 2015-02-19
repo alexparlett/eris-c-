@@ -206,9 +206,7 @@ namespace Eris
         if (std::is_numeric<glm::i32>(element_name) && origin->IsArray())
         {
             glm::i32 index = boost::lexical_cast<glm::i32>(element_name);
-            origin->PushBack(value->value, m_doc->GetAllocator());
-            for (auto i = origin->Size() - 1; i > index && i < origin->Size(); i--)
-                origin[i - 1].Swap(origin[i]);
+            or
         }
         else
             origin->AddMember(rapidjson::StringRef(element_name), value->value, m_doc->GetAllocator());

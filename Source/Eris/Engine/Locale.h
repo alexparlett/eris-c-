@@ -25,7 +25,7 @@
 #include "Core/Context.h"
 #include "Core/Object.h"
 #include "Memory/RefCounted.h"
-#include "Resource/XMLElement.h"
+#include "Resource/JsonElement.h"
 
 namespace Eris
 {
@@ -33,7 +33,7 @@ namespace Eris
     {
     public:
         Page();
-        Page(const XMLElement& element);
+        Page(const JsonElement& element);
 
         std::string getLine(glm::i32 line) const;
 

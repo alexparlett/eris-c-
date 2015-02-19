@@ -54,6 +54,10 @@ namespace Eris
 
         operator bool() const;
 
+        JsonElement operator[] (glm::i32 index) const;
+        JsonElement operator[] (const std::string& name) const;
+        JsonElement operator[] (const char* name) const;
+
         iterator begin();
         iterator end();
         const_iterator begin() const;
@@ -68,33 +72,34 @@ namespace Eris
         bool removeChild(glm::i32 index);
         bool removeChildren();
 
-        bool empty() const;
+        bool null() const;
+        std::size_t childCount() const;
         bool hasChild(const std::string& name) const;
         bool hasChildren() const;
 
-        JsonElement getChild(const std::string& name);
-        JsonElement getChild(glm::i32 index);
+        JsonElement getChild(const std::string& name) const;
+        JsonElement getChild(glm::i32 index) const;
 
-        bool getBool(bool default) const;
-        glm::i32 getI32(glm::i32 default) const;
-        glm::u32 getU32(glm::u32 default) const;
-        glm::f32 getF32(glm::f32 default) const;
-        glm::i64 getI64(glm::i64 default) const;
-        glm::u64 getU64(glm::u64 default) const;
-        glm::f64 getF64(glm::f64 default) const;
-        glm::fvec2 getFVec2(glm::fvec2 default) const;
-        glm::fvec3 getFVec3(glm::fvec3 default) const;
-        glm::fvec4 getFVec4(glm::fvec4 default) const;
-        glm::ivec2 getIVec2(glm::ivec2 default) const;
-        glm::ivec3 getIVec3(glm::ivec3 default) const;
-        glm::ivec4 getIVec4(glm::ivec4 default) const;
-        glm::bvec2 getBVec2(glm::bvec2 default) const;
-        glm::bvec3 getBVec3(glm::bvec3 default) const;
-        glm::bvec4 getBVec4(glm::bvec4 default) const;
-        glm::mat2 getMat2(glm::mat2 default) const;
-        glm::mat3 getMat3(glm::mat3 default) const;
-        glm::mat4 getMat4(glm::mat4 default) const;
-        std::string getString(std::string default) const;
+        bool getBool(bool default = false) const;
+        glm::i32 getI32(glm::i32 default = 0) const;
+        glm::u32 getU32(glm::u32 default = 0U) const;
+        glm::f32 getF32(glm::f32 default = 0.f) const;
+        glm::i64 getI64(glm::i64 default = 0LL) const;
+        glm::u64 getU64(glm::u64 default = 0ULL) const;
+        glm::f64 getF64(glm::f64 default = 0.0) const;
+        glm::fvec2 getFVec2(glm::fvec2 default = glm::fvec2()) const;
+        glm::fvec3 getFVec3(glm::fvec3 default = glm::fvec3()) const;
+        glm::fvec4 getFVec4(glm::fvec4 default = glm::fvec4()) const;
+        glm::ivec2 getIVec2(glm::ivec2 default = glm::ivec2()) const;
+        glm::ivec3 getIVec3(glm::ivec3 default = glm::ivec3()) const;
+        glm::ivec4 getIVec4(glm::ivec4 default = glm::ivec4()) const;
+        glm::bvec2 getBVec2(glm::bvec2 default = glm::bvec2()) const;
+        glm::bvec3 getBVec3(glm::bvec3 default = glm::bvec3()) const;
+        glm::bvec4 getBVec4(glm::bvec4 default = glm::bvec4()) const;
+        glm::mat2 getMat2(glm::mat2 default = glm::mat2()) const;
+        glm::mat3 getMat3(glm::mat3 default = glm::mat3()) const;
+        glm::mat4 getMat4(glm::mat4 default = glm::mat4()) const;
+        std::string getString(std::string default = StringEmpty) const;
 
         bool setValue(const std::string& value);
 

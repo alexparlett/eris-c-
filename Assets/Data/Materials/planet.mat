@@ -5,7 +5,7 @@
 			"type": "2d",
 			"unit": "0",
 			"uniform": "diffuse",
-			"file": "Textures/Planet-Alien-AshyGreen-Diffuse.jpg"
+			"file": "Textures/Planet-Alien-AshyGreen-Diffuse.tex"
 		}
 	],
 	"uniforms": [
