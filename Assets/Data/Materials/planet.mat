@@ -16,7 +16,7 @@
 		}
 	],
 	"cull": "back",
-	"passes": [
+	"tags": [
 		"opaque",
 		"transparent"
 	]
