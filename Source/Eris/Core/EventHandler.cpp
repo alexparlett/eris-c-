@@ -20,26 +20,43 @@
 // THE SOFTWARE.
 //
 
-#pragma once
-
-#include "Serializable.h"
-#include "Memory/Pointers.h"
+#include "EventHandler.h"
 
 namespace Eris
 {
-    class Node;
-
-    class Component : public Serializable
+    EventHandler::EventHandler(HandlerFunctionPtr function) :
+        m_sender(0),
+        m_function(function),
+        m_user_data(0)
     {
-    public:
-        Component(Context* context);
-        Component(Context* context, Node* node);
-        virtual ~Component();
+    }
 
-        void setNode(Node* node);
-        Node* getNode() const;
+    EventHandler::EventHandler(HandlerFunctionPtr function, void* user_data) :
+        m_sender(0),
+        m_function(function),
+        m_user_data(user_data)
+    {
+    }
 
-    protected:
-        Node* m_node;
-    };
+    EventHandler::~EventHandler() 
+    {
+    }
+
+    void EventHandler::setSender(Object* sender) 
+    { 
+        m_sender = sender; 
+    }
+
+    void EventHandler::setEventType(StringHash event_type) 
+    { 
+        ERIS_ASSERT(event_type != StringHash::ZERO)
+        m_event_type = event_type; 
+    }
+
+    void EventHandler::invoke(const Event* event) 
+    { 
+        m_function(m_event_type, event); 
+    }
+
 }
+

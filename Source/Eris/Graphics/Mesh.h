@@ -49,8 +49,8 @@ namespace Eris
         void draw();
         void compile();
 
-        void setVertices(std::vector<Vertex> vertices) { m_vertices = vertices; }
-        void setIndices(std::vector<glm::u32> indices) { m_indices = indices; }
+        void setVertices(std::vector<Vertex> vertices);
+        void setIndices(std::vector<glm::u32> indices);
 
         glm::u32 getVao() const { return m_vao; }
         glm::u32 getVbo() const { return m_vbo; }

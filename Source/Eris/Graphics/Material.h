@@ -59,7 +59,7 @@ namespace Eris
         void use() const;
 
         ShaderProgram* getProgram() const { return m_program; }
-        Texture* getTexture(glm::i32 index) const { return m_textures[index].texture; }
+        Texture* getTexture(glm::i32 index) const { ERIS_ASSERT(index >= 0 && index < 32); return m_textures[index].texture; }
         CullMode getCullMode() const { return m_cull_mode; }
         glm::u64 getRenderKey() const { return m_render_key; }
 
@@ -75,6 +75,7 @@ namespace Eris
         SharedPtr<ShaderProgram> m_program;
         TextureUnit m_textures[32];
         std::map<std::string, ShaderUniform> m_parameters;
+        std::vector<StringHash> m_tags;
 
         static boost::uuids::random_generator s_uuid_generator;
     };

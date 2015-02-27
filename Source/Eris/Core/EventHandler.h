@@ -22,24 +22,39 @@
 
 #pragma once
 
-#include "Serializable.h"
-#include "Memory/Pointers.h"
+#include "Event.h"
+#include "Collections/StringHash.h"
+#include "Memory/RefCounted.h"
 
 namespace Eris
 {
-    class Node;
+    class Object;
 
-    class Component : public Serializable
+    class EventHandler : public RefCounted
     {
+        using HandlerFunctionPtr = std::function < void(const StringHash&, const Event*) > ;
+
     public:
-        Component(Context* context);
-        Component(Context* context, Node* node);
-        virtual ~Component();
+        EventHandler(HandlerFunctionPtr function);
+        EventHandler(HandlerFunctionPtr function, void* user_data);
 
-        void setNode(Node* node);
-        Node* getNode() const;
+        virtual ~EventHandler();
 
-    protected:
-        Node* m_node;
+        void setSender(Object* sender);
+        void setEventType(StringHash event_type);
+
+        Object* getSender() const { return m_sender; }
+        const StringHash& getEventType() const { return m_event_type; }
+
+        void invoke(const Event* event);
+
+    private:
+        Object* m_sender;
+        StringHash m_event_type;
+        HandlerFunctionPtr m_function;
+        void* m_user_data;
     };
+
+#define HANDLER(className, function) (new Eris::EventHandler(std::bind(&className::function, this, std::placeholders::_1, std::placeholders::_2)))
+#define HANDLER_USERDATA(className, function, userData) (new Eris::EventHandler(std::bind(&className::function, this, std::placeholders::_1, std::placeholders::_2), userData))
 }

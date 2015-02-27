@@ -21,8 +21,41 @@
 //
 
 #include "Component.h"
+#include "Node.h"
 
 namespace Eris
 {
 
+
+    Component::Component(Context* context) :
+        Serializable(context),
+        m_node(nullptr)
+    {
+    }
+
+    Component::Component(Context* context, Node* node) :
+        Serializable(context),
+        m_node(node)
+    {
+    }
+
+    Component::~Component()
+    {
+        if (m_node)
+        {
+            m_node->removeComponent<Component>(this);
+            m_node = nullptr;
+        }
+    }
+
+    void Component::setNode(Node* node)
+    {
+        ERIS_ASSERT(node);
+        m_node = node;
+    }
+
+    Node* Component::getNode() const
+    {
+        return m_node;
+    }
 }

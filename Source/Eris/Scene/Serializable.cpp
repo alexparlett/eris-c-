@@ -20,26 +20,25 @@
 // THE SOFTWARE.
 //
 
-#pragma once
-
 #include "Serializable.h"
-#include "Memory/Pointers.h"
 
 namespace Eris
 {
-    class Node;
 
-    class Component : public Serializable
+
+    Serializable::Serializable(Context* context) :
+        Object(context),
+        m_transient(false)
     {
-    public:
-        Component(Context* context);
-        Component(Context* context, Node* node);
-        virtual ~Component();
+    }
 
-        void setNode(Node* node);
-        Node* getNode() const;
+    Serializable::~Serializable()
+    {
+    }
 
-    protected:
-        Node* m_node;
-    };
+    void Serializable::setTransient(bool transient)
+    {
+        m_transient = transient;
+    }
+
 }

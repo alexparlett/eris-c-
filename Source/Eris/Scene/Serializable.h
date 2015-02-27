@@ -22,24 +22,26 @@
 
 #pragma once
 
-#include "Serializable.h"
-#include "Memory/Pointers.h"
+#include "Core/Context.h"
+#include "Core/Object.h"
+#include "Resource/JsonElement.h"
 
 namespace Eris
 {
-    class Node;
-
-    class Component : public Serializable
+    class Serializable : public Object
     {
     public:
-        Component(Context* context);
-        Component(Context* context, Node* node);
-        virtual ~Component();
+        Serializable(Context* context);
+        virtual ~Serializable();
 
-        void setNode(Node* node);
-        Node* getNode() const;
+        virtual void load(const JsonElement* src) const = 0;
+        virtual void save(JsonElement* dest) const = 0;
+
+        void setTransient(bool transient);
+
+        bool transient() const { return m_transient; }
 
     protected:
-        Node* m_node;
+        bool m_transient;
     };
 }

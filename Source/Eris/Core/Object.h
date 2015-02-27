@@ -25,51 +25,14 @@
 #include <functional>
 #include <list>
 
+#include "Event.h"
+#include "EventHandler.h"
 #include "Collections/StringHash.h"
 #include "Memory/RefCounted.h"
 #include "Memory/Pointers.h"
 
 namespace Eris
 {
-    class Object;
-    struct Event;
-
-    class EventHandler : public RefCounted
-    {
-        using HandlerFunctionPtr = std::function<void(const StringHash&, const Event*)>;
-
-    public:
-        EventHandler(HandlerFunctionPtr function) :
-            m_sender(0),
-            m_function(function),
-            m_user_data(0)
-        {
-        }
-
-        EventHandler(HandlerFunctionPtr function, void* user_data) :
-            m_sender(0),
-            m_function(function),
-            m_user_data(user_data)
-        {
-        }
-
-        virtual ~EventHandler() {}
-
-        void setSender(Object* sender) { m_sender = sender; }
-        void setEventType(StringHash event_type) { m_event_type = event_type; }
-
-        Object* getSender() const { return m_sender; }
-        const StringHash& getEventType() const { return m_event_type; }
-
-        void invoke(const Event* event) { m_function(m_event_type, event); }
-
-    private:
-        Object* m_sender;
-        StringHash m_event_type;
-        HandlerFunctionPtr m_function;
-        void* m_user_data;
-    };
-
 	class Object : public RefCounted
 	{
         friend class Context;
@@ -105,8 +68,4 @@ namespace Eris
 
         std::list<SharedPtr<EventHandler>> m_handlers;
 	};
-
-#define HANDLER(className, function) (new Eris::EventHandler(std::bind(&className::function, this, std::placeholders::_1, std::placeholders::_2)))
-#define HANDLER_USERDATA(className, function, userData) (new Eris::EventHandler(std::bind(&className::function, this, std::placeholders::_1, std::placeholders::_2), userData))
-
 }

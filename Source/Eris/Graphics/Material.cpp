@@ -144,6 +144,10 @@ namespace Eris
                 m_cull_mode = CullMode::FRONT_BACK;
         }
 
+        JsonElement tags = root["tags"];
+        for (auto tag : tags)
+            m_tags.push_back(tag.getHash());
+
         return true;
     }
 

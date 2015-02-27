@@ -490,6 +490,15 @@ namespace Eris
         return value;
     }
 
+    StringHash JsonElement::getHash(StringHash default) const
+    {
+        StringHash value(m_value->GetString());
+        if (value == StringEmpty)
+            return default;
+
+        return value;
+    }
+
     bool JsonElement::setValue(const std::string& value)
     {
         if (!m_file || !m_value)

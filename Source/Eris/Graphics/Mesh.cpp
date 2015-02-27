@@ -100,4 +100,14 @@ namespace Eris
         glfwMakeContextCurrent(win);
     }
 
+    void Mesh::setVertices(std::vector<Vertex> vertices)
+    {
+        m_vertices = vertices;
+    }
+
+    void Mesh::setIndices(std::vector<glm::u32> indices)
+    {
+        m_indices = indices;
+    }
+
 }

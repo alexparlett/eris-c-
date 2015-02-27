@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include "Collections/StringHash.h"
 #include "Memory/Pointers.h"
 
 #define RAPIDJSON_HAS_STDSTRING 1
@@ -100,6 +101,7 @@ namespace Eris
         glm::mat3 getMat3(glm::mat3 default = glm::mat3()) const;
         glm::mat4 getMat4(glm::mat4 default = glm::mat4()) const;
         std::string getString(std::string default = StringEmpty) const;
+        StringHash getHash(StringHash default = StringHash::ZERO) const;
 
         bool setValue(const std::string& value);
 
