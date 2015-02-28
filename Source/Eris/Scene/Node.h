@@ -48,13 +48,14 @@ namespace Eris
         const std::vector<SharedPtr<Node>>& children() const { return m_children; }
 
         template<typename T> T* addComponent();
-        template<typename T> void removeComponent(T* component);
+        void removeComponent(Component* component);
         template<typename T> void removeComponents();
         template<typename T> T* component() const;
         template<typename T> std::vector<T*> components() const;
 
     private:
         glm::u64 m_id;
+        bool active;
         Node* m_parent;
         std::vector<SharedPtr<Node>> m_children;
         std::vector<SharedPtr<Component>> m_components;
@@ -98,24 +99,6 @@ namespace Eris
             T* cast_component = static_cast<T*>((*current).get());
             if (cast_component)
                 current = m_components.erase(current);
-            else
-                current++;
-        }
-    }
-
-    template<typename T>
-    void Eris::Node::removeComponent(T* component)
-    {
-        ERIS_ASSERT(component);
-        auto current = m_components.begin();
-        while (current != m_components.end())
-        {
-            T* cast_component = static_cast<T*>((*current).get());
-            if (cast_component && cast_component == component)
-            {
-                current = m_components.erase(current);
-                break;
-            }
             else
                 current++;
         }

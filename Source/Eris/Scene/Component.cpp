@@ -25,8 +25,6 @@
 
 namespace Eris
 {
-
-
     Component::Component(Context* context) :
         Serializable(context),
         m_node(nullptr)
@@ -43,7 +41,7 @@ namespace Eris
     {
         if (m_node)
         {
-            m_node->removeComponent<Component>(this);
+            m_node->removeComponent(this);
             m_node = nullptr;
         }
     }

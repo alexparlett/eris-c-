@@ -40,6 +40,8 @@ namespace Eris
     {
         if (m_parent)
             m_parent->removeChild(this);
+
+        removeChildren();
     }
 
     void Node::load(const JsonElement* src) const
@@ -101,5 +103,18 @@ namespace Eris
         }
 
         m_children.clear();
+    }
+
+    void Node::removeComponent( Component* component )
+    {
+        ERIS_ASSERT( component );
+        for ( auto i = m_components.begin(); i != m_components.end(); ++i )
+        {
+            if ( *i == component )
+            {
+                m_components.erase( i );
+                break;
+            }
+        }
     }
 }

@@ -26,6 +26,12 @@
 
 namespace Eris
 {
+    enum class TransformSpace : glm::u8
+    {
+        LOCAL,
+        WORLD
+    };
+
     class Transform : public Component
     {
     public:
@@ -40,24 +46,34 @@ namespace Eris
         void setRotation(const glm::quat& rotation);
         void setScale(glm::f32 scalar);
         void setScale(const glm::vec3& scale);
+        void setEulerAngles(const glm::vec3& eulerAngles);
         void setWorldPosition(const glm::vec3& position);
         void setWorldRotation(const glm::quat& rotation);
         void setWorldScale(glm::f32 scalar);
         void setWorldScale(const glm::vec3& scale);
+        void setWorldEulerAngles( const glm::vec3& eurlerAngles );
 
         const glm::vec3& position() const { return m_position; }
         const glm::quat& rotation() const { return m_rotation; }
         const glm::vec3& scale() const { return m_scale; }
+        glm::vec3 eulerAngles() const;
         glm::vec3 forward() const;
         glm::vec3 up() const;
         glm::vec3 right() const;
+        glm::f32 roll() const;
+        glm::f32 pitch() const;
+        glm::f32 yaw() const;
         glm::mat4 transform() const;
         glm::vec3 worldPosition() const;
         glm::quat worldRotation() const;
         glm::vec3 worldScale() const;
+        glm::vec3 worldEulerAngles() const;
         glm::vec3 worldForward() const;
         glm::vec3 worldUp() const;
         glm::vec3 worldRight() const;
+        glm::f32 worldRoll() const;
+        glm::f32 worldPitch() const;
+        glm::f32 worldYaw() const;
         glm::mat4 worldTransform() const { return m_world_transform; }
 
         void invalidateWorldTransform();
