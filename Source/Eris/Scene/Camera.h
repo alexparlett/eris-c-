@@ -22,23 +22,28 @@
 
 #pragma once
 
-#include "Serializable.h"
-#include "Memory/Pointers.h"
+#include "Component.h"
 
 namespace Eris
 {
-    class Node;
-
-    class Component : public Serializable
+    class Camera : public Component
     {
     public:
-        Component(Context* context, Node* node);
-        virtual ~Component();
+        Camera(Context* context, Node* node);
+        virtual ~Camera();
 
-        void setNode(Node* node);
-        Node* getNode() const;
+        glm::f32 fov() const { return m_fov; }
+        glm::f32 nearClip() const { return m_near_clip; }
+        glm::f32 farClip() const { return m_far_clip; }
+        glm::mat4 view() const;
 
-    protected:
-        Node* m_node;
+        void setFov(glm::f32 fov);
+        void setNearClip(glm::f32 near_clip);
+        void setFarClip(glm::f32 far_clip);
+
+    private:
+        glm::f32 m_fov;
+        glm::f32 m_near_clip;
+        glm::f32 m_far_clip;
     };
 }

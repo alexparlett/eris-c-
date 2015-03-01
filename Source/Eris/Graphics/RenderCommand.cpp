@@ -85,4 +85,12 @@ namespace Eris
 
         model->draw();
     }
+
+    void CameraCommand::operator()( Graphics* graphics, const RenderKey* last_key )
+    {
+        glm::f32 aspect = graphics->getWidth() / graphics->getHeight();
+        glm::mat4 view = camera->view();
+        glm::mat4 perspective = glm::perspective( camera->fov(), aspect, camera->nearClip(), camera->farClip() );
+    }
+
 }

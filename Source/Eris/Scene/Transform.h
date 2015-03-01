@@ -35,27 +35,37 @@ namespace Eris
     class Transform : public Component
     {
     public:
-        Transform(Context* context);
         Transform(Context* context, Node* node);
         virtual ~Transform();
 
         virtual void load(const JsonElement* src) const;
         virtual void save(JsonElement* dest) const;
 
+        void setLocalPosition(const glm::vec3& position);
+        void setLocalRotation(const glm::quat& rotation);
+        void setLocalScale(glm::f32 scalar);
+        void setLocalScale(const glm::vec3& scale);
+        void setLocalEulerAngles(const glm::vec3& eulerAngles);
         void setPosition(const glm::vec3& position);
         void setRotation(const glm::quat& rotation);
         void setScale(glm::f32 scalar);
         void setScale(const glm::vec3& scale);
-        void setEulerAngles(const glm::vec3& eulerAngles);
-        void setWorldPosition(const glm::vec3& position);
-        void setWorldRotation(const glm::quat& rotation);
-        void setWorldScale(glm::f32 scalar);
-        void setWorldScale(const glm::vec3& scale);
-        void setWorldEulerAngles( const glm::vec3& eurlerAngles );
+        void setEulerAngles( const glm::vec3& eurlerAngles );
 
-        const glm::vec3& position() const { return m_position; }
-        const glm::quat& rotation() const { return m_rotation; }
-        const glm::vec3& scale() const { return m_scale; }
+        const glm::vec3& localPosition() const { return m_local_position; }
+        const glm::quat& localRotation() const { return m_local_rotation; }
+        const glm::vec3& localScale() const { return m_local_scale; }
+        glm::vec3 localEulerAngles() const;
+        glm::vec3 localForward() const;
+        glm::vec3 localUp() const;
+        glm::vec3 localRight() const;
+        glm::f32 localRoll() const;
+        glm::f32 localPitch() const;
+        glm::f32 localYaw() const;
+        glm::mat4 localTransform() const;
+        glm::vec3 position() const;
+        glm::quat rotation() const;
+        glm::vec3 scale() const;
         glm::vec3 eulerAngles() const;
         glm::vec3 forward() const;
         glm::vec3 up() const;
@@ -63,26 +73,15 @@ namespace Eris
         glm::f32 roll() const;
         glm::f32 pitch() const;
         glm::f32 yaw() const;
-        glm::mat4 transform() const;
-        glm::vec3 worldPosition() const;
-        glm::quat worldRotation() const;
-        glm::vec3 worldScale() const;
-        glm::vec3 worldEulerAngles() const;
-        glm::vec3 worldForward() const;
-        glm::vec3 worldUp() const;
-        glm::vec3 worldRight() const;
-        glm::f32 worldRoll() const;
-        glm::f32 worldPitch() const;
-        glm::f32 worldYaw() const;
-        glm::mat4 worldTransform() const { return m_world_transform; }
+        glm::mat4 transform() const { return m_world_transform; }
 
-        void invalidateWorldTransform();
+        void invalidateTransform();
 
     private:
         glm::u64 m_id;
         glm::mat4 m_world_transform;
-        glm::vec3 m_position;
-        glm::quat m_rotation;
-        glm::vec3 m_scale;
+        glm::vec3 m_local_position;
+        glm::quat m_local_rotation;
+        glm::vec3 m_local_scale;
     };
 }

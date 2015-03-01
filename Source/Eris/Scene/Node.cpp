@@ -64,7 +64,7 @@ namespace Eris
     {
         ERIS_ASSERT(child);
         child->m_parent = this;
-        child->component<Transform>()->invalidateWorldTransform();
+        child->component<Transform>()->invalidateTransform();
         m_children.push_back(SharedPtr<Node>(child));
     }
 
@@ -76,7 +76,7 @@ namespace Eris
             if (*i == child)
             {
                 child->m_parent = nullptr;
-                child->component<Transform>()->invalidateWorldTransform();
+                child->component<Transform>()->invalidateTransform();
                 m_children.erase(i);
                 break;
             }

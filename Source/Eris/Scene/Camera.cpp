@@ -20,25 +20,52 @@
 // THE SOFTWARE.
 //
 
-#pragma once
-
-#include "Serializable.h"
-#include "Memory/Pointers.h"
+#include "Camera.h"
+#include "Node.h"
+#include "Transform.h"
 
 namespace Eris
 {
-    class Node;
-
-    class Component : public Serializable
+    Camera::Camera( Context* context, Node* node ) :
+        Component(context, node),
+        m_fov(60.f),
+        m_near_clip(0.1f),
+        m_far_clip(100.f)
     {
-    public:
-        Component(Context* context, Node* node);
-        virtual ~Component();
+    }
 
-        void setNode(Node* node);
-        Node* getNode() const;
+    Camera::~Camera()
+    {
+    }
 
-    protected:
-        Node* m_node;
-    };
+    glm::mat4 Camera::view() const
+    {
+        ERIS_ASSERT( m_node );
+
+        Transform* transform = m_node->component<Transform>();
+
+        ERIS_ASSERT( transform );
+
+        glm::vec3 pos = transform->position();
+        glm::vec3 forward = transform->forward();
+        glm::vec3 up = transform->up();
+
+        return glm::lookAt( pos, forward, up );
+    }
+
+    void Camera::setFov( glm::f32 fov )
+    {
+        m_fov = glm::max( fov, 1.f );
+    }
+
+    void Camera::setNearClip( glm::f32 near_clip)
+    {
+        m_near_clip = glm::max( near_clip, 0.f );
+    }
+
+    void Camera::setFarClip( glm::f32 far_clip )
+    {
+        m_far_clip = glm::max( far_clip, m_near_clip );
+    }
+
 }

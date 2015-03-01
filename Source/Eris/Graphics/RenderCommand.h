@@ -27,6 +27,7 @@
 #include "ShaderProgram.h"
 
 #include "Memory/RefCounted.h"
+#include "Scene/Camera.h"
 
 namespace Eris
 {
@@ -86,5 +87,12 @@ namespace Eris
         SharedPtr<Model> model;
         SharedPtr<Material> material;
         std::list<ShaderUniform> uniforms;
+    };
+
+    struct CameraCommand : public RenderCommand
+    {
+        virtual void operator()( Graphics* graphics, const RenderKey* last_key );
+
+        SharedPtr<Camera> camera;
     };
 }

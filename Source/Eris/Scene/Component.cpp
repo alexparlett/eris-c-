@@ -25,12 +25,6 @@
 
 namespace Eris
 {
-    Component::Component(Context* context) :
-        Serializable(context),
-        m_node(nullptr)
-    {
-    }
-
     Component::Component(Context* context, Node* node) :
         Serializable(context),
         m_node(node)

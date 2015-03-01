@@ -28,15 +28,9 @@
 
 namespace Eris
 {
-    Transform::Transform( Context* context ) :
-        Component( context ),
-        m_scale( 1.f )
-    {
-    }
-
     Transform::Transform( Context* context, Node* node ) :
         Component( context, node ),
-        m_scale( 1.f )
+        m_local_scale( 1.f )
     {
     }
 
@@ -54,51 +48,51 @@ namespace Eris
         ERIS_ASSERT( dest );
     }
 
+    void Transform::setLocalPosition( const glm::vec3& position )
+    {
+        m_local_position = position;
+        invalidateTransform();
+    }
+
+    void Transform::setLocalRotation( const glm::quat& rotation )
+    {
+        m_local_rotation = rotation;
+        invalidateTransform();
+    }
+
+    void Transform::setLocalScale( glm::f32 scalar )
+    {
+        m_local_scale = glm::vec3( scalar );
+        invalidateTransform();
+    }
+
+    void Transform::setLocalScale( const glm::vec3& scale )
+    {
+        m_local_scale = scale;
+        invalidateTransform();
+    }
+
     void Transform::setPosition( const glm::vec3& position )
     {
-        m_position = position;
-        invalidateWorldTransform();
+        setLocalPosition( m_node && m_node->parent() ? glm::vec3( glm::inverse( m_node->parent()->component<Transform>()->transform() ) * glm::vec4( position, 0.f ) ) : position );
     }
 
     void Transform::setRotation( const glm::quat& rotation )
     {
-        m_rotation = rotation;
-        invalidateWorldTransform();
+        setLocalRotation( m_node && m_node->parent() ? glm::quat_cast( glm::inverse( m_node->parent()->component<Transform>()->transform() ) * glm::mat4_cast( rotation ) ) : rotation );
     }
 
     void Transform::setScale( glm::f32 scalar )
     {
-        m_scale = glm::vec3( scalar );
-        invalidateWorldTransform();
+        setScale( glm::vec3( scalar ) );
     }
 
     void Transform::setScale( const glm::vec3& scale )
     {
-        m_scale = scale;
-        invalidateWorldTransform();
+        setLocalScale( m_node && m_node->parent() ? scale / m_node->parent()->component<Transform>()->scale() : scale );
     }
 
-    void Transform::setWorldPosition( const glm::vec3& position )
-    {
-        setPosition( m_node && m_node->parent() ? glm::vec3( glm::inverse( m_node->parent()->component<Transform>()->worldTransform() ) * glm::vec4( position, 0.f ) ) : position );
-    }
-
-    void Transform::setWorldRotation( const glm::quat& rotation )
-    {
-        setRotation( m_node && m_node->parent() ? glm::quat_cast( glm::inverse( m_node->parent()->component<Transform>()->worldTransform() ) * glm::mat4_cast( rotation ) ) : rotation );
-    }
-
-    void Transform::setWorldScale( glm::f32 scalar )
-    {
-        setWorldScale( glm::vec3( scalar ) );
-    }
-
-    void Transform::setWorldScale( const glm::vec3& scale )
-    {
-        setScale( m_node && m_node->parent() ? scale / m_node->parent()->component<Transform>()->worldScale() : scale );
-    }
-
-    glm::vec3 Transform::worldPosition() const
+    glm::vec3 Transform::position() const
     {
         glm::vec3 scale, translation, skew;
         glm::quat rotation;
@@ -107,7 +101,7 @@ namespace Eris
         return translation;
     }
 
-    glm::quat Transform::worldRotation() const
+    glm::quat Transform::rotation() const
     {
         glm::vec3 scale, translation, skew;
         glm::quat rotation;
@@ -116,7 +110,7 @@ namespace Eris
         return rotation;
     }
 
-    glm::vec3 Transform::worldScale() const
+    glm::vec3 Transform::scale() const
     {
         glm::vec3 scale, translation, skew;
         glm::quat rotation;
@@ -125,57 +119,62 @@ namespace Eris
         return scale;
     }
 
-    glm::mat4 Transform::transform() const
+    glm::mat4 Transform::localTransform() const
     {
-        glm::mat4 transform = glm::mat4_cast( m_rotation );
-        transform = glm::translate( transform, m_position );
-        transform = glm::scale( transform, m_scale );
+        glm::mat4 transform = glm::mat4_cast( m_local_rotation );
+        transform = glm::translate( transform, m_local_position );
+        transform = glm::scale( transform, m_local_scale );
         return transform;
+    }
+
+    glm::vec3 Transform::localForward() const
+    {
+        return m_local_rotation * glm::vec3( 0.f, 0.f, -1.f );
+    }
+
+    glm::vec3 Transform::localUp() const
+    {
+        return m_local_rotation * glm::vec3( 0.f, 1.f, 0.f );
+    }
+    glm::vec3 Transform::localRight() const
+    {
+        return m_local_rotation * glm::vec3( 1.f, 0.f, 0.f );
     }
 
     glm::vec3 Transform::forward() const
     {
-        return m_rotation * glm::vec3( 1.f, 0.f, 0.f );
+        return rotation() * glm::vec3( 0.f, 0.f, -1.f );
     }
 
     glm::vec3 Transform::up() const
     {
-        return m_rotation * glm::vec3( 0.f, 1.f, 0.f );
+        return rotation() * glm::vec3( 0.f, 1.f, 0.f );
     }
+
     glm::vec3 Transform::right() const
     {
-        return m_rotation * glm::vec3( 0.f, 0.f, 1.f );
+        return rotation() * glm::vec3( 1.f, 0.f, 0.f );
     }
 
-    glm::vec3 Transform::worldForward() const
+    void Transform::invalidateTransform()
     {
-        return worldRotation() * glm::vec3( 1.f, 0.f, 0.f );
-    }
-
-    glm::vec3 Transform::worldUp() const
-    {
-        return worldRotation() * glm::vec3( 0.f, 1.f, 0.f );
-    }
-
-    glm::vec3 Transform::worldRight() const
-    {
-        return worldRotation() * glm::vec3( 0.f, 0.f, 1.f );
-    }
-
-    void Transform::invalidateWorldTransform()
-    {
-        const glm::mat4 local = transform();
+        const glm::mat4 local = localTransform();
         m_world_transform = m_node && m_node->parent() ? m_node->parent()->component<Transform>()->m_world_transform * local : local;
+    }
+
+    glm::vec3 Transform::localEulerAngles() const
+    {
+        return glm::eulerAngles( m_local_rotation );
     }
 
     glm::vec3 Transform::eulerAngles() const
     {
-        return glm::eulerAngles( m_rotation );
+        return glm::eulerAngles( rotation() );
     }
 
-    glm::vec3 Transform::worldEulerAngles() const
+    void Transform::setLocalEulerAngles( const glm::vec3& eulerAngles )
     {
-        return glm::eulerAngles( worldRotation() );
+        setLocalRotation( glm::quat_cast( glm::orientate4( eulerAngles ) ) );
     }
 
     void Transform::setEulerAngles( const glm::vec3& eulerAngles )
@@ -183,39 +182,34 @@ namespace Eris
         setRotation( glm::quat_cast( glm::orientate4( eulerAngles ) ) );
     }
 
-    void Transform::setWorldEulerAngles( const glm::vec3& eulerAngles )
+    glm::f32 Transform::localRoll() const
     {
-        setWorldRotation( glm::quat_cast( glm::orientate4( eulerAngles ) ) );
+        return glm::roll( m_local_rotation );
+    }
+
+    glm::f32 Transform::localPitch() const
+    {
+        return glm::pitch( m_local_rotation );
+    }
+
+    glm::f32 Transform::localYaw() const
+    {
+        return glm::yaw( m_local_rotation );
     }
 
     glm::f32 Transform::roll() const
     {
-        return glm::roll( m_rotation );
+        return glm::roll( rotation() );
     }
 
     glm::f32 Transform::pitch() const
     {
-        return glm::pitch( m_rotation );
+        return glm::pitch( rotation() );
     }
 
     glm::f32 Transform::yaw() const
     {
-        return glm::yaw( m_rotation );
-    }
-
-    glm::f32 Transform::worldRoll() const
-    {
-        return glm::roll( worldRotation() );
-    }
-
-    glm::f32 Transform::worldPitch() const
-    {
-        return glm::pitch( worldRotation() );
-    }
-
-    glm::f32 Transform::worldYaw() const
-    {
-        return glm::yaw( worldRotation() );
+        return glm::yaw( rotation() );
     }
 
 }
