@@ -31,7 +31,8 @@ namespace Eris
     Node::Node(Context* context) :
         Serializable(context),
         m_id(s_next_node_id++),
-        m_parent(nullptr)
+        m_parent(nullptr),
+        m_active(true)
     {
         addComponent<Transform>();
     }
@@ -52,6 +53,11 @@ namespace Eris
     void Node::save(JsonElement* dest) const
     {
         ERIS_ASSERT(dest);
+    }
+
+    bool Node::active() const
+    {
+        return m_parent ? m_parent->active() && m_active : m_active;
     }
 
     void Node::addChild(Node* child)

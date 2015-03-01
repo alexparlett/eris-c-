@@ -39,6 +39,8 @@ namespace Eris
 
         glm::u64 id() const { return m_id; }
         Node* parent() const { return m_parent; }
+        bool active() const;
+        bool activeSelf() const { return m_active; }
 
         void addChild(Node* child);
         void removeChild(Node* child);
@@ -55,7 +57,7 @@ namespace Eris
 
     private:
         glm::u64 m_id;
-        bool active;
+        bool m_active;
         Node* m_parent;
         std::vector<SharedPtr<Node>> m_children;
         std::vector<SharedPtr<Component>> m_components;
