@@ -41,7 +41,7 @@ namespace Eris
         void patch(const XMLElement& element);
         void clear() { m_doc->reset(); }
 
-        bool empty() { return m_doc->empty(); }
+        bool isEmpty() { return m_doc->empty(); }
 
         XMLElement getRoot(const std::string& name = StringEmpty);
         pugi::xml_document* getDocument() const { return m_doc; }

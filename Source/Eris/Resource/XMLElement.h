@@ -57,7 +57,7 @@ namespace Eris
         const_iterator begin() const;
         const_iterator end() const;
 
-        bool empty() const;
+        bool isEmpty() const;
         bool hasChild(const std::string& name) const;
         bool hasAttribute(const std::string& name) const;
         bool hasChildren() const;

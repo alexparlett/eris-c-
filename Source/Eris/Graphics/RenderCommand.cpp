@@ -20,7 +20,7 @@
 // THE SOFTWARE.
 //
 
-#include "Graphics.h"
+#include "Renderer.h"
 #include "RenderCommand.h"
 
 #include "Core/Profiler.h"
@@ -53,44 +53,50 @@ namespace Eris
         return key;
     }
 
-    void ClearColorCommand::operator()(Graphics* graphics, const RenderKey* last_key)
+    void ClearColorCommand::operator()(Renderer* renderer, const RenderKey* last_key)
     {
         glClearColor(color.r, color.g, color.b, color.a);
     }
 
-    void ClearCommand::operator()(Graphics* graphics, const RenderKey* last_key)
+    void ClearCommand::operator()(Renderer* renderer, const RenderKey* last_key)
     {
         glClear(bitfield);
     }
 
-    void EnableCommand::operator()(Graphics* graphics, const RenderKey* last_key)
+    void EnableCommand::operator()(Renderer* renderer, const RenderKey* last_key)
     {
         glEnable(capability);
     }
 
-    void DisableCommand::operator()(Graphics* graphics, const RenderKey* last_key)
+    void DisableCommand::operator()(Renderer* renderer, const RenderKey* last_key)
     {
         glDisable(capability);
     }
 
-    void Draw3DCommand::operator()(Graphics* graphics, const RenderKey* last_key)
+    void Draw3DCommand::operator()(Renderer* renderer, const RenderKey* last_key)
     {
-        AutoProfilerBlock profile(graphics->getContext()->getModule<Profiler>(), "Draw3DCommand");
+        AutoProfilerBlock profile(renderer->getContext()->getModule<Profiler>(), "Draw3DCommand");
 
-        if (!last_key || last_key->material != key.material)
+        if ( !last_key || last_key->material != key.material )
+        {
+            material->getUniform( "view" )->data = renderer->getCurrentView();
+            material->getUniform( "perspective" )->data = renderer->getCurrentPerspective();
             material->use();
+        }
 
         for (auto uniform : uniforms)
-            graphics->bindUniform(uniform.location, uniform.type, uniform.data);
+            renderer->bindUniform(uniform.location, uniform.type, uniform.data);
 
         model->draw();
     }
 
-    void CameraCommand::operator()( Graphics* graphics, const RenderKey* last_key )
+    void CameraCommand::operator()( Renderer* renderer, const RenderKey* last_key )
     {
-        glm::f32 aspect = graphics->getWidth() / graphics->getHeight();
-        glm::mat4 view = camera->view();
-        glm::mat4 perspective = glm::perspective( camera->fov(), aspect, camera->nearClip(), camera->farClip() );
+        glm::mat4 view = camera->getView();
+        glm::mat4 perspective = camera->getPerspective();
+
+        renderer->setCurrentView( view );
+        renderer->setCurrentPerspective( perspective );
     }
 
 }

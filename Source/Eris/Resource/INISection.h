@@ -50,8 +50,8 @@ namespace Eris
         const_iterator begin() const;
         const_iterator end() const;
 
-        bool empty() const;
-        bool exists(const std::string& key) const;
+        bool isEmpty() const;
+        bool hasKey(const std::string& key) const;
 
         static const INISection EMPTY;
 

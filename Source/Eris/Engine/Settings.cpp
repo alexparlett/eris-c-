@@ -51,7 +51,7 @@ namespace Eris
         m_ini->save(*file);
     }
 
-    bool Settings::getBool(const std::string& path, bool default)
+    bool Settings::getBool( const std::string& path, bool default )
     {
         std::pair<std::string, std::string> section_key = getSectionKey(path);
         return m_ini->getSection(section_key.first)->getBool(section_key.second, default);

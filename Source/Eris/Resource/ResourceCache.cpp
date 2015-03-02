@@ -66,7 +66,7 @@ namespace Eris
     bool ResourceCache::addDirectory(const Path& path, glm::uint priority /*= PRIORITY_LAST*/)
     {
         FileSystem* fs = m_context->getModule<FileSystem>();
-        if (!fs->accessible(path))
+        if (!fs->isAccessible(path))
             return false;
 
         if (priority < m_directories.size())
@@ -101,7 +101,7 @@ namespace Eris
             return;
 
         std::lock_guard<std::mutex> lock(m_resource_mutex);
-        if ((res->refs() == 1 && res->weakRefs() == 0) || force)
+        if ((res->getRefs() == 1 && res->getWeakRefs() == 0) || force)
             m_groups[type].m_resources.erase(path);
     }
 
@@ -115,7 +115,7 @@ namespace Eris
             {
                 auto current = res++;
 
-                if ((current->second.refs() == 1 && current->second.weakRefs() == 0) || force)
+                if ((current->second.getRefs() == 1 && current->second.getWeakRefs() == 0) || force)
                     group->second.m_resources.erase(current);
             }
         }
@@ -130,7 +130,7 @@ namespace Eris
             {
                 auto current = res++;
 
-                if ((current->second.refs() == 1 && current->second.weakRefs() == 0) || force)
+                if ((current->second.getRefs() == 1 && current->second.getWeakRefs() == 0) || force)
                     group.second.m_resources.erase(current);
             }
         }
@@ -161,7 +161,7 @@ namespace Eris
             auto path = dir;
             path /= name;
 
-            if (fs->exists(path))
+            if (fs->getExists(path))
                 return path;
         }
 
@@ -183,7 +183,7 @@ namespace Eris
             res->setAsyncState(AsyncState::LOADING);
 
             SharedPtr<File> file(new File(m_context, path));
-            if (file && file->opened())
+            if (file && file->isOpened())
             {
                 if (res->load(*file))
                 {

@@ -132,7 +132,7 @@ namespace Eris
         return XMLElementIterator(m_file, XMLElement(), m_node.end(), m_node.end());
     }
 
-    bool XMLElement::empty() const
+    bool XMLElement::isEmpty() const
     {
         if (!m_file || !m_node)
             return false;

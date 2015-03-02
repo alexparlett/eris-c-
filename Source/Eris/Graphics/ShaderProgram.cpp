@@ -21,6 +21,7 @@
 //
 
 #include "Graphics.h"
+#include "Renderer.h"
 #include "ShaderProgram.h"
 
 #include "Core/Log.h"
@@ -91,14 +92,14 @@ namespace Eris
     {
         ERIS_ASSERT(m_handle > 0);
 
-        Graphics* graphics = m_context->getModule<Graphics>();
+        Renderer* renderer = m_context->getModule<Renderer>();
 
         glUseProgram(m_handle);
 
         for (auto parameter : m_parameters)
         {
             if (parameter.second.data.which() != 0)
-                graphics->bindUniform(parameter.second.location, parameter.second.type, parameter.second.data);
+                renderer->bindUniform(parameter.second.location, parameter.second.type, parameter.second.data);
         }
     }
 

@@ -93,10 +93,10 @@ namespace Eris
 
         void reset() { releaseRef(); }
 
-        bool null() const { return m_ptr == nullptr; }
+        bool isNull() const { return m_ptr == nullptr; }
         T* get() const { return m_ptr; }
-        glm::i32 refs() const { return m_ptr ? m_ptr->refs() : 0; }
-        glm::i32 weakRefs() const { return m_ptr ? m_ptr->weakRefs() : 0; }
+        glm::i32 getRefs() const { return m_ptr ? m_ptr->getRefs() : 0; }
+        glm::i32 getWeakRefs() const { return m_ptr ? m_ptr->getWeakRefs() : 0; }
 
     private:
         template<typename U> SharedPtr<T> operator = (const SharedPtr<U>& rhs) = delete;
@@ -196,7 +196,7 @@ namespace Eris
 
         SharedPtr<T> lock() const
         {
-            if (expired())
+            if (isExpired())
                 return SharedPtr<T>();
             else
                 return SharedPtr<T>(m_ptr);
@@ -204,7 +204,7 @@ namespace Eris
 
         T* get() const
         {
-            if (expired())
+            if (isExpired())
                 return nullptr;
             else
                 return m_ptr;
@@ -244,10 +244,10 @@ namespace Eris
 
         void reset() { releaseRef(); }
 
-        bool null() const { return m_ref_count == nullptr; }
-        bool expired() const { return m_ref_count ? m_ref_count->m_refs < 0 : true; }
-        glm::i32 refs() const { return m_ref_count ? m_ref_count->m_refs : 0; }
-        glm::i32 weakRefs() const { return m_ref_count ? m_ref_count->m_weak_refs : 0; }
+        bool isNull() const { return m_ref_count == nullptr; }
+        bool isExpired() const { return m_ref_count ? m_ref_count->m_refs < 0 : true; }
+        glm::i32 getRefs() const { return m_ref_count ? m_ref_count->m_refs : 0; }
+        glm::i32 getWeakRefs() const { return m_ref_count ? m_ref_count->m_weak_refs : 0; }
 
     private:
         template<typename U> WeakPtr<T> operator = (const WeakPtr<U>& rhs) = delete;
@@ -268,7 +268,7 @@ namespace Eris
                 ERIS_ASSERT(m_ref_count);
                 m_ref_count->m_weak_refs--;
 
-                if (expired() && !m_ref_count->m_weak_refs)
+                if (isExpired() && !m_ref_count->m_weak_refs)
                     delete m_ref_count;
             }
 

@@ -45,8 +45,8 @@ namespace Eris
         bool rename(const Path& src, const Path& new_name);
         bool remove(const Path& file);
 
-        bool accessible(const Path& path) const;
-        bool exists(const Path& path) const;
+        bool isAccessible(const Path& path) const;
+        bool getExists(const Path& path) const;
 
         bool hasRestrictedPaths() const;
 

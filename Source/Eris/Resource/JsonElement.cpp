@@ -233,12 +233,12 @@ namespace Eris
         return false;
     }
 
-    bool JsonElement::null() const
+    bool JsonElement::isNull() const
     {
         return this;
     }
 
-    std::size_t JsonElement::childCount() const
+    std::size_t JsonElement::getChildCount() const
     {
         if (!m_file || !m_value)
             return 0;

@@ -38,19 +38,24 @@ namespace Eris
     {
     }
 
-    glm::mat4 Camera::view() const
+    glm::mat4 Camera::getView() const
     {
         ERIS_ASSERT( m_node );
 
-        Transform* transform = m_node->component<Transform>();
+        Transform* transform = m_node->getComponent<Transform>();
 
         ERIS_ASSERT( transform );
 
-        glm::vec3 pos = transform->position();
-        glm::vec3 forward = transform->forward();
-        glm::vec3 up = transform->up();
+        glm::vec3 pos = transform->getPosition();
+        glm::vec3 forward = transform->getForward();
+        glm::vec3 up = transform->getUp();
 
         return glm::lookAt( pos, forward, up );
+    }
+
+    glm::mat4 Camera::getPerspective() const
+    {
+        return glm::perspective( m_fov, m_aspect_ratio, m_near_clip, m_far_clip );
     }
 
     void Camera::setFov( glm::f32 fov )
@@ -67,5 +72,4 @@ namespace Eris
     {
         m_far_clip = glm::max( far_clip, m_near_clip );
     }
-
 }

@@ -73,8 +73,8 @@ namespace Eris
         bool removeChild(glm::i32 index);
         bool removeChildren();
 
-        bool null() const;
-        std::size_t childCount() const;
+        bool isNull() const;
+        std::size_t getChildCount() const;
         bool hasChild(const std::string& name) const;
         bool hasChildren() const;
 

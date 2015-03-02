@@ -117,12 +117,12 @@ namespace Eris
         m_sections.clear();
     }
 
-    bool INIFile::empty() const
+    bool INIFile::isEmpty() const
     {
         return m_sections.empty();
     }
 
-    bool INIFile::exists(const std::string& section) const
+    bool INIFile::hasSection(const std::string& section) const
     {
         return m_sections.find(section) != m_sections.end();
     }

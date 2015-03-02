@@ -57,7 +57,7 @@ namespace Eris
         virtual std::size_t seek(std::size_t position);
         virtual std::size_t write(const void* data, std::size_t count);
 
-        bool opened() const { return m_handle.is_open(); }
+        bool isOpened() const { return m_handle.is_open(); }
 
         virtual std::size_t getSize() const { return m_size; }
         FileMode getMode() const { return m_mode; }

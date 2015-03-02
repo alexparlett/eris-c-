@@ -29,7 +29,7 @@ namespace Eris
     public:
         Timer();
 
-        glm::f64 elapsed(bool reset = false);
+        glm::f64 getElapsed(bool reset = false);
         void reset();
 
     private:

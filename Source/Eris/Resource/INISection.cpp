@@ -142,12 +142,12 @@ namespace Eris
         return m_key_values.cend();
     }
 
-    bool INISection::empty() const
+    bool INISection::isEmpty() const
     {
         return m_key_values.empty();
     }
 
-    bool INISection::exists(const std::string& key) const
+    bool INISection::hasKey(const std::string& key) const
     {
         return m_key_values.find(key) != m_key_values.end();
     }

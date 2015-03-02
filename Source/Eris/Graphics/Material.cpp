@@ -20,7 +20,7 @@
 // THE SOFTWARE.
 //
 
-#include "Graphics.h"
+#include "Renderer.h"
 #include "Material.h"
 #include "Texture2D.h"
 #include "TextureCube.h"
@@ -200,7 +200,7 @@ namespace Eris
         PROFILE(UseMaterial);
         ERIS_ASSERT(m_program);
 
-        Graphics* graphics = m_context->getModule<Graphics>();
+        Renderer* renderer = m_context->getModule<Renderer>();
 
         glCullFace((glm::u32) m_cull_mode);
 
@@ -209,7 +209,7 @@ namespace Eris
         for (auto parameter : m_parameters)
         {
             if (parameter.second.data.which() != 0)
-                graphics->bindUniform(parameter.second.location, parameter.second.type, parameter.second.data);
+                renderer->bindUniform(parameter.second.location, parameter.second.type, parameter.second.data);
         }
             
         for (auto texture_unit : m_textures)

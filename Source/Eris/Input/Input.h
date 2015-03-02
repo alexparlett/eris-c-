@@ -51,15 +51,15 @@ namespace Eris
         void setCursorMode(CursorMode cm);
         CursorMode getCursorMode() const { return m_cursor_mode; }
 
-        bool keyDown(glm::int32 key);
-        bool keyPressed(glm::int32 key);
-        bool scancodeDown(glm::int32 scancode);
-        bool scancodePressed(glm::int32 scancode);
-        bool modifierDown(glm::int32 modifier);
-        bool modifierPressed(glm::int32 modifier);
-        bool mouseButtonDown(glm::int32 button);
-        bool mouseButtonPressed(glm::int32 button);
-        glm::int32 modifiersDown();
+        bool isKeyDown(glm::int32 key);
+        bool isKeyPressed(glm::int32 key);
+        bool isScancodeDown(glm::int32 scancode);
+        bool isScancodePressed(glm::int32 scancode);
+        bool isModifierDown(glm::int32 modifier);
+        bool isModifierPressed(glm::int32 modifier);
+        bool isMouseButtonDown(glm::int32 button);
+        bool isMouseButtonPressed(glm::int32 button);
+        glm::int32 getModifiersDown();
 
         bool focused() const { return m_focused; }
         bool minimized() const { return m_minimized; }

@@ -7,7 +7,7 @@ namespace Eris
     {
     }
 
-    glm::f64 Timer::elapsed(bool reset /*= false*/)
+    glm::f64 Timer::getElapsed(bool reset /*= false*/)
     {
         glm::f64 current_time = glfwGetTime();
         return m_start_time - current_time;

@@ -51,7 +51,7 @@ namespace Eris
     void File::open(const Path& path, FileMode mode /*= FileMode::READ*/)
     {
         FileSystem* fs = m_context->getModule<FileSystem>();
-        if (!fs->accessible(path))
+        if (!fs->isAccessible(path))
         {
             Log::errorf("Access denied: %s", path.string().c_str());
             return;

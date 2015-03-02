@@ -76,27 +76,27 @@ namespace Eris
         }
     }
 
-    bool Input::keyDown(glm::int32 key)
+    bool Input::isKeyDown(glm::int32 key)
     {
         return m_key_down.find(key) != m_key_down.end();
     }
 
-    bool Input::keyPressed(glm::int32 key)
+    bool Input::isKeyPressed(glm::int32 key)
     {
         return m_key_press.find(key) != m_key_press.end();
     }
 
-    bool Input::scancodeDown(glm::int32 scancode)
+    bool Input::isScancodeDown(glm::int32 scancode)
     {
         return m_scancode_down.find(scancode) != m_scancode_down.end();
     }
 
-    bool Input::scancodePressed(glm::int32 scancode)
+    bool Input::isScancodePressed(glm::int32 scancode)
     {
         return m_scancode_press.find(scancode) != m_scancode_press.end();
     }
 
-    bool Input::modifierDown(glm::int32 modifier)
+    bool Input::isModifierDown(glm::int32 modifier)
     {
         if (modifier == MODIFIER_ALT)
             return m_key_down.find(KEY_LEFT_ALT) != m_key_down.end() || m_key_down.find(KEY_RIGHT_ALT) != m_key_down.end();
@@ -110,7 +110,7 @@ namespace Eris
         return false;
     }
 
-    bool Input::modifierPressed(glm::int32 modifier)
+    bool Input::isModifierPressed(glm::int32 modifier)
     {
         if (modifier == MODIFIER_ALT)
             return m_key_press.find(KEY_LEFT_ALT) != m_key_press.end() || m_key_press.find(KEY_RIGHT_ALT) != m_key_press.end();
@@ -124,27 +124,27 @@ namespace Eris
         return false;
     }
 
-    bool Input::mouseButtonDown(glm::int32 button)
+    bool Input::isMouseButtonDown(glm::int32 button)
     {
         return (m_mouse_button_down & button) != 0;
     }
 
-    bool Input::mouseButtonPressed(glm::int32 button)
+    bool Input::isMouseButtonPressed(glm::int32 button)
     {
         return (m_mouse_button_press & button) != 0;
     }
 
-    glm::int32 Input::modifiersDown()
+    glm::int32 Input::getModifiersDown()
     {
         glm::int32 ret = 0;
 
-        if (modifierDown(MODIFIER_ALT))
+        if (isModifierDown(MODIFIER_ALT))
             ret |= MODIFIER_ALT;
-        if (modifierDown(MODIFIER_CONTROL))
+        if (isModifierDown(MODIFIER_CONTROL))
             ret |= MODIFIER_CONTROL;
-        if (modifierDown(MODIFIER_SHIFT))
+        if (isModifierDown(MODIFIER_SHIFT))
             ret |= MODIFIER_SHIFT;
-        if (modifierDown(MODIFIER_SUPER))
+        if (isModifierDown(MODIFIER_SUPER))
             ret |= MODIFIER_SUPER;
 
         return ret;
@@ -314,7 +314,7 @@ namespace Eris
         MouseScrollEvent* event = context->getFrameAllocator().newInstance<MouseScrollEvent>();
         event->amount = amount;
         event->buttons = input->m_mouse_button_down;
-        event->modifiers = input->modifiersDown();
+        event->modifiers = input->getModifiersDown();
         input->sendEvent(MouseScrollEvent::getTypeStatic(), event);
     }
 
@@ -333,7 +333,7 @@ namespace Eris
         event->position = position;
         event->relative = relative;
         event->buttons = input->m_mouse_button_down;
-        event->modifiers = input->modifiersDown();
+        event->modifiers = input->getModifiersDown();
         input->sendEvent(MouseMoveEvent::getTypeStatic(), event);
     }
 

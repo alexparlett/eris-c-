@@ -32,18 +32,23 @@ namespace Eris
         Camera(Context* context, Node* node);
         virtual ~Camera();
 
-        glm::f32 fov() const { return m_fov; }
-        glm::f32 nearClip() const { return m_near_clip; }
-        glm::f32 farClip() const { return m_far_clip; }
-        glm::mat4 view() const;
+        glm::f32 getFov() const { return m_fov; }
+        glm::f32 getNearClip() const { return m_near_clip; }
+        glm::f32 getFarClip() const { return m_far_clip; }
+        glm::f32 getAspectRation() const { return m_aspect_ratio; }
+
+        glm::mat4 getView() const;
+        glm::mat4 getPerspective() const;
 
         void setFov(glm::f32 fov);
         void setNearClip(glm::f32 near_clip);
         void setFarClip(glm::f32 far_clip);
+        void setAspectRatio( glm::f32 aspect_ratio );
 
     private:
         glm::f32 m_fov;
         glm::f32 m_near_clip;
         glm::f32 m_far_clip;
+        glm::f32 m_aspect_ratio;
     };
 }

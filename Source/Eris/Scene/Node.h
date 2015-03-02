@@ -37,23 +37,23 @@ namespace Eris
         virtual void load(const JsonElement* src) const;
         virtual void save(JsonElement* dest) const;
 
-        glm::u64 id() const { return m_id; }
-        Node* parent() const { return m_parent; }
-        bool active() const;
-        bool activeSelf() const { return m_active; }
+        glm::u64 getId() const { return m_id; }
+        Node* getParent() const { return m_parent; }
+        bool isActive() const;
+        bool isActiveSelf() const { return m_active; }
 
         void addChild(Node* child);
         void removeChild(Node* child);
         void removeChildren();
-        Node* child(glm::u64 id) const;
-        Node* child(glm::u32 index) const;
-        const std::vector<SharedPtr<Node>>& children() const { return m_children; }
+        Node* getChild(glm::u64 id) const;
+        Node* getChild(glm::u32 index) const;
+        const std::vector<SharedPtr<Node>>& getChildren() const { return m_children; }
 
         template<typename T> T* addComponent();
         void removeComponent(Component* component);
         template<typename T> void removeComponents();
-        template<typename T> T* component() const;
-        template<typename T> std::vector<T*> components() const;
+        template<typename T> T* getComponent() const;
+        template<typename T> std::vector<T*> getComponents() const;
 
     private:
         glm::u64 m_id;
@@ -66,7 +66,7 @@ namespace Eris
     };
 
     template<typename T> std::vector < T* >
-    Eris::Node::components() const
+    Eris::Node::getComponents() const
     {
         std::vector<T*> components;
         for (auto c : m_components)
@@ -80,7 +80,7 @@ namespace Eris
     }
 
     template<typename T>
-    T* Eris::Node::component() const
+    T* Eris::Node::getComponent() const
     {
         for (auto c : m_components)
         {

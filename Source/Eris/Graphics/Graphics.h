@@ -71,13 +71,13 @@ namespace Eris
         void setIcon(const std::string& icon);
 
         /// Get whether fullscreen is set.
-        bool getFullscreen() const { return m_fullscreen; }
+        bool isFullscreen() const { return m_fullscreen; }
         /// Get whether resizable is set.
-        bool getResizable() const { return m_resizable; }
+        bool isResizable() const { return m_resizable; }
         /// Get whether borderless is set.
-        bool getBorderless() const { return m_borderless; }
+        bool isBorderless() const { return m_borderless; }
         /// Get whether vsync is set.
-        bool getVSync() const { return m_vsync; }
+        bool isVsync() const { return m_vsync; }
         /// Get width.
         glm::i32 getWidth() const { return m_width; }
         /// Get height.
@@ -99,10 +99,8 @@ namespace Eris
         /// Get current resolution.
         glm::ivec2 getResolution() const;
 
-        void bindUniform(glm::i32 location, glm::u32 type, const Variant& data);
-
         /// Get initialized.
-        bool initialized() const { return m_initialized; }
+        bool isInitialized() const { return m_initialized; }
 
     private:
         bool initializeMainWindow();

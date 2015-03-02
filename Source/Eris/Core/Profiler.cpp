@@ -52,7 +52,7 @@ namespace Eris
     
     void ProfilerBlock::end()
     {
-        glm::f64 elapsed = m_timer.elapsed();
+        glm::f64 elapsed = m_timer.getElapsed();
         if (elapsed > m_max_time)
             m_max_time = elapsed;
         m_total_time += elapsed;

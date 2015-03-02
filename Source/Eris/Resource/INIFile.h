@@ -44,8 +44,8 @@ namespace Eris
 
         void clear();
 
-        bool empty() const;
-        bool exists(const std::string& section) const;
+        bool isEmpty() const;
+        bool hasSection(const std::string& section) const;
 
         iterator begin();
         iterator end();

@@ -20,7 +20,7 @@
 // THE SOFTWARE.
 //
 
-#include "Graphics.h"
+#include "Renderer.h"
 #include "RenderQueue.h"
 
 #include "Core/Profiler.h"
@@ -64,14 +64,14 @@ namespace Eris
         if (m_commands.empty())
             return;
 
-        Graphics* graphics = m_context->getModule<Graphics>();
+        Renderer* renderer = m_context->getModule<Renderer>();
         RenderCommand* last = m_commands[0];
-        (*last)(graphics, nullptr);
+        (*last)(renderer, nullptr);
 
         for (auto i = 1U; i < m_commands.size(); i++)
         {
             RenderCommand* current = m_commands[i];
-            (*current)(graphics, &last->key);
+            (*current)(renderer, &last->key);
             last = current;
         }
     }

@@ -146,7 +146,7 @@ namespace Eris
 
                 reciever->onEvent(event_type, event, this);
 
-                if (self.expired())
+                if (self.isExpired())
                     return;
 
                 if (group->size() != oldSize)
@@ -173,7 +173,7 @@ namespace Eris
 
                     reciever->onEvent(event_type, event, this);
 
-                    if (self.expired())
+                    if (self.isExpired())
                         return;
 
                     if (group->size() != oldSize)

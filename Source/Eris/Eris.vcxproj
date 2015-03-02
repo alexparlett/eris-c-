@@ -323,6 +323,7 @@ xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
     <ClInclude Include="Resource\ResourceLoader.h" />
     <ClInclude Include="Resource\XMLElement.h" />
     <ClInclude Include="Resource\XMLFile.h" />
+    <ClInclude Include="Scene\Camera.h" />
     <ClInclude Include="Scene\Component.h" />
     <ClInclude Include="Scene\Node.h" />
     <ClInclude Include="Scene\Serializable.h" />
@@ -380,6 +381,7 @@ xcopy "$(SolutionDir)Assets\settings.ini" "$(SolutionDir)Game" /Y /D</Command>
     <ClCompile Include="Resource\ResourceLoader.cpp" />
     <ClCompile Include="Resource\XMLElement.cpp" />
     <ClCompile Include="Resource\XMLFile.cpp" />
+    <ClCompile Include="Scene\Camera.cpp" />
     <ClCompile Include="Scene\Component.cpp" />
     <ClCompile Include="Scene\Node.cpp" />
     <ClCompile Include="Scene\Serializable.cpp" />

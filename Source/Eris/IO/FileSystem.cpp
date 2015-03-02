@@ -54,7 +54,7 @@ namespace Eris
 
     bool FileSystem::createDirectory(const Path& src)
     {
-        if (!accessible(src))
+        if (!isAccessible(src))
         {
             Log::errorf("Unable to access directory: %s", src);
             return false;
@@ -65,13 +65,13 @@ namespace Eris
 
     bool FileSystem::copy(const Path& src, const Path& dest)
     {
-        if (!accessible(src))
+        if (!isAccessible(src))
         {
             Log::errorf("Unable to access file: %s", src);
             return false;
         }
 
-        if (!accessible(dest))
+        if (!isAccessible(dest))
         {
             Log::errorf("Unable to access file: %s", dest);
             return false;
@@ -90,7 +90,7 @@ namespace Eris
 
     bool FileSystem::rename(const Path& src, const Path& new_name)
     {
-        if (!accessible(src))
+        if (!isAccessible(src))
         {
             Log::errorf("Unable to access file: %s", src);
             return false;
@@ -101,7 +101,7 @@ namespace Eris
 
     bool FileSystem::remove(const Path& file)
     {
-        if (!accessible(file))
+        if (!isAccessible(file))
         {
             Log::errorf("Unable to access file: %s", file);
             return false;
@@ -110,7 +110,7 @@ namespace Eris
         return std::tr2::sys::remove_all(file) > 0;
     }
 
-    bool FileSystem::accessible(const Path& path) const
+    bool FileSystem::isAccessible(const Path& path) const
     {
         if (path.empty())
             return false;
@@ -146,9 +146,9 @@ namespace Eris
         return false;
     }
 
-    bool FileSystem::exists(const Path& path) const
+    bool FileSystem::getExists(const Path& path) const
     {
-        if (!accessible(path))
+        if (!isAccessible(path))
         {
             Log::warnf("Unable to access file: %s", path);
             return false;
@@ -164,7 +164,7 @@ namespace Eris
 
     void FileSystem::scanDir(std::vector<Path>& output, const Path& path, std::string filter, glm::uint flags, bool recusive)
     {
-        if (!accessible(path))
+        if (!isAccessible(path))
         {
             Log::warnf("Unable to access path: %s", path);
             return;

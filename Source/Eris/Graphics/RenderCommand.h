@@ -49,40 +49,40 @@ namespace Eris
     {
         RenderKey key;
 
-        virtual void operator()(Graphics* graphics, const RenderKey* queue_id) = 0;
+        virtual void operator()(Renderer* renderer, const RenderKey* queue_id) = 0;
     };
 
     struct ClearColorCommand : public RenderCommand
     {
-        virtual void operator()(Graphics* graphics, const RenderKey* last_key);
+        virtual void operator()(Renderer* renderer, const RenderKey* last_key);
 
         glm::vec4 color;
     };
 
     struct ClearCommand : public RenderCommand
     {
-        virtual void operator()(Graphics* graphics, const RenderKey* last_key);
+        virtual void operator()(Renderer* renderer, const RenderKey* last_key);
 
         glm::u32 bitfield;
     };
 
     struct EnableCommand : public RenderCommand
     {
-        virtual void operator()(Graphics* graphics, const RenderKey* last_key);
+        virtual void operator()(Renderer* renderer, const RenderKey* last_key);
 
         glm::u32 capability;
     };
 
     struct DisableCommand : public RenderCommand
     {
-        virtual void operator()(Graphics* graphics, const RenderKey* last_key);
+        virtual void operator()(Renderer* renderer, const RenderKey* last_key);
 
         glm::u32 capability;
     };
 
     struct Draw3DCommand : public RenderCommand
     {
-        virtual void operator()(Graphics* graphics, const RenderKey* last_key);
+        virtual void operator()(Renderer* renderer, const RenderKey* last_key);
 
         SharedPtr<Model> model;
         SharedPtr<Material> material;
@@ -91,7 +91,7 @@ namespace Eris
 
     struct CameraCommand : public RenderCommand
     {
-        virtual void operator()( Graphics* graphics, const RenderKey* last_key );
+        virtual void operator()( Renderer* renderer, const RenderKey* last_key );
 
         SharedPtr<Camera> camera;
     };

@@ -49,7 +49,7 @@ namespace Eris
         void patch(const JsonElement& element);
         void clear() { m_doc->Clear(); }
 
-        bool empty() { return m_doc->IsArray() ? m_doc->Empty() : m_doc->ObjectEmpty(); }
+        bool isEmpty() { return m_doc->IsArray() ? m_doc->Empty() : m_doc->ObjectEmpty(); }
 
         JsonElement getRoot();
         rapidjson::Document* getDocument() const { return m_doc; }

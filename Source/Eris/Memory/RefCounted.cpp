@@ -59,12 +59,12 @@ namespace Eris
             delete this;
     }
 
-    glm::i32 RefCounted::refs()
+    glm::i32 RefCounted::getRefs()
     {
         return m_ref_count->m_refs;
     }
 
-    glm::i32 RefCounted::weakRefs()
+    glm::i32 RefCounted::getWeakRefs()
     {
         return m_ref_count->m_weak_refs - 1;
     }

@@ -40,7 +40,20 @@ namespace Eris
         void run();
         void terminate();
 
+        /// Set current view.
+        void setCurrentView( const glm::mat4& view );
+        /// Set current perspective.
+        void setCurrentPerspective( const glm::mat4& perspective );
+
+        /// Get current state.
         RenderState* getState() const { return m_state; }
+        /// Get current view matrix.
+        glm::mat4 getCurrentView() const { return m_view; }
+        /// Get current perspective matrix.
+        glm::mat4 getCurrentPerspective() const { return m_perspective; }
+
+        /// Bind a uniform to opengl
+        void bindUniform( glm::i32 location, glm::u32 type, const Variant& data );
 
     private:
         bool initializeOpenGL(GLFWwindow* window, glm::i32 width, glm::i32 height);
@@ -53,6 +66,8 @@ namespace Eris
         std::atomic<bool> m_thread_exit;
         std::atomic<bool> m_viewport_dirty;
         SharedPtr<RenderState> m_state;
+        glm::mat4 m_view;
+        glm::mat4 m_perspective;
     };
 
     template<> inline void Context::registerModule(Renderer* module)

@@ -58,8 +58,8 @@ namespace Eris
         void increment();
         void release();
 
-        glm::i32 refs();
-        glm::i32 weakRefs();
+        glm::i32 getRefs();
+        glm::i32 getWeakRefs();
 
     private:
         RefCounter* m_ref_count;

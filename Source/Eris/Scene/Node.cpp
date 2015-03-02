@@ -55,16 +55,16 @@ namespace Eris
         ERIS_ASSERT(dest);
     }
 
-    bool Node::active() const
+    bool Node::isActive() const
     {
-        return m_parent ? m_parent->active() && m_active : m_active;
+        return m_parent ? m_parent->isActive() && m_active : m_active;
     }
 
     void Node::addChild(Node* child)
     {
         ERIS_ASSERT(child);
         child->m_parent = this;
-        child->component<Transform>()->invalidateTransform();
+        child->getComponent<Transform>()->invalidateTransform();
         m_children.push_back(SharedPtr<Node>(child));
     }
 
@@ -76,25 +76,25 @@ namespace Eris
             if (*i == child)
             {
                 child->m_parent = nullptr;
-                child->component<Transform>()->invalidateTransform();
+                child->getComponent<Transform>()->invalidateTransform();
                 m_children.erase(i);
                 break;
             }
         }
     }
 
-    Node* Node::child(glm::u64 id) const
+    Node* Node::getChild(glm::u64 id) const
     {
         for (auto child : m_children)
         {
-            if (child->id() == id)
+            if (child->getId() == id)
                 return child;
         }
 
         return nullptr;
     }
 
-    Node* Node::child(glm::u32 index) const
+    Node* Node::getChild(glm::u32 index) const
     {
         ERIS_ASSERT(index >= 0 && index < m_children.size());
         return m_children.at(index);
@@ -105,7 +105,7 @@ namespace Eris
         for (auto child : m_children)
         {
             child->m_parent = nullptr;
-            child->component<Transform>()->invalidateWorldTransform();
+            child->getComponent<Transform>()->invalidateTransform();
         }
 
         m_children.clear();

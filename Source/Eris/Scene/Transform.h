@@ -52,28 +52,28 @@ namespace Eris
         void setScale(const glm::vec3& scale);
         void setEulerAngles( const glm::vec3& eurlerAngles );
 
-        const glm::vec3& localPosition() const { return m_local_position; }
-        const glm::quat& localRotation() const { return m_local_rotation; }
-        const glm::vec3& localScale() const { return m_local_scale; }
-        glm::vec3 localEulerAngles() const;
-        glm::vec3 localForward() const;
-        glm::vec3 localUp() const;
-        glm::vec3 localRight() const;
-        glm::f32 localRoll() const;
-        glm::f32 localPitch() const;
-        glm::f32 localYaw() const;
-        glm::mat4 localTransform() const;
-        glm::vec3 position() const;
-        glm::quat rotation() const;
-        glm::vec3 scale() const;
-        glm::vec3 eulerAngles() const;
-        glm::vec3 forward() const;
-        glm::vec3 up() const;
-        glm::vec3 right() const;
-        glm::f32 roll() const;
-        glm::f32 pitch() const;
-        glm::f32 yaw() const;
-        glm::mat4 transform() const { return m_world_transform; }
+        const glm::vec3& getLocalPosition() const { return m_local_position; }
+        const glm::quat& getLocalRotation() const { return m_local_rotation; }
+        const glm::vec3& getLocalScale() const { return m_local_scale; }
+        glm::vec3 getLocalEulerAngles() const;
+        glm::vec3 getLocalForward() const;
+        glm::vec3 getLocalUp() const;
+        glm::vec3 getLocalRight() const;
+        glm::f32 getLocalRoll() const;
+        glm::f32 getLocalPitch() const;
+        glm::f32 getLocalYaw() const;
+        glm::mat4 getLocalTransform() const;
+        glm::vec3 getPosition() const;
+        glm::quat getRotation() const;
+        glm::vec3 getScale() const;
+        glm::vec3 getEulerAngles() const;
+        glm::vec3 getForward() const;
+        glm::vec3 getUp() const;
+        glm::vec3 getRight() const;
+        glm::f32 getRoll() const;
+        glm::f32 getPitch() const;
+        glm::f32 getYaw() const;
+        glm::mat4 getTransform() const { return m_world_transform; }
 
         void invalidateTransform();
 
