@@ -52,6 +52,7 @@ namespace Eris
         virtual File& operator << (const SerializerTraits& data);
 
         virtual File& operator >> (char* buffer);
+        virtual File& operator >> (std::stringstream& stream);
 
         virtual std::size_t read(void* buffer, std::size_t count);
         virtual std::size_t seek(std::size_t position);

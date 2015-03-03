@@ -133,6 +133,14 @@ namespace Eris
         return *this;
     }
 
+    File& File::operator>>(std::stringstream& stream)
+    {
+        if ( m_handle.is_open() )
+            stream << m_handle.rdbuf();
+
+        return *this;
+    }
+
     std::size_t File::read(void* buffer, std::size_t count)
     {
         if (m_handle.is_open())

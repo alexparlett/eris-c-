@@ -28,6 +28,7 @@ namespace Eris
     {
     public:
         virtual Deserializer& operator >> (char* buffer) = 0;
+        virtual Deserializer& operator >> (std::stringstream& stream) = 0;
 
         virtual std::size_t read(void* buffer, std::size_t count) = 0;
         virtual std::size_t seek(std::size_t position) = 0;

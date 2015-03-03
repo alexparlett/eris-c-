@@ -23,6 +23,7 @@
 #pragma once
 
 #include "Core/Context.h"
+#include "IO/File.h"
 #include "Resource/Resource.h"
 #include "Memory/ArrayPointers.h"
 
@@ -33,6 +34,18 @@ namespace Eris
         Variant data;
         glm::u32 type;
         glm::i32 location;
+    };
+
+    class ShaderPreprocessor
+    {
+    public:
+        std::stringstream process( const File* in );
+        void reset();
+
+    private:
+        bool isIncluded( const std::string& file );
+
+        std::vector<std::string> m_included_files;
     };
 
     class ShaderProgram : public Resource

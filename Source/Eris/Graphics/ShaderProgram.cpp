@@ -26,6 +26,7 @@
 
 #include "Core/Log.h"
 #include "Core/Profiler.h"
+#include "Resource/JsonFile.h"
 
 #include <sstream>
 
@@ -42,43 +43,38 @@ namespace Eris
     {
         PROFILE(LoadProgram);
 
-        std::size_t ds_size = deserializer.getSize();
-        SharedArrayPtr<char> buffer(ds_size);
-        std::size_t in_size = deserializer.read(buffer.get(), ds_size);
-
-        if (ds_size != in_size)
+        JsonFile file( m_context );
+        if ( !file.load( deserializer ) )
             return false;
 
-        std::stringstream vert_stream, frag_stream;
+        JsonElement root = file.getRoot();
 
-        char* line = nullptr;
-        char* next_line = nullptr;
-
-        line = strtok_s(buffer.get(), "[\r\n\0", &next_line);
-        while (line)
+        std::string vertName = root["vert"].getString();
+        std::string fragName = root["frag"].getString();
+        if ( vertName == StringEmpty || fragName == StringEmpty )
         {
-            if (line[0] == '#')
-            {
-                vert_stream << line << std::endl;
-                frag_stream << line << std::endl;
-            }
-            if (strstr(line, "frag"))
-            {
-                line = strtok_s(nullptr, "[]\0", &next_line);
-                line = strtok_s(nullptr, "[]\0", &next_line);
-                if (line)
-                    frag_stream << line << std::endl;
-            }
-            else if (strstr(line, "vert"))
-            {
-                line = strtok_s(nullptr, "[]\0", &next_line);
-                line = strtok_s(nullptr, "[]\0", &next_line);
-                if (line)
-                    vert_stream << line << std::endl;
-            }
-
-            line = strtok_s(nullptr, "[\r\n\0", &next_line);
+            Log::errorf( "Failed loading ShaderProgram (%s) : Missing shader definition.", deserializer.getPath());
+            return false;
         }
+
+        File vert_file( m_context, vertName );
+        if ( !vert_file.isOpened() )
+        {
+            Log::errorf( "Failed loading ShaderProgram (%s) : Cannot open vertex shader file %s", vertName );
+            return false;
+        }
+
+        File frag_file( m_context, fragName );
+        if ( !frag_file.isOpened() )
+        {
+            Log::errorf( "Failed loading ShaderProgram (%s) : Cannot open fragment shader file %s", fragName );
+            return false;
+        }
+
+        ShaderPreprocessor preprocessor;
+        std::stringstream vert_stream = preprocessor.process( &vert_file );
+        preprocessor.reset();
+        std::stringstream frag_stream = preprocessor.process( &frag_file );
 
         return compile(vert_stream.str().c_str(), frag_stream.str().c_str());
     }
@@ -214,4 +210,64 @@ namespace Eris
 
         return true;
     }
+
+    std::stringstream ShaderPreprocessor::process( const File* in )
+    {
+        m_included_files.push_back( in->getPath().string() );
+
+        std::stringstream ostream, istream;
+
+        istream << in;
+
+        std::string line;
+        while ( std::getline( istream, line ) )
+        {
+            if ( line.compare( "#include" ) > 0 )
+            {
+                std::vector<std::string> tokens = std::string_split( line, " \n\r\0" );
+                if ( tokens.size() < 2 )
+                {
+                    Log::errorf( "Failed preprocessing Shader(%s) : include missing file path", in->getPath() );
+                    continue;
+                }
+             
+                File file( in->getContext(), tokens[1] );
+                if ( !file.isOpened() )
+                {
+                    Log::errorf( "Failed preprocessing Shader(%s) : include %s doesn't exist", in->getPath(), tokens[1]);
+                    continue;
+                }
+
+                if ( isIncluded( tokens[1] ) )
+                {
+                    Log::warnf( "Preprocessing Shader(%s) : file included multiple times in hierarchy", in->getPath(), tokens[1] );
+                    continue;
+                }
+
+                process( &file );
+            }
+            else
+                ostream << line;
+        }
+
+        ostream << std::endl;
+        return ostream;
+    }
+
+    bool ShaderPreprocessor::isIncluded( const std::string& file )
+    {
+        for ( auto entry : m_included_files )
+        {
+            if ( entry == file )
+                return true;
+        }
+
+        return false;
+    }
+
+    void ShaderPreprocessor::reset()
+    {
+        m_included_files.clear();
+    }
+
 }
