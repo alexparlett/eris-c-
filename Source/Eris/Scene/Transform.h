@@ -35,9 +35,9 @@ namespace Eris
     class Transform : public Component
     {
     public:
-        static const Up = glm::vec3( 0.f, 1.f, 0.f );
-        static const Forward = glm::vec3( 0.f, 0.f, -1.f );
-        static const Right = glm::vec3( 1.f, 0.f, 0.f );
+        static const glm::vec3 Up;
+        static const glm::vec3 Forward;
+        static const glm::vec3 Right;
 
         Transform(Context* context, Node* node);
         virtual ~Transform();
@@ -45,7 +45,7 @@ namespace Eris
         virtual void load(const JsonElement* src) const;
         virtual void save(JsonElement* dest) const;
 
-        void lookAt(const glm::vec3& position, const glm::vec3& up = Transform::UP);
+        void lookAt(const glm::vec3& position, const glm::vec3& up = Transform::Up);
         void rotate(const glm::vec3& eulerAngles, const TransformSpace space = TransformSpace::LOCAL);
 
         void setLocalPosition(const glm::vec3& position);

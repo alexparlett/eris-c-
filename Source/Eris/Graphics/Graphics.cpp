@@ -196,7 +196,7 @@ namespace Eris
 
         HWND main_hwnd = glfwGetWin32Window(m_main_window);
         HWND res_hwnd = glfwGetWin32Window(m_resource_window);
-        HANDLE hicon = (HICON) LoadImage(NULL, "icon.ico", IMAGE_ICON, 0, 0, LR_LOADFROMFILE | LR_DEFAULTSIZE | LR_SHARED);
+        HANDLE hicon = (HICON) LoadImage(NULL, icon.c_str(), IMAGE_ICON, 0, 0, LR_LOADFROMFILE | LR_DEFAULTSIZE | LR_SHARED);
         if (hicon)
         {
             SendMessage(main_hwnd, WM_SETICON, ICON_SMALL, (LPARAM) hicon);

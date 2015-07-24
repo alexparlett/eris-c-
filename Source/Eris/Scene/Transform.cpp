@@ -28,9 +28,14 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/norm.hpp>
 #include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/rotate_vector.hpp> 
 
 namespace Eris
 {
+    const glm::vec3 Transform::Up = glm::vec3(0.f, 1.f, 0.f);
+    const glm::vec3 Transform::Forward = glm::vec3(0.f, 0.f, -1.f);
+    const glm::vec3 Transform::Right = glm::vec3(1.f, 0.f, 0.f);
+
     Transform::Transform( Context* context, Node* node ) :
         Component( context, node ),
         m_local_scale( 1.f )
@@ -51,26 +56,24 @@ namespace Eris
         ERIS_ASSERT( dest );
     }
 
-    void Transform::lookAt(const glm::vec3& position, const glm::vec3& up)
+    void Transform::lookAt(const glm::vec3& target, const glm::vec3& up)
     {
-        glm::vec3 direction = glm::direction2(getPosition(), position);
-        glm::vec3 normal = glm::normalize(direction);
-        setRotation(glm::quat_cast(glm::orientation(normal, up)));
+        setRotation(glm::quat_cast(glm::lookAt(getPosition(), target, up)));
     }
 
     void Transform::rotate(const glm::vec3& eulerAngles, const TransformSpace space)
     {
-        glm::mat4 rot = glm::orientate3(eulerAngles);
+        glm::quat rot = glm::quat_cast(glm::orientate3(eulerAngles));
         switch (space)
         {
-            case LOCAL:
-                rot = rot * glm::mat4_cast(getLocalRotation());
-                setLocalRotation(glm::quat_cast(rot));
+        case TransformSpace::LOCAL:
+                rot = rot * getLocalRotation();
+                setLocalRotation(rot);
                 break;
 
-            case WORLD:
-                rot = rot * glm::mat4_cast(getRotation());
-                setRotation(glm::quat_cast(rot));
+        case TransformSpace::WORLD:
+                rot = rot * getRotation();
+                setRotation(rot);
                 break;
         }
     }
