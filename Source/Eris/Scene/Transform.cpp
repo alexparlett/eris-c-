@@ -25,6 +25,9 @@
 
 #include <glm/gtx/matrix_decompose.hpp>
 #include <glm/gtx/euler_angles.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/norm.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 namespace Eris
 {
@@ -46,6 +49,30 @@ namespace Eris
     void Transform::save( JsonElement* dest ) const
     {
         ERIS_ASSERT( dest );
+    }
+
+    void Transform::lookAt(const glm::vec3& position, const glm::vec3& up)
+    {
+        glm::vec3 direction = glm::direction2(getPosition(), position);
+        glm::vec3 normal = glm::normalize(direction);
+        setRotation(glm::quat_cast(glm::orientation(normal, up)));
+    }
+
+    void Transform::rotate(const glm::vec3& eulerAngles, const TransformSpace space)
+    {
+        glm::mat4 rot = glm::orientate3(eulerAngles);
+        switch (space)
+        {
+            case LOCAL:
+                rot = rot * glm::mat4_cast(getLocalRotation());
+                setLocalRotation(glm::quat_cast(rot));
+                break;
+
+            case WORLD:
+                rot = rot * glm::mat4_cast(getRotation());
+                setRotation(glm::quat_cast(rot));
+                break;
+        }
     }
 
     void Transform::setLocalPosition( const glm::vec3& position )
@@ -129,31 +156,31 @@ namespace Eris
 
     glm::vec3 Transform::getLocalForward() const
     {
-        return m_local_rotation * glm::vec3( 0.f, 0.f, -1.f );
+        return m_local_rotation * Transform::Forward;
     }
 
     glm::vec3 Transform::getLocalUp() const
     {
-        return m_local_rotation * glm::vec3( 0.f, 1.f, 0.f );
+        return m_local_rotation * Transform::Up;
     }
     glm::vec3 Transform::getLocalRight() const
     {
-        return m_local_rotation * glm::vec3( 1.f, 0.f, 0.f );
+        return m_local_rotation * Transform::Right;
     }
 
     glm::vec3 Transform::getForward() const
     {
-        return getRotation() * glm::vec3( 0.f, 0.f, -1.f );
+        return getRotation() * Transform::Forward;
     }
 
     glm::vec3 Transform::getUp() const
     {
-        return getRotation() * glm::vec3( 0.f, 1.f, 0.f );
+        return getRotation() * Transform::Up;
     }
 
     glm::vec3 Transform::getRight() const
     {
-        return getRotation() * glm::vec3( 1.f, 0.f, 0.f );
+        return getRotation() * Transform::Right;
     }
 
     void Transform::invalidateTransform()
