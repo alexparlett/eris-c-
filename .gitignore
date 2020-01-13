@@ -164,3 +164,4 @@ Temp/
 Game/
 Source/gitversion.h
 Lib/
+.history/
